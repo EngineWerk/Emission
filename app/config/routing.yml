@@ -1,0 +1,5 @@
+enginewerk_emission:
+    resource: "@EnginewerkEmissionBundle/Controller/"
+    type:     annotation
+    prefix:   /
+
