@@ -62,7 +62,7 @@ class File
     protected $type;
 
     /**
-     * @ORM\Column(name="size", type="integer", options={"unsigned"=true})
+     * @ORM\Column(name="size", type="bigint", options={"unsigned"=true})
      * @var integer
      */
     protected $size;

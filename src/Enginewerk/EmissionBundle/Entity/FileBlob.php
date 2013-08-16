@@ -40,13 +40,13 @@ class FileBlob
     protected $size;
     
     /**
-     * @ORM\Column(name="rangeStart", type="integer", options={"unsigned"=true})
+     * @ORM\Column(name="rangeStart", type="bigint", options={"unsigned"=true})
      * @var integer
      */
     protected $rangeStart;
     
     /**
-     * @ORM\Column(name="rangeEnd", type="integer", options={"unsigned"=true})
+     * @ORM\Column(name="rangeEnd", type="bigint", options={"unsigned"=true})
      * @var integer
      */
     protected $rangeEnd;
