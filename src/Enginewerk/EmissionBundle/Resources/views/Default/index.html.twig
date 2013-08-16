@@ -72,15 +72,27 @@
         </thead>
     {% for File in Files %}
         <tr>
-            <td>{{ File.id }}</td>
-            <td>{{ File.name }}</td>
-            <td>{{ File.fileId }}</td>
-            <td>{{ File.type }}</td>
-            <td>{{ File.size }}</td>
-            <td>{{ File.expirationDate|date("Y-m-d H:i:s") }}</td>
-            <td>{{ File.updatedAt|date("Y-m-d H:i:s") }}</td>
-            <td>{{ File.createdAt|date("Y-m-d H:i:s") }}</td>
-            <td><a href="{{ path('show_file', {'file': File.fileId}) }}">show</a> <a href="{{ path('download_file', {'file': File.fileId}) }}">save</a> <a href="{{ path('open_file', {'file': File.fileId}) }}">open</a> - <a href="{{ path('delete_file', {'file': File.fileId}) }}">delete</a></td>
+            {% if File.isComplete == 1 %}
+                <td>{{ File.id }}</td>
+                <td>{{ File.name }}</td>
+                <td>{{ File.fileId }}</td>
+                <td>{{ File.type }}</td>
+                <td>{{ File.size }}</td>
+                <td>{{ File.expirationDate|date("Y-m-d H:i:s") }}</td>
+                <td>{{ File.updatedAt|date("Y-m-d H:i:s") }}</td>
+                <td>{{ File.createdAt|date("Y-m-d H:i:s") }}</td>
+                <td><a href="{{ path('show_file', {'file': File.fileId}) }}">show</a> <a href="{{ path('download_file', {'file': File.fileId}) }}">save</a> <a href="{{ path('open_file', {'file': File.fileId}) }}">open</a> - <a href="{{ path('delete_file', {'file': File.fileId}) }}">delete</a></td>
+            {% else %}
+                <td>{{ File.id }}</td>
+                <td>{{ File.name }}</td>
+                <td>{{ File.fileId }}</td>
+                <td>{{ File.type }}</td>
+                <td>{{ File.size }}</td>
+                <td>{{ File.expirationDate|date("Y-m-d H:i:s") }}</td>
+                <td>{{ File.updatedAt|date("Y-m-d H:i:s") }}</td>
+                <td>{{ File.createdAt|date("Y-m-d H:i:s") }}</td>
+                <td>Incomplete - <a href="{{ path('delete_file', {'file': File.fileId}) }}">delete</a></td>
+            {% endif%}
         </tr>
     {% endfor %}
     </table>
@@ -122,7 +134,7 @@
                 limitConcurrentUploads: 1,
                 maxChunkSize: ({{max_chunk_size}} * 1024 * 1024), // 16 MB
                 sequentialUploads: true,
-                //maxFileSize: 128000000, // 128 MB // NO maxFileSize
+                maxFileSize: 999999999999, // 999 Gb
                 formData:[
                     {
                         name: 'form[_token]',

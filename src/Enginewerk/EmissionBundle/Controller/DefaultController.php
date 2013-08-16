@@ -21,8 +21,6 @@ class DefaultController extends Controller
     {
         $Repository = $this->getDoctrine()->getRepository('EnginewerkEmissionBundle:File');
         $Query = $Repository->createQueryBuilder('f')
-                ->where('f.isComplete = :isComplete')
-                ->setParameter('isComplete', '1')
                 ->orderBy('f.id', 'DESC')
                 ->getQuery();
         
