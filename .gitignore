@@ -12,6 +12,7 @@ web/bundles/*
 app/config/parameters.ini
 app/config/parameters.yml
 /nbproject/private/
+app/SymfonyRequirements.php
 
 #File storage directory
 /app/local_fs/main/*
