@@ -86,6 +86,14 @@ class File
     protected $updatedAt;
     
     /**
+     * File uploader name
+     * 
+     * @ORM\Column(type="string", length=255)
+     * @var string
+     */
+    protected $uploadedBy;
+    
+    /**
      * @ORM\OneToMany(targetEntity="FileBlob", mappedBy="file", cascade={"remove"})
      */
     protected $fileBlobs;
@@ -401,5 +409,28 @@ class File
     public function getIsComplete()
     {
         return $this->isComplete;
+    }
+
+    /**
+     * Set uploadedBy
+     *
+     * @param string $uploadedBy
+     * @return File
+     */
+    public function setUploadedBy($uploadedBy)
+    {
+        $this->uploadedBy = $uploadedBy;
+    
+        return $this;
+    }
+
+    /**
+     * Get uploadedBy
+     *
+     * @return string 
+     */
+    public function getUploadedBy()
+    {
+        return $this->uploadedBy;
     }
 }

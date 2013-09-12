@@ -16,6 +16,9 @@ parameters:
 
     app.uploader_max_chunk_size: 16
 
+    google_openid_client_id: client_id
+    google_openid_client_secret: client_secret
+
 twig:
     globals:
         max_chunk_size: %app.uploader_max_chunk_size%

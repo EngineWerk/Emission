@@ -7,38 +7,40 @@ security:
         ROLE_SUPER_ADMIN: [ROLE_USER, ROLE_ADMIN, ROLE_ALLOWED_TO_SWITCH]
 
     providers:
+        chain_provider:
+            chain:
+                providers: [in_memory, oauth.user_provider]
+                
         in_memory:
             memory:
                 users:
                     user:  { password: userpass, roles: [ 'ROLE_USER' ] }
                     admin: { password: adminpass, roles: [ 'ROLE_ADMIN' ] }
+                    
+        oauth.user_provider:
+            id: hwi_oauth.user.provider
 
     firewalls:
         dev:
             pattern:  ^/(_(profiler|wdt)|css|images|js)/
             security: false
-
-        #login:
-        #    pattern:  ^/demo/secured/login$
-        #    security: false
-
+            
         download:
             pattern:  ^/(f|d|o)/
-            security: false
-
+            security: false            
+        
         secured_area:
-            pattern:    ^/
-            #form_login:
-            #    check_path: _security_check
-            #    login_path: _demo_login
-            #logout:
-            #    path:   _demo_logout
-            #    target: _demo
-            #anonymous: ~
-            http_basic:
-                realm: "Requires login"
-
+            pattern:  ^/
+            anonymous: true
+            oauth:
+                resource_owners:
+                    google:             "/login/check-google"
+                login_path:        /login
+                failure_path:      /login
+                oauth_user_provider:
+                    service: hwi_oauth.user.provider
+        
     access_control:
-        - { path: ^/, roles: ROLE_USER }
-        #- { path: ^/demo/secured/hello/admin/, roles: ROLE_ADMIN }
-        #- { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY, requires_channel: https }
+        - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/connect, role: IS_AUTHENTICATED_ANONYMOUSLY }       
+        - { path: ^/, role: ROLE_USER }

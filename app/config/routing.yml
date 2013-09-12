@@ -1,5 +1,15 @@
+hwi_oauth_login:
+    resource: "@HWIOAuthBundle/Resources/config/routing/login.xml"
+    prefix:   /login
+    
+hwi_oauth_redirect:
+    resource: "@HWIOAuthBundle/Resources/config/routing/redirect.xml"
+    prefix:   /connect
+
+google_login:
+    pattern: /login/check-google    
+    
 enginewerk_emission:
     resource: "@EnginewerkEmissionBundle/Controller/"
     type:     annotation
-    prefix:   /
-
+    prefix:   /    

@@ -28,11 +28,10 @@
 
 {% block stylesheets %}
 <!-- Bootstrap CSS Toolkit styles -->
-<link rel="stylesheet" href="http://blueimp.github.io/cdn/css/bootstrap.min.css">
+<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
 <!-- Generic page styles -->
 <link rel="stylesheet" href="{{ asset('bundles/enginewerkemission/css/style.css') }}">
 <!-- Bootstrap styles for responsive website layout, supporting different screen sizes -->
-<link rel="stylesheet" href="http://blueimp.github.io/cdn/css/bootstrap-responsive.min.css">
 <!-- Bootstrap CSS fixes for IE6 -->
 <!--[if lt IE 7]><link rel="stylesheet" href="http://blueimp.github.io/cdn/css/bootstrap-ie6.min.css"><![endif]-->
 <!-- CSS to style the file input field as button and adjust the Bootstrap progress bars -->
@@ -63,6 +62,7 @@
             <th>ID</th>
             <th>Name</th>
             <th>File ID</th>
+            <th>Uploaded by</th>
             <th>Type</th>
             <th>Size</th>
             <th>Expiration date</th>
@@ -76,6 +76,7 @@
                 <td>{{ File.id }}</td>
                 <td>{{ File.name }}</td>
                 <td>{{ File.fileId }}</td>
+                <td>{{ File.uploadedBy }}</td>
                 <td>{{ File.type }}</td>
                 <td>{{ File.size }}</td>
                 <td>{{ File.expirationDate|date("Y-m-d H:i:s") }}</td>
@@ -86,6 +87,7 @@
                 <td>{{ File.id }}</td>
                 <td>{{ File.name }}</td>
                 <td>{{ File.fileId }}</td>
+                <td>{{ File.uploadedBy }}</td>
                 <td>{{ File.type }}</td>
                 <td>{{ File.size }}</td>
                 <td>{{ File.expirationDate|date("Y-m-d H:i:s") }}</td>
@@ -209,6 +211,7 @@
             '<td>' + file.id + '</td> \n' + 
             '<td>' + file.name + '</td> \n' + 
             '<td>' + file.file_id + '</td> \n' + 
+            '<td>' + file.uploaded_by + '</td> \n' + 
             '<td>' + file.type + '</td> \n' + 
             '<td>' + file.size + '</td> \n' + 
             '<td>' + file.expiration_date + '</td> \n' + 

@@ -104,6 +104,7 @@ class DefaultController extends Controller
                 $File->setType($Form->get('fileBlob')->getData()->getMimeType());
                 $File->setSize($fileTotalSize);
                 $File->setIsComplete(false);
+                $File->setUploadedBy($this->getUser()->getUserName());
                 
                 $em->persist($File);
             }
@@ -149,6 +150,7 @@ class DefaultController extends Controller
                           'expiration_date' => $File->getExpirationDate()->format('Y-m-d H:i:s'),
                           'updated_at' => $File->getUpdatedAt()->format('Y-m-d H:i:s'),
                           'created_at' => $File->getCreatedAt()->format('Y-m-d H:i:s'),
+                          'uploaded_by' => $File->getUploadedBy(),
                           'show_url' => $this->generateUrl('show_file', array('file' => $File->getFileId()), true),
                           'download_url' => $this->generateUrl('download_file', array('file' => $File->getFileId()), true),
                           'open_url' => $this->generateUrl('open_file', array('file' => $File->getFileId()), true),
