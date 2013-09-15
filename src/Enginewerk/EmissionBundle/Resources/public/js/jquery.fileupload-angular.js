@@ -1,5 +1,5 @@
 /*
- * jQuery File Upload AngularJS Plugin 1.3.1
+ * jQuery File Upload AngularJS Plugin 1.4.4
  * https://github.com/blueimp/jQuery-File-Upload
  *
  * Copyright 2013, Sebastian Tschan
@@ -38,10 +38,14 @@
         .provider('fileUpload', function () {
             var scopeApply = function () {
                     var scope = angular.element(this)
-                        .fileupload('option', 'scope')();
-                    if (!scope.$$phase) {
+                            .fileupload('option', 'scope')(),
+                        $timeout = angular.injector(['ng'])
+                            .get('$timeout');
+                    // Safe apply, makes sure $apply is called
+                    // asynchronously outside of the $digest cycle:
+                    $timeout(function () {
                         scope.$apply();
-                    }
+                    });
                 },
                 $config;
             $config = this.defaults = {
@@ -65,18 +69,21 @@
                                 submit = function () {
                                     return data.submit();
                                 };
+                            angular.forEach(data.files, function (file, index) {
+                                file._index = index;
+                                file.$state = function () {
+                                    return data.state();
+                                };
+                                file.$progress = function () {
+                                    return data.progress();
+                                };
+                                file.$response = function () {
+                                    return data.response();
+                                };
+                            });
                             file.$cancel = function () {
                                 scope.clear(data.files);
                                 return data.abort();
-                            };
-                            file.$state = function () {
-                                return data.state();
-                            };
-                            file.$progress = function () {
-                                return data.progress();
-                            };
-                            file.$response = function () {
-                                return data.response();
                             };
                             if (file.$state() === 'rejected') {
                                 file._$submit = submit;
@@ -131,7 +138,6 @@
                     return this.scope().queue.length;
                 },
                 dataType: 'json',
-                prependFiles: true,
                 autoUpload: false
             };
             this.$get = [
@@ -180,8 +186,8 @@
         // The FileUploadController initializes the fileupload widget and
         // provides scope methods to control the File Upload functionality: 
         .controller('FileUploadController', [
-            '$scope', '$element', '$attrs', 'fileUpload',
-            function ($scope, $element, $attrs, fileUpload) {
+            '$scope', '$element', '$attrs', '$window', 'fileUpload',
+            function ($scope, $element, $attrs, $window, fileUpload) {
                 var uploadMethods = {
                     progress: function () {
                         return $element.fileupload('progress');
@@ -205,8 +211,7 @@
                         return $element.fileupload('processing', data);
                     }
                 };
-                $scope.disabled = angular.element('<input type="file">')
-                    .prop('disabled');
+                $scope.disabled = !$window.jQuery.support.fileInput;
                 $scope.queue = $scope.queue || [];
                 $scope.clear = function (files) {
                     var queue = this.queue,
@@ -293,7 +298,9 @@
                     'fileuploadprocessalways',
                     'fileuploadprocessstop'
                 ].join(' '), function (e, data) {
-                    $scope.$emit(e.type, data);
+                    if ($scope.$emit(e.type, data).defaultPrevented) {
+                        e.preventDefault();
+                    }
                 }).on('remove', function () {
                     // Remove upload methods from the scope,
                     // when the widget is removed:

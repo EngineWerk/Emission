@@ -1,5 +1,5 @@
 /*
- * jQuery File Upload Plugin JS Example 8.0.1
+ * jQuery File Upload Plugin JS Example 8.8.2
  * https://github.com/blueimp/jQuery-File-Upload
  *
  * Copyright 2010, Sebastian Tschan
@@ -10,7 +10,7 @@
  */
 
 /*jslint nomen: true, regexp: true */
-/*global $, window, navigator */
+/*global $, window, blueimp */
 
 $(function () {
     'use strict';
@@ -40,7 +40,7 @@ $(function () {
             // which actually support image resizing, but fail to
             // send Blob objects via XHR requests:
             disableImageResize: /Android(?!.*Chrome)|Opera/
-                .test(window.navigator && navigator.userAgent),
+                .test(window.navigator.userAgent),
             maxFileSize: 5000000,
             acceptFileTypes: /(\.|\/)(gif|jpe?g|png)$/i
         });
@@ -50,7 +50,7 @@ $(function () {
                 url: '//jquery-file-upload.appspot.com/',
                 type: 'HEAD'
             }).fail(function () {
-                $('<span class="alert alert-error"/>')
+                $('<div class="alert alert-danger"/>')
                     .text('Upload server currently unavailable - ' +
                             new Date())
                     .appendTo('#fileupload');
