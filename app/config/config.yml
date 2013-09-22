@@ -24,6 +24,8 @@ framework:
 twig:
     debug:            %kernel.debug%
     strict_variables: %kernel.debug%
+    globals:
+        max_chunk_size: %app.uploader_max_chunk_size%    
 
 # Assetic Configuration
 assetic:
