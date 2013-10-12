@@ -9,6 +9,9 @@ hwi_oauth_redirect:
 google_login:
     pattern: /login/check-google    
     
+windows_live_login:
+    pattern: /login/check-windows-live    
+    
 enginewerk_emission:
     resource: "@EnginewerkEmissionBundle/Controller/"
     type:     annotation

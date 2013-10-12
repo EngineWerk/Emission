@@ -35,6 +35,7 @@ security:
             oauth:
                 resource_owners:
                     google:             "/login/check-google"
+                    windows_live:       "/login/check-windows-live"
                 login_path:        /login
                 failure_path:      /login
                 oauth_user_provider:
