@@ -17,7 +17,6 @@
 {% block body %}
 <!-- The fileinput-button span is used to style the file input field as button -->
     <menu>Application Name {{ app.user.username }} logout</menu>
-    resumable
     <div id="emissionSettingsContainer">
         <div>Chunk size: {{max_chunk_size}} M</div>
     </div>
@@ -53,7 +52,7 @@
                     <td><a href="{{ path('show_file', {'file': File.fileId}) }}">show</a> 
                         <a href="{{ path('download_file', {'file': File.fileId}) }}">save</a> 
                         <a href="{{ path('open_file', {'file': File.fileId}) }}">open</a> - 
-                        <a href="{{ path('delete_file', {'file': File.fileId}) }}">delete</a>
+                        <a href="{{ path('delete_file', {'file': File.fileId}) }}" class="remove-file" data-filename="{{ File.name }}">delete</a>
                     </td>
                 {% else %}
                     <td>Incomplete - <a href="{{ path('delete_file', {'file': File.fileId}) }}">delete</a></td>
@@ -125,7 +124,7 @@
             '<td>' + file.expiration_date + '</td> \n' + 
             '<td>' + file.updated_at + '</td> \n' + 
             '<td>' + file.created_at + '</td> \n' + 
-            '<td><a href="' + file.show_url + '">show</a> <a href="' + file.download_url + '">save</a> <a href="' + file.open_url + '">open</a> - <a href="' + file.delete_url + '">delete</a></td> \n' + 
+            '<td><a href="' + file.show_url + '">show</a> <a href="' + file.download_url + '">save</a> <a href="' + file.open_url + '">open</a> - <a href="' + file.delete_url + '" class="remove_file">delete</a></td> \n' + 
         '</tr>';
 
                     $('#filesTable tbody').prepend(tableRow);

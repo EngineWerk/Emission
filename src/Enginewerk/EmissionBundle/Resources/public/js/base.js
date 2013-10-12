@@ -41,5 +41,54 @@ function cursorNormal() {
 }
 
 $(document).ready( function(){
+
     //$.prettyLoader();
-});
+    
+    $('.remove-file').live('click',function(event){
+        
+        var clickedObj = $(this);
+        
+        // Jeśli wciśnięty klawisz alt to nie wyświetlamy potwierdzenia usunięcia.
+        if(event.altKey !== true) {
+        
+            var r = confirm('Usunąć "' + clickedObj.attr('data-filename') + '" ?')
+            if (r !== true)
+            {
+                return false;
+            }
+        }
+   
+        cursorBusy();
+
+        $.ajax({
+            url: clickedObj.attr('href')
+            }).done(function ( data ) {
+
+                rsp = jQuery.parseJSON( data );
+
+                if(rsp.status === 'Success') {
+                    //callbackOnSuccess(imageId, context);                        
+                    clickedObj.parent().parent().fadeOut(200, function(){
+                        clickedObj.parent().parent().remove();
+                    });
+                } else {
+                    if(rsp.status === 'Error') {
+                       if(rsp.data.code === 23000) {
+                           //callBackOnError(rsp.message, context);
+                       } else {
+                           log(rsp.message);
+                           //callBackOnError(rsp.message, context);
+                       }
+                    } else {
+                        log('Wystąpił nieobsługiwalny błąd.');                    
+                        //callBackOnError('unknown error', context);
+                    }
+                }
+                
+                cursorNormal();
+        });
+
+        event.preventDefault();
+    });
+         
+});    

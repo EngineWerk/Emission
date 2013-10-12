@@ -287,13 +287,42 @@ class DefaultController extends Controller
         $File = $this->getDoctrine()->getRepository('EnginewerkEmissionBundle:File')->findOneBy(array('fileId' => $request->get('file')));
         
         if(!$File) {
-            throw $this->createNotFoundException('File not found');
+            $jsonData = json_encode(array(
+                    array(
+                        'status' => 'Error',
+                        'message' => 'File not found'
+                    ),
+                ));
+            
+        } else {
+        
+            try {
+                $em = $this->getDoctrine()->getManager();
+                $em->remove($File);
+                $em->flush();  
+                
+                $jsonData = json_encode(array(
+                    array(
+                        'status' => 'Success',
+                    ),
+                ));
+                
+            } catch(Exception $e) {
+                $jsonData = json_encode(array(
+                    array(
+                        'status' => 'Error',
+                    ),
+                ));
+            }
         }
         
-        $em = $this->getDoctrine()->getManager();
-        $em->remove($File);
-        $em->flush();  
         
-        return $this->redirect($this->generateUrl('enginewerk_emission_default_index'));
+        $headers = array(
+                'Content-Type' => 'application/json'
+          );
+
+        $response = new Response($jsonData, 200, $headers);
+
+        return $response;
     }
 }
