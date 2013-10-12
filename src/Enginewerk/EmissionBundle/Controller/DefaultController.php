@@ -288,10 +288,8 @@ class DefaultController extends Controller
         
         if(!$File) {
             $jsonData = json_encode(array(
-                    array(
-                        'status' => 'Error',
-                        'message' => 'File not found'
-                    ),
+                    'status' => 'Error',
+                    'message' => 'File not found'
                 ));
             
         } else {
@@ -302,16 +300,12 @@ class DefaultController extends Controller
                 $em->flush();  
                 
                 $jsonData = json_encode(array(
-                    array(
-                        'status' => 'Success',
-                    ),
+                    'status' => 'Success',
                 ));
                 
             } catch(Exception $e) {
                 $jsonData = json_encode(array(
-                    array(
-                        'status' => 'Error',
-                    ),
+                    'status' => 'Error',
                 ));
             }
         }

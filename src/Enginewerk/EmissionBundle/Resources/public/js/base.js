@@ -61,10 +61,8 @@ $(document).ready( function(){
         cursorBusy();
 
         $.ajax({
-            url: clickedObj.attr('href')
-            }).done(function ( data ) {
-
-                rsp = jQuery.parseJSON( data );
+            url: clickedObj.attr('href'),
+            }).done(function ( rsp, textStatus  ) {
 
                 if(rsp.status === 'Success') {
                     //callbackOnSuccess(imageId, context);                        

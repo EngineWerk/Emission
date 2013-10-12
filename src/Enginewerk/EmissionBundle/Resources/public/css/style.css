@@ -9,15 +9,16 @@ body {
 body {
 	font: 14px "Helvetica Neue", Helvetica, Arial, sans-serif;
 	line-height: 1.4em;
-	/*background: url("/images/wallpaper-1617340.jpeg") no-repeat scroll center -100px #EEEEEE;*/
 	color: #333333;
 	-webkit-font-smoothing: antialiased;
 }
 
-#main_container {
+#emissionApplicationContainer {
     width: 950px;
     margin: 0 auto;
 }
+
+#filesTable .fileCreatedAt, #filesTable .fileUpdatedAt, #filesTable .fileExpirationDate, #filesTable .fileHashID, #filesTable .fileUploadedBy {display:none;}
 
 a, a:visited {
     color: black;
