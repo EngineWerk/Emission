@@ -11,6 +11,11 @@
 <script src="{{ asset('bundles/enginewerkemission/js/jquery.iframe-transport.js') }}"></script>
 <!-- The basic File Upload plugin -->
 <script src="{{ asset('bundles/enginewerkemission/js/jquery.fileupload.js') }}"></script>
+
+<script src="{{ asset('bundles/enginewerkemission/js/md5.js') }}"></script>
+<script src="{{ asset('bundles/enginewerkemission/js/sha3.js') }}"></script>
+<script src="{{ asset('bundles/enginewerkemission/js/lib-typedarrays-min.js') }}"></script>
+
 <!-- Bootstrap JS is not required, but included for the responsive demo navigation -->
 <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
 
@@ -25,73 +30,65 @@
 <!-- Bootstrap CSS fixes for IE6 -->
 <!--[if lt IE 7]><link rel="stylesheet" href="http://blueimp.github.io/cdn/css/bootstrap-ie6.min.css"><![endif]-->
 <!-- CSS to style the file input field as button and adjust the Bootstrap progress bars -->
+<link rel="stylesheet" href="{{ asset('bundles/enginewerkemission/css/jquery.fileupload.css') }}">
 <link rel="stylesheet" href="{{ asset('bundles/enginewerkemission/css/jquery.fileupload-ui.css') }}">
+<link rel="stylesheet" href="{{ asset('bundles/enginewerkemission/css/style.css') }}">
 {% endblock %}
 
 {% block body %}
 <!-- The fileinput-button span is used to style the file input field as button -->
-    
-    <div>Chunk size: {{max_chunk_size}} M</div>
-    <span class="btn btn-success fileinput-button">
+    <menu>Application Name {{ app.user.username }} logout</menu>
+    <div id="emissionSettingsContainer">
+        <div>Chunk size: {{max_chunk_size}} M</div>
+    </div>
+    <div id="emissionFileDropContainer">
+        <span class="btn btn-success fileinput-button">
         <i class="icon-plus icon-white"></i>
         <span>Add files...</span>
         <!-- The file input field used as target for the file upload widget -->
         <input id="fileupload" type="file" name="files[]" multiple>
-    </span>
-    <br>
-    <br>
-    <!-- The global progress bar -->
-    <div id="progress" class="progress">
-        <div class="progress-bar progress-bar-success"></div>
+        </span>
     </div>
-    <!-- The container for the uploaded files -->
-    <div id="files" class="files"></div>
     
-    <table cellspacing="10" cellpadding="10" id="filesTable">
-        <thead>
-            <th>ID</th>
-            <th>Name</th>
-            <th>File ID</th>
-            <th>Uploaded by</th>
-            <th>Type</th>
-            <th>Size</th>
-            <th>Expiration date</th>
-            <th>Updated at</th>
-            <th>Uploaded on</th>
-            <th></th>
-        </thead>
-        <tbody>
-    {% for File in Files %}
-        <tr>
-            {% if File.isComplete == 1 %}
-                <td>{{ File.id }}</td>
+    <div id="emissionFileListUploadContainer">
+        <!-- The global progress bar -->
+        <div id="progress" class="progress">
+            <div class="progress-bar progress-bar-success"></div>
+        </div>
+        <!-- The container for the uploaded files -->
+        <div id="files" class="files">
+        </div>
+
+        <table cellspacing="10" cellpadding="10" id="filesTable" class="center">
+            <tbody>
+        {% for File in Files %}
+            <tr{% if File.isComplete == 1 %} data-file-completed="yes"{% endif%}>
+                <td class="hide">{{ File.id }}</td>
                 <td>{{ File.name }}</td>
-                <td>{{ File.fileId }}</td>
                 <td>{{ File.uploadedBy }}</td>
-                <td>{{ File.type }}</td>
+                <td class="hide">{{ File.fileId }}</td>
+                <td class="hide">{{ File.type }}</td>
                 <td>{{ File.size }}</td>
-                <td>{{ File.expirationDate|date("Y-m-d H:i:s") }}</td>
-                <td>{{ File.updatedAt|date("Y-m-d H:i:s") }}</td>
-                <td>{{ File.createdAt|date("Y-m-d H:i:s") }}</td>
-                <td><a href="{{ path('show_file', {'file': File.fileId}) }}">show</a> <a href="{{ path('download_file', {'file': File.fileId}) }}">save</a> <a href="{{ path('open_file', {'file': File.fileId}) }}">open</a> - <a href="{{ path('delete_file', {'file': File.fileId}) }}">delete</a></td>
-            {% else %}
-                <td>{{ File.id }}</td>
-                <td>{{ File.name }}</td>
-                <td>{{ File.fileId }}</td>
-                <td>{{ File.uploadedBy }}</td>
-                <td>{{ File.type }}</td>
-                <td>{{ File.size }}</td>
-                <td>{{ File.expirationDate|date("Y-m-d H:i:s") }}</td>
-                <td>{{ File.updatedAt|date("Y-m-d H:i:s") }}</td>
-                <td>{{ File.createdAt|date("Y-m-d H:i:s") }}</td>
-                <td>Incomplete - <a href="{{ path('delete_file', {'file': File.fileId}) }}">delete</a></td>
-            {% endif%}
-        </tr>
-    {% endfor %}
-        </tbody>
-    </table>
-    
+                <td class="hide">{{ File.expirationDate|date("Y-m-d H:i:s") }}</td>
+                <td class="hide">{{ File.updatedAt|date("Y-m-d H:i:s") }}</td>
+                <td class="hide">{{ File.createdAt|date("Y-m-d H:i:s") }}</td>
+                {% if File.isComplete == 1 %}
+                    <td><a href="{{ path('show_file', {'file': File.fileId}) }}">show</a> 
+                        <a href="{{ path('download_file', {'file': File.fileId}) }}">save</a> 
+                        <a href="{{ path('open_file', {'file': File.fileId}) }}">open</a> - 
+                        <a href="{{ path('delete_file', {'file': File.fileId}) }}">delete</a>
+                    </td>
+                {% else %}
+                    <td>Incomplete - <a href="{{ path('delete_file', {'file': File.fileId}) }}">delete</a></td>
+                {% endif%}
+            </tr>
+        {% endfor %}
+            </tbody>
+        </table>
+    </div>
     <script type="text/javascript">
+        var chunks = 0;
+        var urlCheck = '{{ path('check_xhr_file', {'hash' : 'value'}) }}';
         /*jslint unparam: true */
         /*global window, $ */
         $(function () {
@@ -126,7 +123,8 @@
                 //limitMultiFileUploads: 1,
                 singleFileUploads: true,
                 limitConcurrentUploads: 1,
-                maxChunkSize: ({{max_chunk_size}} * 1024 * 1024), // 16 MB
+                //maxChunkSize: ({{max_chunk_size}} * 1024 * 1024), // 16 MB
+                maxChunkSize: (1 * 1024 * 1024), // 16 MB
                 sequentialUploads: true,
                 maxFileSize: 999999999999, // 999 Gb
                 formData:[
@@ -149,10 +147,11 @@
                 disableVideoPreview: true
                         
             }).on('fileuploadadd', function (e, data) {
-                data.context = $('<div/>').appendTo('#files');
+                data.context = $('<div/>').prependTo('#filesTable tbody:first');
                 $.each(data.files, function (index, file) {
-                    var node = $('<p/>')
-                            .append($('<span/>').text(file.name));
+                    var node = $('<tr/>')
+                            .append($('<td/>').text(file.name));
+                    
                     if (!index) {
                         node
                             .append('<br>')
@@ -227,9 +226,17 @@
                 });*/
     
             }).on('fileuploadchunksend', function (e, data) {
+                
+                //console.log('chunksend');
                 //console.log(e);
-                //console.log('fileuploadchunksend');
-                //return false;
+                //console.log(data);
+                chunks++;
+                if(chunks < 2)
+                    return true;
+                else
+                    return false;
+            }).on('fileuploadchunkfail', function (e, data) {
+                console.log('chunkfail');
             });
         });
         </script>

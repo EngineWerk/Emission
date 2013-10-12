@@ -14,7 +14,7 @@ use Enginewerk\EmissionBundle\Entity\FileBlob;
 class DefaultController extends Controller
 {
     /**
-     * @Route("/")
+     * @Route("/uploader")
      * @Template()
      */
     public function indexAction()
@@ -36,6 +36,48 @@ class DefaultController extends Controller
     }
     
     /**
+     * @Route("/")
+     * @Template()
+     */
+    public function resumableAction()
+    {
+        $Repository = $this->getDoctrine()->getRepository('EnginewerkEmissionBundle:File');
+        $Query = $Repository->createQueryBuilder('f')
+                ->orderBy('f.id', 'DESC')
+                ->getQuery();
+        
+        $Files = $Query->getResult();
+        
+        $File = new FileBlob();
+        $Form = $this->createFormBuilder($File)
+                ->add('fileBlob')
+                ->add('save', 'submit')
+                ->getForm();
+        
+        return array('Files' => $Files, 'Form' => $Form->createView());
+    }
+    
+    /**
+     * @Route("/checkxhr/{hash}", name="check_xhr_file")
+     */
+    public function checkXHRAction(Request $request)
+    {
+        $jsonData = json_encode(array(
+                  array(
+                      'errors' => 'hmmmm'
+                  ),
+            ));
+        
+        $headers = array(
+                'Content-Type' => 'application/json'
+          );
+
+        $response = new Response($jsonData, 200, $headers);
+
+        return $response;
+    }
+    
+    /**
      * @Route("/uploadxhr", name="upload_xhr_file")
      */
     public function uploadXHRAction(Request $request)
@@ -47,7 +89,9 @@ class DefaultController extends Controller
         $rangeTotalSize = null;
         $rangeStart = null;
         $rangeEnd = null;
+        $md5Hash = null;
         
+        $formRequest = $request->request->get('form');
         // Figure out if file is chunked and ranges for received file chunk
         if ($request->headers->get('Content-Range')) {
             
@@ -61,12 +105,13 @@ class DefaultController extends Controller
             $rangeStart = $range[0];
             $rangeEnd = $range[1];
            
-            $formRequest = $request->request->get('form');
+            
             $formRequest['rangeStart'] = $rangeStart;
             $formRequest['rangeEnd'] = $rangeEnd;
-           
-            $request->request->set('form', $formRequest);
         }
+        
+        $formRequest['md5Hash'] = $request->headers->get('MD5-Hash'); 
+        $request->request->set('form', $formRequest);
         
         $FileBlob = new FileBlob();
        
@@ -74,6 +119,7 @@ class DefaultController extends Controller
                 ->add('fileBlob')
                 ->add('rangeStart')
                 ->add('rangeEnd')
+                ->add('md5Hash')
                 ->add('save', 'submit')
                 ->getForm();
         
@@ -178,8 +224,6 @@ class DefaultController extends Controller
                       'errors' => var_export($Form->getErrors(), true)
                   ),
             ));
-
-            
         }
         
         $headers = array(
@@ -190,48 +234,184 @@ class DefaultController extends Controller
 
         return $response;
     }
+    
+    /**
+     * @Route("/uploadChunkTest", name="upload_file_chunk_test")
+     */
+    public function uploadChunkTestAction(Request $request)
+    {
+        // Find out if we have this File already
+        $File = $this->getDoctrine()
+                ->getRepository('EnginewerkEmissionBundle:File')
+                ->findOneBy(array(
+                    'name' => $request->request->get('resumableFilename'),
+                    'size' => $request->request->get('resumableTotalSize')));
+
+        if(!$File) {
+            $jsonData = json_encode(array(
+                    array(
+                        'success' => $request->get('resumableFilename')
+                    ),
+              ));
+
+            $headers = array(
+                  'Content-Type' => 'application/json'
+            );
+            $response = new Response($jsonData, 306, $headers);
+
+            return $response;
+        }
+
+        // Find out if we have this FileBlob already
+        $FileBlob = $this->getDoctrine()
+                ->getRepository('EnginewerkEmissionBundle:FileBlob')
+                ->findOneBy(array(
+                    'fileId' => $File->getId(),
+                    'rangeStart' => $request->request->get('resumableFilename'),
+                    'rangeEnd' => $request->request->get('resumableTotalSize')));
+
+        if(!$FileBlob) {
+            $jsonData = json_encode(array(
+                    array(
+                        'success' => $request->get('resumableFilename')
+                    ),
+              ));
+
+            $headers = array(
+                  'Content-Type' => 'application/json'
+            );
+            $response = new Response($jsonData, 306, $headers);
+
+            return $response;
+        }
+    }
 
     /**
      * @Route("/upload", name="upload_file")
-     * @Template("EnginewerkEmissionBundle:Default:upload.html.twig")
      */
     public function uploadAction(Request $request)
     {
+        $formRequest = $request->request->get('form');
+
+        $formRequest['rangeStart'] = $request->request->get('resumableCurrentStartByte');
+        $formRequest['rangeEnd'] = $request->request->get('resumableCurrentEndByte');
+        
+        $request->request->set('form', $formRequest);
+        
         $FileBlob = new FileBlob();
        
         $Form = $this->createFormBuilder($FileBlob)
                 ->add('fileBlob')
+                ->add('rangeStart')
+                ->add('rangeEnd')
                 ->add('save', 'submit')
                 ->getForm();
         
         $Form->handleRequest($request);
         
         if ($Form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
             
-            $File = $this->getDoctrine()->getRepository('EnginewerkEmissionBundle:File')->findOneBy(array('name' => $Form->get('fileBlob')->getData()->getClientOriginalName()));
-            var_dump($File);
-            if(null === $File) {
-            //if(!$FileBlob->getFile()) {
-                
+            $em = $this->getDoctrine()->getManager();            
+            // Find out if we have this File already
+            $File = $this->getDoctrine()
+                    ->getRepository('EnginewerkEmissionBundle:File')
+                    ->findOneBy(array(
+                        'name' => $request->request->get('resumableFilename'),
+                        'size' => $request->request->get('resumableTotalSize')));
+
+            // No? Lets create one
+            if (null === $File) {
                 $File = new File();
-      
-                $File->setName($Form->get('fileBlob')->getData()->getClientOriginalName());
+
+                $File->setName($request->request->get('resumableFilename'));
                 $File->setExtensionName($Form->get('fileBlob')->getData()->guessExtension());
                 $File->setType($Form->get('fileBlob')->getData()->getMimeType());
-                $File->setSize($Form->get('fileBlob')->getData()->getSize());
-                
-                $em->persist($File);   
+                $File->setSize($request->request->get('resumableTotalSize'));
+                $File->setIsComplete(false);
+                $File->setUploadedBy($this->getUser()->getUserName());
+
+                $em->persist($File);
             }
             
-            //$FileBlob->setFile($File);
-            $em->persist($FileBlob);
-            $em->flush();  
+            // Find out if we have this FileBlob
+            $FileBlobInStorage = $this->getDoctrine()
+                    ->getRepository('EnginewerkEmissionBundle:FileBlob')
+                    ->findOneBy(array(
+                        'fileId' => $File->getId(),
+                        'rangeStart' => $formRequest['rangeStart'],
+                        'rangeEnd' => $formRequest['rangeEnd']));
             
-            return $this->redirect($this->generateUrl('enginewerk_emission_default_index'));
-        }
+            // No ? Lets create one
+            if (null === $FileBlobInStorage) {
+                $FileBlob->setFile($File);  
+                $em->persist($FileBlob);
+                $em->flush();  
+            }
+            
+            // Do we have whole file?
+            // Lets make sum for all renageEnd and check against declared File size
+            $query = $this->getDoctrine()->getManager()
+                    ->createQuery('SELECT SUM(f.size) as totalSize FROM EnginewerkEmissionBundle:FileBlob f WHERE f.fileId = :fileId')
+                    ->setParameter('fileId', $File->getId());
 
-        return array('Form' => $Form->createView());
+            $totalSize = $query->getSingleScalarResult();
+
+            if($totalSize == $File->getSize()) {
+                
+                // Set isComplete property to true
+                $File->setIsComplete(true);
+                $em->persist($File);
+                $em->flush(); 
+                
+                // Return whole data to access file
+                $jsonData = json_encode(array(
+                    'status' => 'Success',  
+                    'data' => array(
+                          'id' => $File->getId(),
+                          'file_id' => $File->getFileId(),
+                          'name' => $File->getName(),
+                          'type' => $File->getType(),
+                          'size' => $File->getSize(),
+                          'expiration_date' => $File->getExpirationDate()->format('Y-m-d H:i:s'),
+                          'updated_at' => $File->getUpdatedAt()->format('Y-m-d H:i:s'),
+                          'created_at' => $File->getCreatedAt()->format('Y-m-d H:i:s'),
+                          'uploaded_by' => $File->getUploadedBy(),
+                          'show_url' => $this->generateUrl('show_file', array('file' => $File->getFileId()), true),
+                          'download_url' => $this->generateUrl('download_file', array('file' => $File->getFileId()), true),
+                          'open_url' => $this->generateUrl('open_file', array('file' => $File->getFileId()), true),
+                          'delete_url' => $this->generateUrl('delete_file', array('file' => $File->getFileId()), true)
+                      ),
+                ));
+            } else {
+                $jsonData = json_encode(array(
+                    'status' => 'Success',  
+                    'data' => array(
+                          'id' => $File->getId(),
+                          'file_id' => $File->getFileId(),
+                          'name' => $File->getName(),
+                          'type' => $File->getType(),
+                          'size' => $File->getSize()
+                      ),
+                ));
+            }
+            
+        } else {
+            
+            $jsonData = json_encode(array(
+                  array(
+                      'errors' => var_export($Form->getErrors(), true),
+                  ),
+            ));
+        }
+        
+        $headers = array(
+                'Content-Type' => 'application/json'
+          );
+
+        $response = new Response($jsonData, 200, $headers);
+
+        return $response;
+
     }
     
     /**

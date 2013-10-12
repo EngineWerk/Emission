@@ -10,6 +10,89 @@
  * http://www.opensource.org/licenses/MIT
  */
 
+
+html,
 body {
-  padding-top: 60px;
+	margin: 0;
+	padding: 0;
+}
+
+body {
+	font: 14px "Helvetica Neue", Helvetica, Arial, sans-serif;
+	line-height: 1.4em;
+	/*background: url("/images/wallpaper-1617340.jpeg") no-repeat scroll center -100px #EEEEEE;*/
+	color: #333333;
+	-webkit-font-smoothing: antialiased;
+}
+
+#main_container {
+    width: 950px;
+    margin: 0 auto;
+}
+
+a, a:visited {
+    color: black;
+}
+
+#files {
+    padding: 10px 10px 10px 10px;
+    background-color: #FbFbFb;
+    border-radius: 10px 10px 10px 10px;
+}
+
+#filesTable {
+    width: 100%;
+}
+
+#filesTable td.fst {
+    width: 750px;
+}
+
+#filesTable td.lst {
+    text-align: right;
+}
+
+#filesTable td {
+    padding: 5px;
+}
+
+#filesTable tr:hover {
+    background-color: #F8F8f8;
+}
+#filesTable span {
+    font-size: 11px;
+    color: #ddd;
+    display: none;
+}
+/*
+#fileTable tr:hover span {
+    display: block;
+}*/
+
+#filesTable a {
+    font-size: 14px;
+    color: #a4a4a4;
+}
+
+#filesTable span.ownerName {color: gray; display: inline; font-size: 14px;}
+
+#file_browsing_form {
+    height: 100px;
+}
+
+#file_upload-queue {
+    display:none;
+    width: 920px;
+}
+
+footer {
+    font-size: 12px;
+    color: #ccc;
+    text-align: right;
+    padding-right: 20px;
+}
+
+.file_upload {
+    margin: 0 auto;
+    padding-top: 33px;
 }
