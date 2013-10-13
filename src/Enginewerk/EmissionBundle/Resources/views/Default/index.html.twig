@@ -18,7 +18,7 @@
 
 {% block body %}
 <!-- The fileinput-button span is used to style the file input field as button -->
-    <menu>Emission {{ app.user.username }}</menu>
+    <!--<menu>Emission {{ app.user.username }}</menu>-->
     
     <div id="emissionFileDropContainer">
         <div id="dropbox">
@@ -171,15 +171,15 @@
                             cursorNormal();
                             setTimeout(function(){
                                 
-                                $('#dropbox_progress').find('.progress').width(0);
-                                $('#dropbox_progress').find('.progress').html('');
-                                    
-                                /*$('#dropbox_progress').fadeOut(200, function(){
-                                    $('#dropbox').fadeIn(200);
-                                    $('#dropbox_progress').find('.progress').width(0);
-                                    $('#dropbox_progress').find('.progress').html('');
-                                });        */
-                            }, 100);
+                                $('#dropbox_progress div.progressHolder').fadeTo(200, 0.01, function(){
+                                    setTimeout(function(){
+                                        $('#dropbox_progress').find('.progress').width(0);
+                                        setTimeout(function(){
+                                            $('#dropbox_progress div.progressHolder').fadeTo(100, 1);
+                                        }, 200);
+                                    }, 300);
+                                });
+                             }, 100);
                         }
 
                     } else {
