@@ -45,13 +45,13 @@ class DefaultController extends Controller
         $File = $this->getDoctrine()
                 ->getRepository('EnginewerkEmissionBundle:File')
                 ->findOneBy(array(
-                    'name' => $request->request->get('resumableFilename'),
-                    'size' => $request->request->get('resumableTotalSize')));
+                    'name' => $request->get('resumableFilename'),
+                    'size' => $request->get('resumableTotalSize')));
 
         if(!$File) {
             $jsonData = json_encode(array(
                     array(
-                        'success' => $request->get('resumableFilename')
+                        'success' => 'File "' . $request->get('resumableFilename') . '" , not found'
                     ),
               ));
 
@@ -68,13 +68,13 @@ class DefaultController extends Controller
                 ->getRepository('EnginewerkEmissionBundle:FileBlob')
                 ->findOneBy(array(
                     'fileId' => $File->getId(),
-                    'rangeStart' => $request->request->get('resumableFilename'),
-                    'rangeEnd' => $request->request->get('resumableTotalSize')));
+                    'rangeStart' => $request->get('resumableCurrentStartByte'),
+                    'rangeEnd' => $request->get('resumableCurrentEndByte')));
 
         if(!$FileBlob) {
             $jsonData = json_encode(array(
                     array(
-                        'success' => $request->get('resumableFilename')
+                        'success' => 'Blob not found'
                     ),
               ));
 
@@ -85,6 +85,20 @@ class DefaultController extends Controller
 
             return $response;
         }
+        
+        $jsonData = json_encode(array(
+                array(
+                    'success' => 'Blob found'
+                ),
+          ));
+
+        $headers = array(
+              'Content-Type' => 'application/json'
+        );
+        
+        $response = new Response($jsonData, 200, $headers);
+
+        return $response;
     }
 
     /**
@@ -196,6 +210,8 @@ class DefaultController extends Controller
                 ));
             }
             
+            $responseCode = 200;
+            
         } else {
             
             $jsonData = json_encode(array(
@@ -203,13 +219,15 @@ class DefaultController extends Controller
                       'errors' => var_export($Form->getErrors(), true),
                   ),
             ));
+            
+            $responseCode = 415;
         }
         
         $headers = array(
                 'Content-Type' => 'application/json'
           );
 
-        $response = new Response($jsonData, 200, $headers);
+        $response = new Response($jsonData, $responseCode, $headers);
 
         return $response;
 
