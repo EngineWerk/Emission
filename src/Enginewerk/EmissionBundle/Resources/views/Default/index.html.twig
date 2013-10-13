@@ -14,6 +14,8 @@
 <link rel="stylesheet" href="{{ asset('bundles/enginewerkemission/css/resumable.css') }}">
 {% endblock %}
 
+{% import '::macro.html.twig' as marco %}
+
 {% block body %}
 <!-- The fileinput-button span is used to style the file input field as button -->
     <menu>Emission {{ app.user.username }}</menu>
@@ -44,7 +46,7 @@
                     <td class="fileUploadedBy">{{ File.uploadedBy }}</td>
                     <td class="fileHashID">{{ File.fileId }}</td>
                     <td class="fileType">{{ File.type }}</td>
-                    <td class="fileSize">{{ File.size }}</td>
+                    <td class="fileSize">{{ marco.bytesToSize(File.size) }}</td>
                     <td class="fileExpirationDate">{{ File.expirationDate|date("Y-m-d H:i:s") }}</td>
                     <td class="fileUpdatedAt">{{ File.updatedAt|date("Y-m-d H:i:s") }}</td>
                     <td class="fileCreatedAt">{{ File.createdAt|date("Y-m-d H:i:s") }}</td>

@@ -4,10 +4,12 @@
 
 {% block javascripts %}{% endblock %}
 
+{% import '::macro.html.twig' as marco %}
+
 {% block body %}
 <h2>{{ File.name }}</h2>
 type: {{ File.type }}<br />
-size: {{ File.size }} bytes<br />
+size: {{ marco.bytesToSize(File.size) }} bytes<br />
 click to 
 <a href="{{ path('download_file', {'file': File.fileId}) }}">save</a> 
 <a href="{{ path('open_file', {'file': File.fileId}) }}">open</a> 
