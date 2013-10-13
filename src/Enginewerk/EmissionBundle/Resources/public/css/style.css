@@ -13,12 +13,28 @@ body {
 	-webkit-font-smoothing: antialiased;
 }
 
-#emissionApplicationContainer {
-    width: 950px;
-    margin: 0 auto;
+#emissionSettingsContainer {font-size: 0.98em;}
+
+#filesTable .fileCreatedAt, #filesTable .fileUpdatedAt, #filesTable .fileExpirationDate, #filesTable .fileHashID, #filesTable .fileUploadedBy {display:block;}
+#filesTable .fileOptions { width: 160px;}
+#filesTable .fileSize {text-align: right; }
+
+@media only screen and (min-device-width: 1280px) {
+    #filesTable .fileCreatedAt, #filesTable .fileUpdatedAt, #filesTable .fileExpirationDate, #filesTable .fileHashID, #filesTable .fileUploadedBy, #filesTable .fileType {display:none;}
+
+    #emissionApplicationContainer {
+        width: 950px;
+        margin: 0 auto;
+    }
 }
 
-#filesTable .fileCreatedAt, #filesTable .fileUpdatedAt, #filesTable .fileExpirationDate, #filesTable .fileHashID, #filesTable .fileUploadedBy {display:none;}
+@media only screen and (max-device-width: 480px) {
+    #filesTable .fileCreatedAt, #filesTable .fileUpdatedAt, #filesTable .fileExpirationDate, #filesTable .fileHashID, #filesTable .fileUploadedBy, #filesTable .fileType {display:none;}
+}
+
+@media only screen and (max-device-width: 779px) {
+    #filesTable .fileCreatedAt, #filesTable .fileUpdatedAt, #filesTable .fileExpirationDate, #filesTable .fileHashID, #filesTable .fileUploadedBy, #filesTable .fileType  {display:none;}
+}
 
 a, a:visited {
     color: black;
@@ -85,4 +101,27 @@ footer {
 .file_upload {
     margin: 0 auto;
     padding-top: 33px;
+}
+
+
+.pace {
+  -webkit-pointer-events: none;
+  pointer-events: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+}
+
+.pace .pace-progress {
+  background-color: rgba(239, 244, 246, 0.19999999999999996);
+  position: fixed;
+  z-index: -1;
+  top: 0;
+  left: 0;
+  bottom: 0;
+
+  -webkit-transition: width 1s;
+  -moz-transition: width 1s;
+  -o-transition: width 1s;
+  transition: width 1s;
 }

@@ -6,10 +6,10 @@
 <script src="{{ asset('bundles/enginewerkemission/js/jquery-1.7.2.min.js') }}"></script>
 <script src="{{ asset('bundles/enginewerkemission/js/vendor/resumable/resumable.js') }}"></script>
 <script src="{{ asset('bundles/enginewerkemission/js/base.js') }}"></script>
+<script src="{{ asset('bundles/enginewerkemission/js/md5.js') }}"></script>
 {% endblock %}
 
 {% block stylesheets %}
-<!-- Generic page styles -->
 <link rel="stylesheet" href="{{ asset('bundles/enginewerkemission/css/style.css') }}">
 <link rel="stylesheet" href="{{ asset('bundles/enginewerkemission/css/resumable.css') }}">
 {% endblock %}
@@ -19,11 +19,7 @@
 {% block body %}
 <!-- The fileinput-button span is used to style the file input field as button -->
     <menu>Emission {{ app.user.username }}</menu>
-    {% if app.environment == 'dev' %}
-    <div id="emissionSettingsContainer">
-        <div>Chunk size: {{max_chunk_size}} M</div>
-    </div>
-    {% endif %}
+    
     <div id="emissionFileDropContainer">
         <div id="dropbox">
             <div id="browse"></div>
@@ -31,14 +27,15 @@
     </div>
     
     <div id="emissionFileListUploadContainer">
-        <!-- The global progress bar -->
-        <div id="progress" class="progress">
-            <div class="progress-bar progress-bar-success"></div>
+        <div id="dropbox_progress">
+            <div class="progressHolder">
+                <div class="progress"></div>
+            </div>
         </div>
         
         <!-- The container for the uploaded files -->
         <div id="files" class="files">
-            <table cellspacing="10" cellpadding="10" id="filesTable" class="center">
+            <table cellspacing="0" cellpadding="10" id="filesTable" class="center">
                 <tbody>
             {% for File in Files %}
                 <tr{% if File.isComplete == 1 %} data-file-completed="yes"{% endif%} data-file-id="{{ File.id }}">
@@ -51,13 +48,13 @@
                     <td class="fileUpdatedAt">{{ File.updatedAt|date("Y-m-d H:i:s") }}</td>
                     <td class="fileCreatedAt">{{ File.createdAt|date("Y-m-d H:i:s") }}</td>
                     {% if File.isComplete == 1 %}
-                        <td><a href="{{ path('show_file', {'file': File.fileId}) }}">show</a> 
+                        <td class="fileOptions"><a href="{{ path('show_file', {'file': File.fileId}) }}">show</a> 
                             <a href="{{ path('download_file', {'file': File.fileId}) }}">save</a> 
                             <a href="{{ path('open_file', {'file': File.fileId}) }}">open</a> - 
                             <a href="{{ path('delete_file', {'file': File.fileId}) }}" class="remove-file" data-filename="{{ File.name }}">delete</a>
                         </td>
                     {% else %}
-                        <td>Incomplete - <a href="{{ path('delete_file', {'file': File.fileId}) }}">delete</a></td>
+                        <td class="fileOptions">Incomplete - <a href="{{ path('delete_file', {'file': File.fileId}) }}">delete</a></td>
                     {% endif%}
                 </tr>
             {% endfor %}
@@ -65,6 +62,15 @@
             </table>
         </div>
     </div>
+    <p>
+        <div id="emissionSettingsContainer">
+            {% if app.environment == 'dev' %}
+            <div>Chunk size: {{max_chunk_size}} M</div>
+            <div><input type="checkbox" id="askBeforeDeleteCheckBox"/><label for="askBeforeDeleteCheckBox">Ask before delete</label></div>
+            {% endif %}
+        </div>
+    </p>    
+        
     <script type="text/javascript">
         var url = '{{ path('upload_file') }}'
         var urlChunkTest = '{{ path('upload_file_chunk_test') }}'
@@ -83,6 +89,7 @@
             fileParameterName : 'form[fileBlob]',
         });
 
+
         // Resumable.js isn't supported, fall back on a different method
         //if(!r.support) location.href = '/flash';
 
@@ -91,11 +98,34 @@
         
         var pendingFilesNumber = 0;
     
-        r.on('fileAdded', function(file){
+        r.on('fileAdded', function(resumable){
+
+            var file = resumable.file;
+            var fileNameHash = CryptoJS.MD5(file.fileName);
+
             r.upload();
             pendingFilesNumber++;
+            
+        var tableRow = '<tr id="fhash-' + fileNameHash + '"> \n' + 
+            '<td class="fileName">' + file.fileName + '</td> \n' + 
+            '<td class="fileHashID"></td> \n' + 
+            '<td class="fileUploadedBy"></td> \n' + 
+            '<td class="fileType"></td> \n' + 
+            '<td class="fileSize"></td> \n' + 
+            '<td class="fileExpirationDate"></td> \n' + 
+            '<td class="fileUpdatedAt"></td> \n' + 
+            '<td class="fileCreatedAt"></td> \n' + 
+            '<td></td> \n' + 
+        '</tr>';
 
-            //$('#files').append($('<div>').append(file.fileName));
+            $('#filesTable tbody').prepend(tableRow);
+        });
+        
+        r.on('uploadStart', function(){
+            cursorBusy();
+            /*$('#dropbox').fadeOut(100, function() {
+                $('#dropbox_progress').fadeIn(100);
+            });*/
         });
         
         r.on('fileSuccess', function(file, response){
@@ -111,9 +141,10 @@
             if(rsp) {
                 if(rsp.status === 'Success') {
                     if(rsp.data) {
-                        //viewAddFile(rsp.data);
                         
                         var file = rsp.data;
+                        //viewAddFile(rsp.data);
+                        
                         var link = $('<a>')
                         .attr('target', '_blank')
                         .prop('href', file.download_url);
@@ -124,25 +155,30 @@
             '<td class="fileHashID">' + file.file_id + '</td> \n' + 
             '<td class="fileUploadedBy">' + file.uploaded_by + '</td> \n' + 
             '<td class="fileType">' + file.type + '</td> \n' + 
-            '<td class="fileSize">' + file.size + '</td> \n' + 
+            '<td class="fileSize">' + bytesToSize(file.size) + '</td> \n' + 
             '<td class="fileExpirationDate">' + file.expiration_date + '</td> \n' + 
             '<td class="fileUpdatedAt">' + file.updated_at + '</td> \n' + 
             '<td class="fileCreatedAt">' + file.created_at + '</td> \n' + 
-            '<td><a href="' + file.show_url + '">show</a> <a href="' + file.download_url + '">save</a> <a href="' + file.open_url + '">open</a> - <a href="' + file.delete_url + '" class="remove_file">delete</a></td> \n' + 
+            '<td class="fileOptions"><a href="' + file.show_url + '">show</a> <a href="' + file.download_url + '">save</a> <a href="' + file.open_url + '">open</a> - <a href="' + file.delete_url + '" class="remove-file">delete</a></td> \n' + 
         '</tr>';
 
-                    $('#filesTable tbody').prepend(tableRow);
+                    $('#fhash-' + CryptoJS.MD5(file.name) + '').replaceWith(tableRow);
+                    //$('#filesTable tbody').prepend(tableRow);
                         
                         pendingFilesNumber--;
 
                         if(pendingFilesNumber === 0) {
                             cursorNormal();
                             setTimeout(function(){
-                                $('#dropbox_progress').fadeOut(200, function(){
+                                
+                                $('#dropbox_progress').find('.progress').width(0);
+                                $('#dropbox_progress').find('.progress').html('');
+                                    
+                                /*$('#dropbox_progress').fadeOut(200, function(){
                                     $('#dropbox').fadeIn(200);
                                     $('#dropbox_progress').find('.progress').width(0);
                                     $('#dropbox_progress').find('.progress').html('');
-                                });        
+                                });        */
                             }, 100);
                         }
 
@@ -172,11 +208,13 @@
             cursorNormal();
         });
 
-        r.on('progress', function() {
+        r.on('progress', function(event) {
 
             $('#dropbox_progress').find('.progress').width($('#dropbox_progress').find('.progressHolder').width() * r.progress());
             //var percent = Math.round(r.progress() * 100);   
-            $('#dropbox_progress').find('.progress').html('Szufluję...');
+            //$('#dropbox_progress').find('.progress').html('Szufluję...');
+            //log(r.progress() * 100);
+            //log(event);
 
         });
         
@@ -288,6 +326,13 @@
            pastedImage.src = source;
         }
         
+        
+        function bytesToSize(bytes) {
+            var sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+            if (bytes == 0) return 'n/a';
+            var i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
+            return Math.round(bytes / Math.pow(1024, i), 2) + ' ' + sizes[[i]];
+        };
     </script>
 {% endblock %}
 
