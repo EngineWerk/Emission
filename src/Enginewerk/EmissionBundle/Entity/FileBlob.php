@@ -41,13 +41,13 @@ class FileBlob
     
     /**
      * @ORM\Column(name="rangeStart", type="bigint", options={"unsigned"=true})
-     * @var integer
+     * @Assert\Type(type="digit")
      */
     protected $rangeStart;
     
     /**
      * @ORM\Column(name="rangeEnd", type="bigint", options={"unsigned"=true})
-     * @var integer
+     * @Assert\Type(type="digit")
      */
     protected $rangeEnd;
 

@@ -7,6 +7,7 @@
 <script src="{{ asset('bundles/enginewerkemission/js/vendor/resumable/resumable.js') }}"></script>
 <script src="{{ asset('bundles/enginewerkemission/js/base.js') }}"></script>
 <script src="{{ asset('bundles/enginewerkemission/js/md5.js') }}"></script>
+<script src="{{ asset('bundles/enginewerkemission/js/vendor/SparkMD5/spark-md5.min.js') }}"></script>
 {% endblock %}
 
 {% block stylesheets %}
@@ -39,7 +40,7 @@
                 <tbody>
             {% for File in Files %}
                 <tr{% if File.isComplete == 1 %} data-file-completed="yes"{% endif%} data-file-id="{{ File.id }}">
-                    <td class="fileName">{{ File.name }}</td>
+                    <td class="fileName">{{ File.name }}{% if File.isComplete == 0 %} (incomplete){% endif %}</td>
                     <td class="fileUploadedBy">{{ File.uploadedBy }}</td>
                     <td class="fileHashID">{{ File.fileId }}</td>
                     <td class="fileType">{{ File.type }}</td>
@@ -48,13 +49,14 @@
                     <td class="fileUpdatedAt">{{ File.updatedAt|date("Y-m-d H:i:s") }}</td>
                     <td class="fileCreatedAt">{{ File.createdAt|date("Y-m-d H:i:s") }}</td>
                     {% if File.isComplete == 1 %}
-                        <td class="fileOptions"><a href="{{ path('show_file', {'file': File.fileId}) }}">show</a> 
-                            <a href="{{ path('download_file', {'file': File.fileId}) }}">save</a> 
-                            <a href="{{ path('open_file', {'file': File.fileId}) }}">open</a> - 
+                        <td class="fileOptions">
+                            <a href="{{ path('show_file', {'file': File.fileId}) }}">show</a> 
+                            <!--<a href="{{ path('download_file', {'file': File.fileId}) }}">save</a> 
+                            <a href="{{ path('open_file', {'file': File.fileId}) }}">open</a>--> - 
                             <a href="{{ path('delete_file', {'file': File.fileId}) }}" class="remove-file" data-filename="{{ File.name }}">delete</a>
                         </td>
                     {% else %}
-                        <td class="fileOptions">Incomplete - <a href="{{ path('delete_file', {'file': File.fileId}) }}">delete</a></td>
+                        <td class="fileOptions"><a href="{{ path('delete_file', {'file': File.fileId}) }}">delete</a></td>
                     {% endif%}
                 </tr>
             {% endfor %}
@@ -75,12 +77,14 @@
     <script type="text/javascript">
         var url = '{{ path('upload_file') }}'
         var urlChunkTest = '{{ path('upload_file_chunk_test') }}'
-        var maxChunkSize = ({{max_chunk_size}} * 1024 * 1024); // 16 MB
+        var maxChunkSize = ({{max_chunk_size}} * 1024 * 1024); // to MB
         var postdata = {'form[_token]' : '{{Form._token.vars.value}}'};
         
         var r = new Resumable({
             target: url, 
-            targetChunkTestUrl: urlChunkTest, 
+            targetChunkTestUrl: urlChunkTest,
+            chunkRetryInterval: 2,
+            maxFileSize: 2147483648,
             simultaneousUploads: 1,
             method : 'POST',
             chunkSize : maxChunkSize,
@@ -202,7 +206,7 @@
                 alert('Wystąpił nieobsługiwalny błąd');
             } 
         });
-
+        
         r.on('fileError', function(file, message){
             log('fileError');
             alert('Błąd przesyłu');

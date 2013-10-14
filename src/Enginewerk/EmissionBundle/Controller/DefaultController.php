@@ -119,7 +119,6 @@ class DefaultController extends Controller
                 ->add('fileBlob')
                 ->add('rangeStart')
                 ->add('rangeEnd')
-                ->add('save', 'submit')
                 ->getForm();
         
         $Form->handleRequest($request);
@@ -216,7 +215,7 @@ class DefaultController extends Controller
             
             $jsonData = json_encode(array(
                   array(
-                      'errors' => var_export($Form->getErrors(), true),
+                      'errors' => var_export($Form->getErrorsAsString(), true),
                   ),
             ));
             
