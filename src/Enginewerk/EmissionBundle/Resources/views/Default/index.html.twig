@@ -51,8 +51,8 @@
                     {% if File.isComplete == 1 %}
                         <td class="fileOptions">
                             <a href="{{ path('show_file', {'file': File.fileId}) }}">show</a> 
-                            <!--<a href="{{ path('download_file', {'file': File.fileId}) }}">save</a> 
-                            <a href="{{ path('open_file', {'file': File.fileId}) }}">open</a>--> - 
+                            <a href="{{ path('download_file', {'file': File.fileId}) }}" class="fileOptionsDownloadLink">save</a> 
+                            <a href="{{ path('open_file', {'file': File.fileId}) }}" class="fileOptionsOpenLink">open</a> - 
                             <a href="{{ path('delete_file', {'file': File.fileId}) }}" class="remove-file" data-filename="{{ File.name }}">delete</a>
                         </td>
                     {% else %}
@@ -164,7 +164,7 @@
             '<td class="fileExpirationDate">' + file.expiration_date + '</td> \n' + 
             '<td class="fileUpdatedAt">' + file.updated_at + '</td> \n' + 
             '<td class="fileCreatedAt">' + file.created_at + '</td> \n' + 
-            '<td class="fileOptions"><a href="' + file.show_url + '">show</a> <a href="' + file.download_url + '">save</a> <a href="' + file.open_url + '">open</a> - <a href="' + file.delete_url + '" class="remove-file">delete</a></td> \n' + 
+            '<td class="fileOptions"><a href="' + file.show_url + '">show</a> <a href="' + file.download_url + '" class="fileOptionsDownloadLink">save</a> <a href="' + file.open_url + '" class="fileOptionsOpenLink">open</a> - <a href="' + file.delete_url + '" class="remove-file">delete</a></td> \n' + 
         '</tr>';
 
                     $('#fhash-' + CryptoJS.MD5(file.name) + '').replaceWith(tableRow);

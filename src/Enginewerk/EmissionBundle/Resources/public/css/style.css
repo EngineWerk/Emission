@@ -15,26 +15,27 @@ body {
 
 #emissionSettingsContainer {font-size: 0.98em;}
 
-#filesTable .fileCreatedAt, #filesTable .fileUpdatedAt, #filesTable .fileExpirationDate, #filesTable .fileHashID, #filesTable .fileUploadedBy {display:block;}
-#filesTable .fileOptions { width: 160px;}
+/*#filesTable .fileCreatedAt, #filesTable .fileUpdatedAt, #filesTable .fileExpirationDate, #filesTable .fileHashID, #filesTable .fileUploadedBy {display:block;}*/
+
+#filesTable .fileOptions { width: 85px;}
+#filesTable .fileOptions a { text-decoration: none;}
+#filesTable .fileOptions a:hover { text-decoration: underline;}
 #filesTable .fileSize {text-align: right; }
 
-@media only screen and (min-device-width: 1280px) {
-    #filesTable .fileCreatedAt, #filesTable .fileUpdatedAt, #filesTable .fileExpirationDate, #filesTable .fileHashID, #filesTable .fileUploadedBy, #filesTable .fileType {display:none;}
+#filesTable .fileCreatedAt, 
+#filesTable .fileUpdatedAt, 
+#filesTable .fileExpirationDate, 
+#filesTable .fileHashID, 
+#filesTable .fileUploadedBy, 
+#filesTable .fileType,
+#filesTable .fileOptionsDownloadLink,
+#filesTable .fileOptionsOpenLink {display:none;}
 
-    #emissionApplicationContainer {
-        width: 950px;
-        margin: 0 auto;
-    }
+#emissionApplicationContainer {
+    width: 950px;
+    margin: 0 auto;
 }
 
-@media only screen and (max-device-width: 480px) {
-    #filesTable .fileCreatedAt, #filesTable .fileUpdatedAt, #filesTable .fileExpirationDate, #filesTable .fileHashID, #filesTable .fileUploadedBy, #filesTable .fileType {display:none;}
-}
-
-@media only screen and (max-device-width: 779px) {
-    #filesTable .fileCreatedAt, #filesTable .fileUpdatedAt, #filesTable .fileExpirationDate, #filesTable .fileHashID, #filesTable .fileUploadedBy, #filesTable .fileType  {display:none;}
-}
 
 a, a:visited {
     color: black;
