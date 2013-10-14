@@ -80,6 +80,8 @@
         var maxChunkSize = ({{max_chunk_size}} * 1024 * 1024); // to MB
         var postdata = {'form[_token]' : '{{Form._token.vars.value}}'};
         
+        var pendingFilesNumber = 0;
+        
         var r = new Resumable({
             target: url, 
             targetChunkTestUrl: urlChunkTest,
@@ -101,9 +103,8 @@
         r.assignBrowse(document.getElementById('browse'));
         r.assignDrop(document.getElementById('dropbox'));
         
-        var pendingFilesNumber = 0;
-    
-        r.on('fileAdded', function(resumable){
+ 
+        r.on('fileAdded', function(resumable) {
 
             var file = resumable.file;
             var fileNameHash = CryptoJS.MD5(file.fileName);
@@ -128,14 +129,12 @@
         
         r.on('uploadStart', function(){
             cursorBusy();
-            /*$('#dropbox').fadeOut(100, function() {
-                $('#dropbox_progress').fadeIn(100);
-            });*/
         });
         
-        r.on('fileSuccess', function(file, response){
+        r.on('fileSuccess', function(file, response) {
 
             log('Total files: ' + r.files.length);
+            
             try {
                 rsp = jQuery.parseJSON(response);
             } catch (error) {
@@ -148,14 +147,11 @@
                     if(rsp.data) {
                         
                         var file = rsp.data;
-                        //viewAddFile(rsp.data);
-                        
                         var link = $('<a>')
                         .attr('target', '_blank')
                         .prop('href', file.download_url);
                 
-                    
-                    var tableRow = '<tr data-file-id="' + file.id + '"> \n' + 
+                        var tableRow = '<tr data-file-id="' + file.id + '"> \n' + 
             '<td class="fileName">' + file.name + '</td> \n' + 
             '<td class="fileHashID">' + file.file_id + '</td> \n' + 
             '<td class="fileUploadedBy">' + file.uploaded_by + '</td> \n' + 
@@ -167,15 +163,15 @@
             '<td class="fileOptions"><a href="' + file.show_url + '">show</a> <a href="' + file.download_url + '" class="fileOptionsDownloadLink">save</a> <a href="' + file.open_url + '" class="fileOptionsOpenLink">open</a> - <a href="' + file.delete_url + '" class="remove-file">delete</a></td> \n' + 
         '</tr>';
 
-                    $('#fhash-' + CryptoJS.MD5(file.name) + '').replaceWith(tableRow);
-                    //$('#filesTable tbody').prepend(tableRow);
+                        $('#fhash-' + CryptoJS.MD5(file.name) + '').replaceWith(tableRow);
                         
                         pendingFilesNumber--;
 
                         if(pendingFilesNumber === 0) {
+                            
                             cursorNormal();
-                            setTimeout(function(){
-                                
+                            setTimeout(function() {
+   
                                 $('#dropbox_progress div.progressHolder').fadeTo(200, 0.01, function(){
                                     setTimeout(function(){
                                         $('#dropbox_progress').find('.progress').width(0);
@@ -194,33 +190,27 @@
                 } else {
                     if(rsp.status === 'Error') {
                         if(rsp.data.message) {
-                            alert('Wystąpił błąd.' + rsp.data.message);
+                            alert('Error occured: ' + rsp.data.message);
                         } else {
-                            alert('Wystąpił nieznany błąd');
+                            alert('Unexpectred error occured');
                         }
                     } else {
-                        alert('Wystąpił nieznany błąd');
+                        alert('Unexpectred error occured');
                     }
                 }
             } else {
-                alert('Wystąpił nieobsługiwalny błąd');
+                alert('Unexpectred error occured');
             } 
         });
         
         r.on('fileError', function(file, message){
             log('fileError');
-            alert('Błąd przesyłu');
+            alert('Generaln sending error');
             cursorNormal();
         });
 
         r.on('progress', function(event) {
-
             $('#dropbox_progress').find('.progress').width($('#dropbox_progress').find('.progressHolder').width() * r.progress());
-            //var percent = Math.round(r.progress() * 100);   
-            //$('#dropbox_progress').find('.progress').html('Szufluję...');
-            //log(r.progress() * 100);
-            //log(event);
-
         });
         
         // IMAGE PASTE
@@ -264,7 +254,7 @@
 
                        // The URL can then be used as the source of an image
                        var d = new Date();
-                       file.name = 'dL ScreenShot ' + d.toString();
+                       file.name = 'Screenshot ' + d.toString();
                        r.addFile(file);
                     }
                  }
@@ -324,18 +314,21 @@
                 }
 
                 var d = new Date();
-                blob.name = 'Emision shot' + d.toString();
+                blob.name = 'Screenshot' + d.toString();
                 r.addFile(blob);
-           }
+           };
 
            pastedImage.src = source;
         }
         
         
         function bytesToSize(bytes) {
+            if (bytes === 0)
+                return 'n/a';
+            
             var sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
-            if (bytes == 0) return 'n/a';
             var i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
+            
             return Math.round(bytes / Math.pow(1024, i), 2) + ' ' + sizes[[i]];
         };
     </script>
