@@ -13,13 +13,17 @@
 
         padding: 10px;
         margin: 10px 0;
+        
+        background: #fff;
+        border: 1px dashed #fcfcfc;
+        padding: 0;
 }
 
 #browse {
     cursor: pointer;
     height: 80px;
     width: 48px;
-    background: url('/bundles/enginewerkemission/img/br_up.png') no-repeat center;
+    background: url('/bundles/enginewerkemission/img/icon-plus-thick-16x16.png') no-repeat center;
 }
 
 #browse input {
@@ -49,8 +53,8 @@
 }
 
 #dropbox:hover {
-    background: #fefefe;
-    border: 10px dashed #efefef;
+    background: #fcfcfc;
+    border: 1px dashed #fcfcfc;
     padding: 0;
 }
 
