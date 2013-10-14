@@ -7,12 +7,12 @@ vendor/*
 */cache/*
 web/uploads/*
 web/bundles/*
+nbproject*
 
 # Configuration files
 app/config/parameters.ini
 app/config/parameters.yml
-/nbproject/private/
 app/SymfonyRequirements.php
 
 #File storage directory
-/app/local_fs/main/*
+app/local_fs/main/*
