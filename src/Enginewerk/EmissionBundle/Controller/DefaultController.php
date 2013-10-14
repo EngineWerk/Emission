@@ -37,6 +37,7 @@ class DefaultController extends Controller
     
 
     /**
+     * TODO Validating minimum chunk size
      * @Route("/uploadChunkTest", name="upload_file_chunk_test")
      */
     public function uploadChunkTestAction(Request $request)
@@ -51,7 +52,7 @@ class DefaultController extends Controller
         if(!$File) {
             $jsonData = json_encode(array(
                     array(
-                        'success' => 'File "' . $request->get('resumableFilename') . '" , not found'
+                        'error' => 'File "' . $request->get('resumableFilename') . '" , not found'
                     ),
               ));
 
@@ -61,6 +62,25 @@ class DefaultController extends Controller
             $response = new Response($jsonData, 306, $headers);
 
             return $response;
+        } else {
+            
+            // Check if uploaded chunks are same size as currently delcared
+            if($File->getFileBlobs()->first()->getSize() != $request->get('resumableCurrentChunkSize')) {
+                
+                $jsonData = json_encode(array(
+                        array(
+                            'error' => 'Chunk size differ from previously uploaded'
+                        ),
+                  ));
+
+                $headers = array(
+                      'Content-Type' => 'application/json'
+                );
+                
+                $response = new Response($jsonData, 415, $headers);
+                
+                return $response;
+            }
         }
 
         // Find out if we have this FileBlob already
@@ -74,7 +94,7 @@ class DefaultController extends Controller
         if(!$FileBlob) {
             $jsonData = json_encode(array(
                     array(
-                        'success' => 'Blob not found'
+                        'error' => 'Blob not found'
                     ),
               ));
 
@@ -102,6 +122,8 @@ class DefaultController extends Controller
     }
 
     /**
+     * TODO Validating minimum chunk size
+     * 
      * @Route("/upload", name="upload_file")
      */
     public function uploadAction(Request $request)

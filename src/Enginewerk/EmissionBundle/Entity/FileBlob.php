@@ -40,12 +40,16 @@ class FileBlob
     protected $size;
     
     /**
+     * First byte position
      * @ORM\Column(name="rangeStart", type="bigint", options={"unsigned"=true})
-     * @Assert\Type(type="digit")
+     * @Assert\Type(type="numeric")
      */
     protected $rangeStart;
     
     /**
+     * Last byte position
+     * Always greater than 0
+     * 
      * @ORM\Column(name="rangeEnd", type="bigint", options={"unsigned"=true})
      * @Assert\Type(type="digit")
      */
