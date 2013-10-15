@@ -42,6 +42,10 @@ class DefaultController extends Controller
      */
     public function uploadChunkTestAction(Request $request)
     {
+        $headers = array(
+              'Content-Type' => 'application/json'
+        );        
+        
         // Find out if we have this File already
         $File = $this->getDoctrine()
                 ->getRepository('EnginewerkEmissionBundle:File')
@@ -50,36 +54,24 @@ class DefaultController extends Controller
                     'size' => $request->get('resumableTotalSize')));
 
         if(!$File) {
+            
             $jsonData = json_encode(array(
-                    array(
-                        'error' => 'File "' . $request->get('resumableFilename') . '" , not found'
-                    ),
-              ));
+                    'status' => 'Error',
+                    'message' => 'File "' . $request->get('resumableFilename') . '" , not found'
+                ));
 
-            $headers = array(
-                  'Content-Type' => 'application/json'
-            );
-            $response = new Response($jsonData, 306, $headers);
-
-            return $response;
+            return new Response($jsonData, 306, $headers);
         } else {
             
             // Check if uploaded chunks are same size as currently delcared
             if($File->getFileBlobs()->first()->getSize() != $request->get('resumableCurrentChunkSize')) {
                 
                 $jsonData = json_encode(array(
-                        array(
-                            'error' => 'Chunk size differ from previously uploaded'
-                        ),
-                  ));
+                    'status' => 'Error',
+                    'message' => 'Chunk size differ from previously uploaded'
+                ));
 
-                $headers = array(
-                      'Content-Type' => 'application/json'
-                );
-                
-                $response = new Response($jsonData, 415, $headers);
-                
-                return $response;
+                return new Response($jsonData, 415, $headers);
             }
         }
 
@@ -92,33 +84,22 @@ class DefaultController extends Controller
                     'rangeEnd' => $request->get('resumableCurrentEndByte')));
 
         if(!$FileBlob) {
+            
             $jsonData = json_encode(array(
-                    array(
-                        'error' => 'Blob not found'
-                    ),
-              ));
+                    'status' => 'Error',
+                    'message' => 'Blob not found'
+                ));
 
-            $headers = array(
-                  'Content-Type' => 'application/json'
-            );
-            $response = new Response($jsonData, 306, $headers);
+            return new Response($jsonData, 306, $headers);
+        } else {
+            
+            $jsonData = json_encode(array(
+                    'status' => 'Error',
+                    'message' => 'Blob found'
+                ));
 
-            return $response;
+            return new Response($jsonData, 200, $headers);
         }
-        
-        $jsonData = json_encode(array(
-                array(
-                    'success' => 'Blob found'
-                ),
-          ));
-
-        $headers = array(
-              'Content-Type' => 'application/json'
-        );
-        
-        $response = new Response($jsonData, 200, $headers);
-
-        return $response;
     }
 
     /**
@@ -236,10 +217,9 @@ class DefaultController extends Controller
         } else {
             
             $jsonData = json_encode(array(
-                  array(
-                      'errors' => var_export($Form->getErrorsAsString(), true),
-                  ),
-            ));
+                    'status' => 'Error',
+                    'message' => var_export($Form->getErrorsAsString(), true)
+                ));
             
             $responseCode = 415;
         }
@@ -348,7 +328,6 @@ class DefaultController extends Controller
                 ));
             }
         }
-        
         
         $headers = array(
                 'Content-Type' => 'application/json'
