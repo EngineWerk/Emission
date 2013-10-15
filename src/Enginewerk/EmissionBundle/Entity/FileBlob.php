@@ -200,7 +200,7 @@ class FileBlob
     {
         return null === $this->fileHash
             ? null
-            : $this->getUploadRootDir().'/'.$this->getFileHash();
+            : $this->getUploadRootDir().'/'. $this->getDeepDirFromFileName($this->getFileHash()) . '/' . $this->getFileHash();
     }
 
     /**
@@ -210,6 +210,11 @@ class FileBlob
     protected function getUploadRootDir()
     {
         return __DIR__.'/../../../../app/local_fs/main' ;
+    }
+    
+    protected function getDeepDirFromFileName($fileName)
+    {
+        return sprintf('%s/%s/%s', $fileName[0], $fileName[1], $fileName[2]);
     }
     
     /**
@@ -284,12 +289,12 @@ class FileBlob
         // if there is an error when moving the file, an exception will
         // be automatically thrown by move(). This will properly prevent
         // the entity from being persisted to the database on error
-        $this->getFileBlob()->move($this->getUploadRootDir(), $this->getFileHash());
+        $this->getFileBlob()->move($this->getUploadRootDir() . DIRECTORY_SEPARATOR . $this->getDeepDirFromFileName($this->getFileHash()), $this->getFileHash());
 
         // check if we have an old image
         if (isset($this->temp)) {
             // delete the old image
-            unlink($this->getUploadRootDir().'/'.$this->temp);
+            unlink($this->getUploadRootDir() . DIRECTORY_SEPARATOR . $this->getDeepDirFromFileName($this->temp). $this->temp);
             // clear the temp image path
             $this->temp = null;
         }
