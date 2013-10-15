@@ -19,7 +19,7 @@
 
 {% block body %}
 <!-- The fileinput-button span is used to style the file input field as button -->
-    <!--<menu>Emission {{ app.user.username }}</menu>-->
+    <menu style="text-align: right; color:#bfbfbf;">{{ app.user.username }} <a href="{{ path('logout') }}" style="color:#bfbfbf;">logout</a></menu>
     
     <div id="emissionFileDropContainer">
         <div id="dropbox">

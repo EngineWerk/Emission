@@ -27,8 +27,8 @@ security:
             
         download:
             pattern:  ^/(f|d|o)/
-            security: false            
-        
+            security: false 
+            
         secured_area:
             pattern:  ^/
             anonymous: true
@@ -40,6 +40,7 @@ security:
                 failure_path:      /login
                 oauth_user_provider:
                     service: hwi_oauth.user.provider
+            logout: ~
         
     access_control:
         - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }

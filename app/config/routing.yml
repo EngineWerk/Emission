@@ -10,8 +10,11 @@ google_login:
     pattern: /login/check-google    
     
 windows_live_login:
-    pattern: /login/check-windows-live    
-    
+    pattern: /login/check-windows-live
+
+logout:
+    path:   /logout
+   
 enginewerk_emission:
     resource: "@EnginewerkEmissionBundle/Controller/"
     type:     annotation
