@@ -15,7 +15,7 @@
         margin: 10px 0;
         
         background: #fff;
-        border: 1px dashed #fcfcfc;
+        border: 10px dashed #fefefe;
         padding: 0;
 }
 
@@ -53,8 +53,8 @@
 }
 
 #dropbox:hover {
-    background: #fcfcfc;
-    border: 1px dashed #fcfcfc;
+    background: #fff;
+    border: 10px dashed #fcfcfc;
     padding: 0;
 }
 
