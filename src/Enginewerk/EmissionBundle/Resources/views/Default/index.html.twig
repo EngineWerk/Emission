@@ -117,7 +117,7 @@
             '<td class="fileHashID"></td> \n' + 
             '<td class="fileUploadedBy"></td> \n' + 
             '<td class="fileType"></td> \n' + 
-            '<td class="fileSize"></td> \n' + 
+            '<td class="fileSize">' + bytesToSize(file.size) + '</td> \n' + 
             '<td class="fileExpirationDate"></td> \n' + 
             '<td class="fileUpdatedAt"></td> \n' + 
             '<td class="fileCreatedAt"></td> \n' + 
@@ -205,7 +205,7 @@
         
         r.on('fileError', function(file, message){
             log('fileError');
-            alert('Generaln sending error');
+            alert('General sending error');
             cursorNormal();
         });
 
