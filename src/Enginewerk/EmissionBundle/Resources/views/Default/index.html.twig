@@ -8,6 +8,7 @@
 <script src="{{ asset('bundles/enginewerkemission/js/base.js') }}"></script>
 <script src="{{ asset('bundles/enginewerkemission/js/md5.js') }}"></script>
 <script src="{{ asset('bundles/enginewerkemission/js/vendor/SparkMD5/spark-md5.min.js') }}"></script>
+<script src="{{ asset('bundles/enginewerkemission/js/vendor/jStorage/jstorage.js') }}"></script>
 {% endblock %}
 
 {% block stylesheets %}
@@ -26,7 +27,7 @@
         {% if app.environment == 'dev' %}
         {% endif %}
         <div><input type="checkbox" id="askBeforeDeleteCheckBox"/><label for="askBeforeDeleteCheckBox">Ask before delete file</label></div>
-        <div><input type="checkbox" id="fastAndStableNetworkCheckBox"/><label for="fastAndStableNetworkCheckBox">Fast network (LAN@{{max_chunk_size}} MB / WAN@1MB)</label></div>
+        <div><input type="checkbox" id="fastAndStableNetworkCheckBox"/><label for="fastAndStableNetworkCheckBox">Fast connection (LAN {{max_chunk_size}}MB / WAN 1MB)</label></div>
         
     </div>
     
@@ -342,6 +343,34 @@
             
             event.preventDefault();
         });
+        
+        $(function(){
+            
+            // Option - Ask before delete
+            if($.jStorage.get('app.settings.ask_before_delete', 'yes') === 'yes') {
+                $('#askBeforeDeleteCheckBox').attr('checked', 'checked');
+            }
+            
+            $('#askBeforeDeleteCheckBox').change(function(){
+                var option = ($(this).attr('checked') === 'checked') ? 'yes' : 'no';
+                $.jStorage.set('app.settings.ask_before_delete', option);
+                log($.jStorage.get('app.settings.ask_before_delete', 'yes'));
+            });
+            
+            // Option - Fast and stable network - LAN
+            if($.jStorage.get('app.settings.fast_and_stable_network', 'yes') === 'yes') {
+                $('#fastAndStableNetworkCheckBox').attr('checked', 'checked');
+            }
+            
+            $('#fastAndStableNetworkCheckBox').change(function(){
+                var option = ($(this).attr('checked') === 'checked') ? 'yes' : 'no';
+                $.jStorage.set('app.settings.fast_and_stable_network', option);
+                log($.jStorage.get('app.settings.fast_and_stable_network', 'yes'));
+            });
+ 
+            
+        });
+        
     </script>
 {% endblock %}
 

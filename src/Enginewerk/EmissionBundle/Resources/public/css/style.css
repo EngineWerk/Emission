@@ -19,7 +19,7 @@ body {
 
 
 #emissionSettingsContainer {
-    background-color: #efefef;
+    background-color: #f5f5f5;
     color: #323232;
     padding: 10px;
 }
@@ -29,7 +29,7 @@ body {
 #emissionSettingsContainerUpperSwitch {}
 #emissionSettingsContainer > div:first-child {width: 100%; text-align: right;}
 
-#emissionMainMenuContainer {background-color: #efefef; padding: 10px;}
+#emissionMainMenuContainer {background-color: #f8f8f8; padding: 10px;}
 #emissionMainMenuContainer img:first-child {padding: 0px 0px 0 10px;}
 
 #filesTable .fileOptions { width: 85px;}

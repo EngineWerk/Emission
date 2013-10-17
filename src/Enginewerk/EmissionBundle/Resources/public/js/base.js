@@ -49,7 +49,7 @@ $(document).ready( function(){
         var clickedObj = $(this);
         
         // Jeśli wciśnięty klawisz alt to nie wyświetlamy potwierdzenia usunięcia.
-        if(event.altKey !== true) {
+        if(event.altKey !== true && $.jStorage.get('app.settings.ask_before_delete', 'yes') ===  'yes' ) {
         
             var r = confirm('Usunąć "' + clickedObj.attr('data-filename') + '" ?')
             if (r !== true)
