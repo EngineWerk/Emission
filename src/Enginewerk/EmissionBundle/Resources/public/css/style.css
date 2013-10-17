@@ -1,4 +1,5 @@
 @charset "UTF-8";
+@import url('http://fonts.googleapis.com/css?family=Lato:100,400,700,900');
 
 html,
 body {
@@ -7,15 +8,29 @@ body {
 }
 
 body {
-	font: 14px "Helvetica Neue", Helvetica, Arial, sans-serif;
+	font: 14px Helvetica, "Lato", 'DroidSerifRegular', "Helvetica Neue", Helvetica, Arial, sans-serif;
 	line-height: 1.4em;
 	color: #333333;
 	-webkit-font-smoothing: antialiased;
 }
 
-#emissionSettingsContainer {font-size: 0.98em;}
+#emissionSettingsContainerSwitch img {padding: 0px 5px 0 10px;}
 
-/*#filesTable .fileCreatedAt, #filesTable .fileUpdatedAt, #filesTable .fileExpirationDate, #filesTable .fileHashID, #filesTable .fileUploadedBy {display:block;}*/
+
+
+#emissionSettingsContainer {
+    background-color: #efefef;
+    color: #323232;
+    padding: 10px;
+}
+
+#emissionSettingsContainer.hidden {display: none;}
+#emissionSettingsContainer {border-bottom: 1px solid #dfdfdf;}
+#emissionSettingsContainerUpperSwitch {}
+#emissionSettingsContainer > div:first-child {width: 100%; text-align: right;}
+
+#emissionMainMenuContainer {background-color: #efefef; padding: 10px;}
+#emissionMainMenuContainer img:first-child {padding: 0px 0px 0 10px;}
 
 #filesTable .fileOptions { width: 85px;}
 #filesTable .fileOptions a { text-decoration: none;}

@@ -22,8 +22,8 @@
 #browse {
     cursor: pointer;
     height: 80px;
-    width: 48px;
-    background: url('/bundles/enginewerkemission/img/icon-plus-thick-16x16.png') no-repeat center;
+    width: 80px;
+    background: url('/bundles/enginewerkemission/img/1382040865_519838-50_Cloud_Arrow_Up.png') no-repeat center;
 }
 
 #browse input {

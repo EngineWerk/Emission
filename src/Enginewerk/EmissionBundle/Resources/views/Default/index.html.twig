@@ -13,14 +13,26 @@
 {% block stylesheets %}
 <link rel="stylesheet" href="{{ asset('bundles/enginewerkemission/css/style.css') }}">
 <link rel="stylesheet" href="{{ asset('bundles/enginewerkemission/css/resumable.css') }}">
+<link rel="stylesheet" href="{{ asset('bundles/enginewerkemission/fonts/Droid-Serif/stylesheet.css') }}">
+
 {% endblock %}
 
 {% import '::macro.html.twig' as marco %}
 
 {% block body %}
 <!-- The fileinput-button span is used to style the file input field as button -->
-    <menu style="text-align: right; color:#bfbfbf;">{{ app.user.username }} <a href="{{ path('logout') }}" style="color:#bfbfbf;">logout</a></menu>
+    <div id="emissionSettingsContainer" class="hidden">
+        <div><a href="" id="emissionSettingsContainerUpperSwitch" title="Close settings"><img src="/bundles/enginewerkemission/img/1382042732_down4.png"/></a></div>
+        {% if app.environment == 'dev' %}
+        {% endif %}
+        <div><input type="checkbox" id="askBeforeDeleteCheckBox"/><label for="askBeforeDeleteCheckBox">Ask before delete file</label></div>
+        <div><input type="checkbox" id="fastAndStableNetworkCheckBox"/><label for="fastAndStableNetworkCheckBox">Fast network (LAN@{{max_chunk_size}} MB / WAN@1MB)</label></div>
+        
+    </div>
     
+    <div id="emissionMainMenuContainer">
+        <div style="text-align: right; color:#323232;"><span style="float: left;">{{ company_name }}</span>{{ app.user.username }} <a href="{{ path('logout') }}" title="Logout Yourself ;)"><img src="/bundles/enginewerkemission/img/1382043670_519564-060_Off.png"/></a> <a href="" id="emissionSettingsContainerSwitch" title="Open settings"><img src="/bundles/enginewerkemission/img/1382042110_45_Menu.png"/></a></div>
+    </div>
     <div id="emissionFileDropContainer">
         <div id="dropbox">
             <div id="browse"></div>
@@ -64,16 +76,7 @@
             </table>
         </div>
     </div>
-    <p>
-        <div id="emissionSettingsContainer">
-            {% if app.environment == 'dev' %}
-            <div>Chunk size: {{max_chunk_size}} M</div>
-            <div><input type="checkbox" id="askBeforeDeleteCheckBox"/><label for="askBeforeDeleteCheckBox">Ask before delete</label></div>
-            <div><input type="checkbox" id="fastAndStableNetworkCheckBox"/><label for="fastAndStableNetworkCheckBox">Fast network (LAN)</label></div>
-            {% endif %}
-        </div>
-    </p>    
-        
+
     <script type="text/javascript">
         var url = '{{ path('upload_file') }}'
         var urlChunkTest = '{{ path('upload_file_chunk_test') }}'
@@ -101,7 +104,7 @@
         //if(!r.support) location.href = '/flash';
 
         r.assignBrowse(document.getElementById('browse'));
-        r.assignDrop(document.getElementById('dropbox'));
+        r.assignDrop(document.getElementById('emissionApplicationContainer'));
         
  
         r.on('fileAdded', function(resumable) {
@@ -331,6 +334,14 @@
             
             return Math.round(bytes / Math.pow(1024, i), 2) + ' ' + sizes[[i]];
         };
+        
+        
+        $('#emissionSettingsContainerSwitch, #emissionSettingsContainerUpperSwitch').click(function(event){
+            
+            $('#emissionSettingsContainer').toggleClass('hidden');
+            
+            event.preventDefault();
+        });
     </script>
 {% endblock %}
 
