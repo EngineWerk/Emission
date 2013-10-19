@@ -17,8 +17,16 @@ framework:
         #assets_version: SomeVersionScheme
     default_locale:  "%locale%"
     trusted_proxies: ~
-    session:         ~
+    session:
+        handler_id:     session.handler.pdo
     fragments:       ~
+    
+parameters:
+    pdo.db_options:
+        db_table:    session
+        db_id_col:   session_id
+        db_data_col: session_value
+        db_time_col: session_time    
 
 # Twig Configuration
 twig:
@@ -67,10 +75,22 @@ swiftmailer:
     password:  %mailer_password%
     spool:     { type: memory }
  
-
 services:
     hwi_oauth.user.provider:
         class: HWI\Bundle\OAuthBundle\Security\Core\User\OAuthUserProvider
+        
+    pdo:
+        class: PDO
+        arguments:
+            dsn:      "mysql:host=%database_host%;port=%database_port%;dbname=%database_name%"
+            user:     %database_user%
+            password: %database_password%
+        calls:
+            - [setAttribute, [3, 2]] # \PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION
+
+    session.handler.pdo:
+        class:     Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler
+        arguments: ["@pdo", "%pdo.db_options%"]        
         
 hwi_oauth:
     firewall_name: secured_area
