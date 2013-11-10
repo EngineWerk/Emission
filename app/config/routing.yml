@@ -7,10 +7,10 @@ hwi_oauth_redirect:
     prefix:   /connect
 
 google_login:
-    pattern: /login/check-google    
+    path: /login/check-google    
     
 windows_live_login:
-    pattern: /login/check-windows-live
+    path: /login/check-windows-live
 
 logout:
     path:   /logout
