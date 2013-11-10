@@ -40,6 +40,17 @@ function cursorNormal() {
     //clickedObject.css('cursor','default')
 }
 
+function bytesToSize(bytes) {
+    if (bytes === 0) {
+        return 'n/a';
+    }
+
+    var sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+    var i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
+
+    return Math.round(bytes / Math.pow(1024, i), 2) + ' ' + sizes[[i]];
+};
+
 $(document).ready( function(){
 
     //$.prettyLoader();
