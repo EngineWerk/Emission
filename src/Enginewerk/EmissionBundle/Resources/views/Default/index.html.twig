@@ -27,6 +27,7 @@
         <div><a href="" id="emissionSettingsContainerUpperSwitch" title="Close settings"><img src="/bundles/enginewerkemission/img/1382042732_down4.png"/></a></div>
         {% if app.environment == 'dev' %}
         {% endif %}
+        <div><input type="text" id="uploadedImageFileName"/><label for="uploadedImageFileName">Ask before delete file</label></div>
         <div><input type="checkbox" id="askBeforeDeleteCheckBox"/><label for="askBeforeDeleteCheckBox">Ask before delete file</label></div>
         <div><input type="checkbox" id="fastAndStableNetworkCheckBox"/><label for="fastAndStableNetworkCheckBox">Fast connection (LAN {{max_chunk_size}}MB / WAN 1MB)</label></div>
         
@@ -91,7 +92,7 @@
             target: url, 
             targetChunkTestUrl: urlChunkTest,
             chunkRetryInterval: 2,
-            maxFileSize: 2147483648,
+            //maxFileSize: 2147483648,
             simultaneousUploads: 1,
             method : 'POST',
             chunkSize : maxChunkSize,
@@ -194,8 +195,8 @@
 
                 } else {
                     if(rsp.status === 'Error') {
-                        if(rsp.data.message) {
-                            alert('Error occured: ' + rsp.data.message);
+                        if(rsp.message) {
+                            alert('Error occured: ' + rsp.message);
                         } else {
                             alert('Unexpectred error occured');
                         }
@@ -208,10 +209,17 @@
             } 
         });
         
-        r.on('fileError', function(file, message){
+        r.on('fileError', function(file, response){
             log('fileError');
-            alert('General sending error');
+            var rsp = JSON.parse(response);
+            var fileDOMObject = $('#fhash-' + CryptoJS.MD5(file.fileName) + '');
+
+            fileDOMObject.fadeOut(200, function(){
+                fileDOMObject.remove();
+            });
+            
             cursorNormal();
+            alert(rsp.message);
         });
 
         r.on('progress', function(event) {
