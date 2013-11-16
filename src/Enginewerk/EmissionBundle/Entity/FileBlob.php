@@ -51,7 +51,7 @@ class FileBlob
      * Always greater than 0
      * 
      * @ORM\Column(name="rangeEnd", type="bigint", options={"unsigned"=true})
-     * @Assert\Type(type="digit")
+     * @Assert\Type(type="numeric")
      */
     protected $rangeEnd;
 
