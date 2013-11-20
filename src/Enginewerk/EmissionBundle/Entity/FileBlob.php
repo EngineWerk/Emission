@@ -35,7 +35,7 @@ class FileBlob
     
     /**
      * @ORM\Column(name="size", type="integer", options={"unsigned"=true})
-     * @var integer
+     * @Assert\Type(type="numeric")
      */
     protected $size;
     

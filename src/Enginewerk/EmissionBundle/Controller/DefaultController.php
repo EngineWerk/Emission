@@ -120,8 +120,8 @@ class DefaultController extends Controller
        
         $Form = $this->createFormBuilder($FileBlob)
                 ->add('fileBlob')
-                ->add('rangeStart')
-                ->add('rangeEnd')
+                ->add('rangeStart', 'text')
+                ->add('rangeEnd', 'text')
                 ->getForm();
         
         $Form->handleRequest($request);
