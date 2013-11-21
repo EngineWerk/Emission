@@ -40,6 +40,7 @@ class File
      * Lower characters, and numbers [a-z0-9].
      * 
      * @ORM\Column(type="string", length=41)
+     * @Assert\Length(min="41", max="41")
      * @var string
      */
     protected $fileHash;
@@ -48,7 +49,8 @@ class File
      * Name for download name
      * 
      * @ORM\Column(type="string", length=255)
-     * at Assert\NotBlank
+     * @Assert\NotBlank
+     * @Assert\Length(max="255")
      * @var string
      */
     protected $name;
@@ -57,13 +59,16 @@ class File
      * File MIME type
      * 
      * @ORM\Column(type="string", length=128)
+     * @Assert\NotBlank
+     * @Assert\Length(min="3", max="128")
      * @var string
      */
     protected $type;
 
     /**
      * @ORM\Column(name="size", type="bigint", options={"unsigned"=true})
-     * @var integer
+     * @Assert\GreaterThan(value="1")
+     * @Assert\Type(type="numeric")
      */
     protected $size;
     
@@ -89,6 +94,8 @@ class File
      * File uploader name
      * 
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank
+     * @Assert\Length(min="3", max="255")
      * @var string
      */
     protected $uploadedBy;
