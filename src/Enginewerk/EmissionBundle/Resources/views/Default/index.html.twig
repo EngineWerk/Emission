@@ -28,7 +28,8 @@
         {% if app.environment == 'dev' %}
         {% endif %}
         <div><input type="checkbox" id="askBeforeDeleteCheckBox"/><label for="askBeforeDeleteCheckBox">Ask before delete file</label></div>
-        <div><input type="checkbox" id="fastAndStableNetworkCheckBox"/><label for="fastAndStableNetworkCheckBox">Fast connection (LAN {{max_chunk_size}}MB / WAN 1MB)</label></div>
+        <!--<div><input type="checkbox" id="fastAndStableNetworkCheckBox"/><label for="fastAndStableNetworkCheckBox">Fast connection (LAN {{max_chunk_size}}MB / WAN 1MB)</label></div>-->
+        <!-- Unsupported. It requires method for handling "live" switching file chunk size on server side -->
         
     </div>
     
