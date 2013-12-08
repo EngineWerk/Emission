@@ -69,7 +69,7 @@ class FileBlob
     
         
     /**
-     * @Assert\File(maxSize="64000000")
+     * @Assert\File(maxSize="16000000")
      */
     private $fileBlob;
     

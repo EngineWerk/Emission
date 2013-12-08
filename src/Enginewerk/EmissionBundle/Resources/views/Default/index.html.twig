@@ -85,7 +85,7 @@
     <script type="text/javascript">
         var url = '{{ path('upload_file') }}'
         var urlChunkTest = '{{ path('upload_file_chunk_test') }}'
-        var maxChunkSize = ({{max_chunk_size}} * 1024 * 1024); // to MB
+        var maxChunkSize = ({% if max_chunk_size > 16 %}16{% else %}{{max_chunk_size}}{% endif %} * 1024 * 1024); // to MB
         var postdata = {'form[_token]' : '{{Form._token.vars.value}}'};
         
         var pendingFilesNumber = 0;
