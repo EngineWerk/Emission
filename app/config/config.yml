@@ -35,7 +35,7 @@ twig:
     globals:
         max_chunk_size: %app.uploader_max_chunk_size%    
         company_name: %app.company_name% 
-
+          
 # Assetic Configuration
 assetic:
     debug:          %kernel.debug%
@@ -90,7 +90,12 @@ services:
 
     session.handler.pdo:
         class:     Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler
-        arguments: ["@pdo", "%pdo.db_options%"]        
+        arguments: ["@pdo", "%pdo.db_options%"]   
+        
+    enginewerk.twig.enginewerk_extension:
+        class: Enginewerk\EmissionBundle\Twig\EmissionExtension
+        tags:
+            - { name: twig.extension }        
         
 hwi_oauth:
     firewall_name: secured_area
