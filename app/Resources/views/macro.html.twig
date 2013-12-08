@@ -1,10 +1,10 @@
 {% macro bytesToSize(bytes) %}
 {% spaceless %}
-    {% set kilobyte = 1000 %}
-    {% set megabyte = kilobyte * 1000 %}
-    {% set gigabyte = megabyte * 1000 %}
-    {% set terabyte = gigabyte * 1000 %}
-    {% set petabyte = terabyte * 1000 %}
+    {% set kilobyte = 1024 %}
+    {% set megabyte = kilobyte * 1024 %}
+    {% set gigabyte = megabyte * 1024 %}
+    {% set terabyte = gigabyte * 1024 %}
+    {% set petabyte = terabyte * 1024 %}
 
     {% if bytes < kilobyte %}
         {{ bytes ~ ' B' }}
