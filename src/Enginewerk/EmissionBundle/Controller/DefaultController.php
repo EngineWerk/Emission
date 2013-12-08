@@ -26,8 +26,8 @@ class DefaultController extends Controller
         
         $Files = $Query->getResult();
         
-        $File = new FileBlob();
-        $Form = $this->createFormBuilder($File)
+        $FileBlob = new FileBlob();
+        $Form = $this->createFormBuilder($FileBlob)
                 ->add('fileBlob')
                 ->add('save', 'submit')
                 ->getForm();
@@ -117,9 +117,9 @@ class DefaultController extends Controller
         $request->request->set('form', $formRequest);
         
         $FileBlob = new FileBlob();
-       
+        
         $Form = $this->createFormBuilder($FileBlob)
-                ->add('fileBlob')
+                ->add('fileBlob', 'file')
                 ->add('rangeStart', 'text')
                 ->add('rangeEnd', 'text')
                 ->getForm();
@@ -128,6 +128,7 @@ class DefaultController extends Controller
         
         if ($Form->isValid()) {
             
+            // File
             $em = $this->getDoctrine()->getManager();            
             // Find out if we have this File already
             $File = $this->getDoctrine()
@@ -135,7 +136,7 @@ class DefaultController extends Controller
                     ->findOneBy(array(
                         'name' => $request->request->get('resumableFilename'),
                         'size' => $request->request->get('resumableTotalSize')));
-
+        
             // No? Lets create one
             if (null === $File) {
                 $File = new File();
@@ -147,8 +148,25 @@ class DefaultController extends Controller
                 $File->setIsComplete(false);
                 $File->setUploadedBy($this->getUser()->getUserName());
 
+                $Validator = $this->get('validator');
+                
+                $errors = $Validator->validate($File);
+                if(count($errors)) {
+                     $headers = array(
+                            'Content-Type' => 'application/json'
+                      );
+
+                    $jsonData = json_encode(array(
+                        'status' => 'Error',
+                        'message' => (string) $errors,
+                    ));
+                    
+                    return new Response($jsonData, 415, $headers);
+                }
+
                 $em->persist($File);
-            }
+            }  
+            ///
             
             // Find out if we have this FileBlob
             $FileBlobInStorage = $this->getDoctrine()
@@ -180,7 +198,7 @@ class DefaultController extends Controller
                 $em->persist($File);
                 $em->flush(); 
                 
-                // Return whole data to access file
+                // Return whole data for accessing of file
                 $jsonData = json_encode(array(
                     'status' => 'Success',  
                     'data' => array(
@@ -218,7 +236,7 @@ class DefaultController extends Controller
             
             $jsonData = json_encode(array(
                     'status' => 'Error',
-                    'message' => var_export($Form->getErrorsAsString(), true)
+                    'message' => var_export($Form->getErrorsAsString(), true),
                 ));
             
             $responseCode = 415;
@@ -245,8 +263,9 @@ class DefaultController extends Controller
     {
         $File = $this->getDoctrine()->getRepository('EnginewerkEmissionBundle:File')->findOneBy(array('fileId' => $request->get('file')));
         
-        if(!$File)
+        if(!$File) {
             throw $this->createNotFoundException('File not found');
+        }
         
         return array('File' => $File);
     }
