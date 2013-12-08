@@ -71,7 +71,9 @@
                             <a href="{{ path('delete_file', {'file': File.fileId}) }}" class="remove-file" data-filename="{{ File.name }}">delete</a>
                         </td>
                     {% else %}
-                        <td class="fileOptions"><a href="{{ path('delete_file', {'file': File.fileId}) }}">delete</a></td>
+                        <td class="fileOptions">
+                            <a href="{{ path('delete_file', {'file': File.fileId}) }}" class="remove-file" data-filename="{{ File.name }}">delete</a>
+                        </td>
                     {% endif%}
                 </tr>
             {% endfor %}
