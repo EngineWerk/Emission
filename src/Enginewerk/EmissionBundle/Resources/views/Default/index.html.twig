@@ -105,7 +105,9 @@
 
 
         // Resumable.js isn't supported, fall back on a different method
-        //if(!r.support) location.href = '/flash';
+        if(!r.support) {
+            alert('File upload not supported');
+        }
 
         r.assignBrowse(document.getElementById('browse'));
         r.assignDrop(document.getElementById('emissionApplicationContainer'));
