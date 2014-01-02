@@ -313,7 +313,9 @@ class DefaultController extends Controller
         foreach ($FileBlobs as $FileBlob) {
             $filePath = $FileBlob->getAbsolutePath();
             readfile($filePath);
-        }        
+        }     
+        
+        ob_end_flush();
     }
     
     /**
