@@ -86,13 +86,8 @@ $(document).ready( function(){
                         clickedObj.parent().parent().remove();
                     });
                 } else {
-                    if(rsp.status === 'Error') {
-                       if(rsp.data.code === 23000) {
-                           //callBackOnError(rsp.message, context);
-                       } else {
-                           log(rsp.message);
-                           //callBackOnError(rsp.message, context);
-                       }
+                    if(rsp.status === 'Error' && rsp.message) {
+                        alert(rsp.message);
                     } else {
                         log('Wystąpił nieobsługiwalny błąd.');                    
                         //callBackOnError('unknown error', context);
