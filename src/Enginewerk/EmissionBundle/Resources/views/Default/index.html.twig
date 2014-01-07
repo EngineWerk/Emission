@@ -54,7 +54,7 @@
             <table cellspacing="0" cellpadding="10" id="filesTable" class="center">
                 <tbody>
             {% for File in Files %}
-                <tr{% if File.isComplete == 1 %} data-file-completed="yes"{% endif%} data-file-id="{{ File.id }}" id="fhash-{{ File.name|md5 }}">
+                <tr{% if File.isComplete == 1 %} data-file-completed="yes"{% endif%} data-file-id="{{ File.id }}" id="fhash-{% if File.checksum == null %}{{ File.name|md5 }}{% else %}{{ File.checksum }}{% endif %}">
                     <td class="fileName">{{ File.name }}{% if File.isComplete == 0 %} (incomplete){% endif %}</td>
                     <td class="fileUploadedBy">{{ File.uploadedBy }}</td>
                     <td class="fileHashID">{{ File.fileId }}</td>
@@ -113,37 +113,81 @@
         r.assignDrop(document.getElementById('emissionApplicationContainer'));
         
  
-        r.on('fileAdded', function(resumable) {
+        r.on('fileAdded', function(resumable, event) {
 
+            cursorBusy();
             var file = resumable.file;
-            var fileNameHash = CryptoJS.MD5(file.fileName);
 
-            r.upload();
-            pendingFilesNumber++;
-            
-            if($('#fhash-' + fileNameHash + '').length === 0 ) {
-            
-                var tableRow = '<tr id="fhash-' + fileNameHash + '"> \n' + 
-                    '<td class="fileName">' + file.fileName + '</td> \n' + 
-                    '<td class="fileHashID"></td> \n' + 
-                    '<td class="fileUploadedBy"></td> \n' + 
-                    '<td class="fileType"></td> \n' + 
-                    '<td class="fileSize">' + bytesToSize(file.size, 2) + '</td> \n' + 
-                    '<td class="fileExpirationDate"></td> \n' + 
-                    '<td class="fileUpdatedAt"></td> \n' + 
-                    '<td class="fileCreatedAt"></td> \n' + 
-                    '<td></td> \n' + 
-                '</tr>';
+            var blobSlice = File.prototype.slice || File.prototype.mozSlice || File.prototype.webkitSlice,
+            chunkSize = maxChunkSize,                               // read in chunks of 2MB
+            chunks = Math.ceil(file.size / chunkSize),
+            currentChunk = 0,
+            spark = new SparkMD5.ArrayBuffer(),
+            frOnload = function(e) {
+                log("read chunk nr", currentChunk + 1, "of", chunks);
+                spark.append(e.target.result);                 // append array buffer
+                currentChunk++;
 
-                $('#filesTable tbody').prepend(tableRow);
-            }
+                if (currentChunk < chunks) {
+                    loadNext();
+                }
+                else {
+                   cursorNormal();
+                   log("finished loading");
+                   //console.info("computed hash", ); // compute hash
+                   
+                   resumable.uniqueIdentifier = spark.end();
+                   var fileNameHash = CryptoJS.MD5(resumable.uniqueIdentifier + file.fileName).toString();
+                   log(fileNameHash);
+                   //console.info("computed hash", fileNameHash); // compute hash
+           
+                    pendingFilesNumber++;
+
+                    if($('#fhash-' + fileNameHash + '').length === 0 ) {
+
+                        var tableRow = '<tr id="fhash-' + fileNameHash + '"> \n' + 
+                            '<td class="fileName">' + file.fileName + '</td> \n' + 
+                            '<td class="fileHashID"></td> \n' + 
+                            '<td class="fileUploadedBy"></td> \n' + 
+                            '<td class="fileType"></td> \n' + 
+                            '<td class="fileSize">' + bytesToSize(file.size, 2) + '</td> \n' + 
+                            '<td class="fileExpirationDate"></td> \n' + 
+                            '<td class="fileUpdatedAt"></td> \n' + 
+                            '<td class="fileCreatedAt"></td> \n' + 
+                            '<td></td> \n' + 
+                        '</tr>';
+
+                        $('#filesTable tbody').prepend(tableRow);
+                    }
+                    
+                    r.upload();
+                }
+            },
+            frOnerror = function () {
+                //console.warn('oops, something went wrong.');
+                log('Md5 compute error');
+            };
+
+            function loadNext() {
+                var fileReader = new FileReader();
+                fileReader.onload = frOnload;
+                fileReader.onerror = frOnerror;
+
+                var start = currentChunk * chunkSize,
+                    end = ((start + chunkSize) >= file.size) ? file.size : start + chunkSize;
+
+                fileReader.readAsArrayBuffer(blobSlice.call(file, start, end));
+            };
+
+            loadNext();
+                    
         });
         
         r.on('uploadStart', function(){
             cursorBusy();
         });
         
-        r.on('fileSuccess', function(file, response) {
+        r.on('fileSuccess', function(Resumable, response) {
 
             log('Total files: ' + r.files.length);
             
@@ -163,7 +207,8 @@
                         .attr('target', '_blank')
                         .prop('href', file.download_url);
                 
-                        var fileNameHash = CryptoJS.MD5(file.name);
+                        var fileNameHash = CryptoJS.MD5(Resumable.uniqueIdentifier + file.name).toString();
+                        log(fileNameHash);
                 
                         var tableRow = '<tr data-file-id="' + file.id + '" id="fhash-' + fileNameHash + '"> \n' + 
             '<td class="fileName">' + file.name + '</td> \n' + 
@@ -208,29 +253,35 @@
                         } else {
                             alert('Unexpectred error occured');
                         }
+                    } else if (rsp.status === 'Info') { 
+                        log(rsp.message);
                     } else {
                         alert('Unexpectred error occured');
                     }
+                    
+                    cursorNormal();
                 }
             } else {
                 alert('Unexpectred error occured');
+                cursorNormal();
             } 
         });
         
-        r.on('fileError', function(file, response){
+        r.on('fileError', function(Resumable, response){
             log('fileError');
+            
             var rsp = JSON.parse(response);
-            var fileDOMObject = $('#fhash-' + CryptoJS.MD5(file.fileName) + '');
+            var fileDOMObject = $('#fhash-' + CryptoJS.MD5(Resumable.uniqueIdentifier + Resumable.file.fileName).toString() + '');
 
             fileDOMObject.fadeOut(200, function(){
                 fileDOMObject.remove();
             });
             
             cursorNormal();
-            alert(rsp.message);
+            alert(Resumable.file.fileName + ' : ' + rsp.message);
         });
 
-        r.on('progress', function(event) {
+        r.on('progress', function() {
             $('#dropbox_progress').find('.progress').width($('#dropbox_progress').find('.progressHolder').width() * r.progress());
         });
                

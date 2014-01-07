@@ -44,6 +44,16 @@ class File
      * @var string
      */
     protected $fileHash;
+    
+    /**
+     * Checksum of file declared by user.
+     * Lower characters, and numbers [a-z0-9].
+     * 
+     * @ORM\Column(type="string", length=32)
+     * @Assert\Length(max="32")
+     * @var string
+     */
+    protected $checksum;
 
     /**
      * Name for download name
@@ -439,5 +449,28 @@ class File
     public function getUploadedBy()
     {
         return $this->uploadedBy;
+    }
+
+    /**
+     * Set checksum
+     *
+     * @param string $checksum
+     * @return File
+     */
+    public function setChecksum($checksum)
+    {
+        $this->checksum = $checksum;
+    
+        return $this;
+    }
+
+    /**
+     * Get checksum
+     *
+     * @return string 
+     */
+    public function getChecksum()
+    {
+        return $this->checksum;
     }
 }

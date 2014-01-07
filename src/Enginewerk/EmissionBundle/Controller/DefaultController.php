@@ -51,6 +51,7 @@ class DefaultController extends Controller
                 ->getRepository('EnginewerkEmissionBundle:File')
                 ->findOneBy(array(
                     'name' => $request->get('resumableFilename'),
+                    'checksum' => $request->get('resumableIdentifier'),
                     'size' => $request->get('resumableTotalSize')));
 
         if(!$File) {
@@ -94,7 +95,7 @@ class DefaultController extends Controller
         } else {
             
             $jsonData = json_encode(array(
-                    'status' => 'Error',
+                    'status' => 'Info',
                     'message' => 'Blob found'
                 ));
 
@@ -135,6 +136,7 @@ class DefaultController extends Controller
                     ->getRepository('EnginewerkEmissionBundle:File')
                     ->findOneBy(array(
                         'name' => $request->request->get('resumableFilename'),
+                        'checksum' => $request->request->get('resumableIdentifier'),
                         'size' => $request->request->get('resumableTotalSize')));
         
             // No? Lets create one
@@ -145,6 +147,7 @@ class DefaultController extends Controller
                 $File->setExtensionName($Form->get('fileBlob')->getData()->guessExtension());
                 $File->setType($Form->get('fileBlob')->getData()->getMimeType());
                 $File->setSize($request->request->get('resumableTotalSize'));
+                $File->setChecksum($request->request->get('resumableIdentifier'));
                 $File->setIsComplete(false);
                 $File->setUploadedBy($this->getUser()->getUserName());
 
