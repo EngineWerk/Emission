@@ -113,9 +113,10 @@
         r.assignDrop(document.getElementById('emissionApplicationContainer'));
  
         r.on('fileAdded', function(resumable, event) {
-
             cursorBusy();
+            
             var file = resumable.file;
+            resumable.pause();
 
             var blobSlice = File.prototype.slice || File.prototype.mozSlice || File.prototype.webkitSlice,
             chunkSize = maxChunkSize,                               // read in chunks of 2MB
@@ -136,6 +137,9 @@
                     var fileNameHash = resumable.uniqueIdentifier;
                     info(file.name, fileNameHash);
                     pendingFilesNumber++;
+                    
+                    resumable.pause();
+                    r.upload();
 
                     if($('#fhash-' + fileNameHash + '').length === 0 ) {
 
