@@ -16,6 +16,12 @@ function log(data) {
     }
 }
 
+function info(name, data) {
+    if(console) {
+        console.info(name, data);
+    }
+}
+
 /**
  * Arguments: number to round, number of decimal places
  */
