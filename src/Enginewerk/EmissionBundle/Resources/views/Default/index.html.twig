@@ -111,7 +111,6 @@
 
         r.assignBrowse(document.getElementById('browse'));
         r.assignDrop(document.getElementById('emissionApplicationContainer'));
-        
  
         r.on('fileAdded', function(resumable, event) {
 
@@ -124,29 +123,24 @@
             currentChunk = 0,
             spark = new SparkMD5.ArrayBuffer(),
             frOnload = function(e) {
-                log("read chunk nr", currentChunk + 1, "of", chunks);
+                log("read chunk");
                 spark.append(e.target.result);                 // append array buffer
                 currentChunk++;
 
                 if (currentChunk < chunks) {
                     loadNext();
-                }
-                else {
-                   cursorNormal();
-                   log("finished loading");
-                   //console.info("computed hash", ); // compute hash
-                   
-                   resumable.uniqueIdentifier = spark.end();
-                   var fileNameHash = CryptoJS.MD5(resumable.uniqueIdentifier + file.fileName).toString();
-                   log(fileNameHash);
-                   //console.info("computed hash", fileNameHash); // compute hash
-           
+                } else {
+                    resumable.uniqueIdentifier = spark.end();
+                    cursorNormal();
+
+                    var fileNameHash = resumable.uniqueIdentifier;
+                    info(file.name, fileNameHash);
                     pendingFilesNumber++;
 
                     if($('#fhash-' + fileNameHash + '').length === 0 ) {
 
                         var tableRow = '<tr id="fhash-' + fileNameHash + '"> \n' + 
-                            '<td class="fileName">' + file.fileName + '</td> \n' + 
+                            '<td class="fileName">' + file.name + '</td> \n' + 
                             '<td class="fileHashID"></td> \n' + 
                             '<td class="fileUploadedBy"></td> \n' + 
                             '<td class="fileType"></td> \n' + 
@@ -159,12 +153,9 @@
 
                         $('#filesTable tbody').prepend(tableRow);
                     }
-                    
-                    r.upload();
                 }
             },
             frOnerror = function () {
-                //console.warn('oops, something went wrong.');
                 log('Md5 compute error');
             };
 
@@ -207,8 +198,8 @@
                         .attr('target', '_blank')
                         .prop('href', file.download_url);
                 
-                        var fileNameHash = CryptoJS.MD5(Resumable.uniqueIdentifier + file.name).toString();
-                        log(fileNameHash);
+                        var fileNameHash = Resumable.uniqueIdentifier;
+                        info(file.name, fileNameHash);
                 
                         var tableRow = '<tr data-file-id="' + file.id + '" id="fhash-' + fileNameHash + '"> \n' + 
             '<td class="fileName">' + file.name + '</td> \n' + 
@@ -254,7 +245,7 @@
                             alert('Unexpectred error occured');
                         }
                     } else if (rsp.status === 'Info') { 
-                        log(rsp.message);
+                        info(rsp.status, rsp.message);
                     } else {
                         alert('Unexpectred error occured');
                     }
@@ -271,7 +262,7 @@
             log('fileError');
             
             var rsp = JSON.parse(response);
-            var fileDOMObject = $('#fhash-' + CryptoJS.MD5(Resumable.uniqueIdentifier + Resumable.file.fileName).toString() + '');
+            var fileDOMObject = $('#fhash-' + Resumable.uniqueIdentifier);
 
             fileDOMObject.fadeOut(200, function(){
                 fileDOMObject.remove();
