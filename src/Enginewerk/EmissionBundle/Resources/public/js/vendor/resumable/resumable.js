@@ -256,6 +256,7 @@
       $.size = file.size;
       $.relativePath = file.webkitRelativePath || $.fileName;
       $.uniqueIdentifier = $h.generateUniqueIdentifier(file);
+      $._pause = false;
       var _error = false;
 
       // Callback when something happens within the chunk
@@ -362,7 +363,16 @@
         });
         return(!outstanding);
       };
-
+      $.pause = function(pause){
+          if(typeof(pause)==='undefined'){
+              $._pause = ($._pause ? false : true);
+          }else{
+              $._pause = pause;
+          }
+      };
+      $.isPaused = function() {
+        return $._pause;
+      };
 
       // Bootstrap and return
       $.bootstrap();
@@ -629,13 +639,15 @@
 
       // Now, simply look for the next, best thing to upload
       $h.each($.files, function(file){
-        $h.each(file.chunks, function(chunk){
-          if(chunk.status()=='pending' && chunk.preprocessState === 0) {
-            chunk.send();
-            found = true;
-            return(false);
-          }
-        });
+        if(file.isPaused()===false){
+         $h.each(file.chunks, function(chunk){
+           if(chunk.status()=='pending' && chunk.preprocessState === 0) {
+             chunk.send();
+             found = true;
+             return(false);
+           }
+          });
+        }
         if(found) return(false);
       });
       if(found) return(true);
