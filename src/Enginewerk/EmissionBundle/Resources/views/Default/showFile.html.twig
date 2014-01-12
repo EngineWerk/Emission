@@ -14,6 +14,7 @@
 {% block body %}
 <div id="files" class="files">
     <h2>{{ File.name }}</h2>
+    {% if File.checksum %}Checksum: {{ File.checksum }}<br />{% endif %}
     Type: {{ File.type }}<br />
     Size: {{ marco.bytesToSize(File.size) }}<br />
     Click to 
