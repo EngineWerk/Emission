@@ -22,6 +22,31 @@ $().ready(function() {
 
     // Add the paste event listener
     window.addEventListener("paste", pasteHandler);
+    
+    function promptForNameAndUploadfile(file)
+    {
+        var d = new Date();
+        var defaultFilename = 'Screenshot ' + d.toString();
+        var userFilename = null;
+        
+        if($.jStorage.get('app.settings.prompt_for_screenshot_filename', 'yes') === 'yes') {
+            var userFilename = prompt("Please enter your name", defaultFilename );
+        } else {
+            userFilename = defaultFilename;
+        }
+        
+        if(userFilename === null) {
+            return false;
+        }
+        
+        if(userFilename !== '') {
+            file.name = userFilename;
+        } else {
+            file.name = defaultFilename;
+        }
+        
+        r.addFile(file);
+    }
 
 
     /* Handle paste events */
@@ -35,10 +60,7 @@ $().ready(function() {
              for (var i = 0; i < items.length; i++) {
                 if (items[i].type.indexOf("image") !== -1) {
                    // We need to represent the image as a file,
-                   var file = items[i].getAsFile();
-                   var d = new Date();
-                   file.name = 'Screenshot ' + d.toString();
-                   r.addFile(file);
+                   promptForNameAndUploadfile(items[i].getAsFile());
                 }
              }
           }
@@ -97,9 +119,7 @@ $().ready(function() {
                 var blob = bb.getBlob('application/octet-stream'); // <-- Here's the Blob    
             }
 
-            var d = new Date();
-            blob.name = 'Screenshot' + d.toString();
-            r.addFile(blob);
+            promptForNameAndUploadfile(blob);
        };
 
        pastedImage.src = source;

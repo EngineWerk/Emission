@@ -27,10 +27,8 @@
         <div><a href="" id="emissionSettingsContainerUpperSwitch" title="Close settings"><img src="/bundles/enginewerkemission/img/1382042732_down4.png"/></a></div>
         {% if app.environment == 'dev' %}
         {% endif %}
-        <div><input type="checkbox" id="askBeforeDeleteCheckBox"/><label for="askBeforeDeleteCheckBox">Ask before delete file</label></div>
-        <!--<div><input type="checkbox" id="fastAndStableNetworkCheckBox"/><label for="fastAndStableNetworkCheckBox">Fast connection (LAN {{max_chunk_size}}MB / WAN 1MB)</label></div>-->
-        <!-- Unsupported. It requires method for handling "live" switching file chunk size on server side -->
-        
+        <div><input type="checkbox" id="promptForScreenshotFilename"/><label for="promptForScreenshotFilename">Prompt for screenshot filename</label></div>
+        <div><input type="checkbox" id="askBeforeDeleteCheckBox"/><label for="askBeforeDeleteCheckBox">Ask before delete file</label></div>        
     </div>
     
     <div id="emissionMainMenuContainer">
@@ -309,6 +307,17 @@
                 var option = ($(this).attr('checked') === 'checked') ? 'yes' : 'no';
                 $.jStorage.set('app.settings.fast_and_stable_network', option);
                 log($.jStorage.get('app.settings.fast_and_stable_network', 'yes'));
+            });
+            
+            // Option - Prompt for screenshot file name
+            if($.jStorage.get('app.settings.prompt_for_screenshot_filename', 'yes') === 'yes') {
+                $('#promptForScreenshotFilename').attr('checked', 'checked');
+            }
+            
+            $('#promptForScreenshotFilename').change(function(){
+                var option = ($(this).attr('checked') === 'checked') ? 'yes' : 'no';
+                $.jStorage.set('app.settings.prompt_for_screenshot_filename', option);
+                log($.jStorage.get('app.settings.prompt_for_screenshot_filename', 'yes'));
             });
  
             
