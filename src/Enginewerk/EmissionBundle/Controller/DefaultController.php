@@ -23,18 +23,17 @@ class DefaultController extends Controller
         $Query = $Repository->createQueryBuilder('f')
                 ->orderBy('f.id', 'DESC')
                 ->getQuery();
-        
+
         $Files = $Query->getResult();
-        
+
         $FileBlob = new FileBlob();
         $Form = $this->createFormBuilder($FileBlob)
                 ->add('fileBlob')
                 ->add('save', 'submit')
                 ->getForm();
-        
+
         return array('Files' => $Files, 'Form' => $Form->createView());
     }
-    
 
     /**
      * TODO Validating minimum chunk size
@@ -44,8 +43,8 @@ class DefaultController extends Controller
     {
         $headers = array(
               'Content-Type' => 'application/json'
-        );        
-        
+        );
+
         // Find out if we have this File already
         $File = $this->getDoctrine()
                 ->getRepository('EnginewerkEmissionBundle:File')
@@ -54,8 +53,8 @@ class DefaultController extends Controller
                     'checksum' => $request->get('resumableIdentifier'),
                     'size' => $request->get('resumableTotalSize')));
 
-        if(!$File) {
-            
+        if (!$File) {
+
             $jsonData = json_encode(array(
                     'status' => 'Error',
                     'message' => 'File "' . $request->get('resumableFilename') . '" , not found'
@@ -63,10 +62,10 @@ class DefaultController extends Controller
 
             return new Response($jsonData, 306, $headers);
         } else {
-            
+
             // Check if uploaded chunks are same size as currently delcared
-            if($File->getFileBlobs()->first()->getSize() != $request->get('resumableCurrentChunkSize')) {
-                
+            if ($File->getFileBlobs()->first()->getSize() != $request->get('resumableCurrentChunkSize')) {
+
                 $jsonData = json_encode(array(
                     'status' => 'Error',
                     'message' => 'Chunk size differ from previously uploaded'
@@ -84,8 +83,8 @@ class DefaultController extends Controller
                     'rangeStart' => $request->get('resumableCurrentStartByte'),
                     'rangeEnd' => $request->get('resumableCurrentEndByte')));
 
-        if(!$FileBlob) {
-            
+        if (!$FileBlob) {
+
             $jsonData = json_encode(array(
                     'status' => 'Error',
                     'message' => 'Blob not found'
@@ -93,7 +92,7 @@ class DefaultController extends Controller
 
             return new Response($jsonData, 306, $headers);
         } else {
-            
+
             $jsonData = json_encode(array(
                     'status' => 'Info',
                     'message' => 'Blob found'
@@ -105,7 +104,7 @@ class DefaultController extends Controller
 
     /**
      * TODO Validating minimum chunk size
-     * 
+     *
      * @Route("/upload", name="upload_file")
      */
     public function uploadAction(Request $request)
@@ -114,23 +113,23 @@ class DefaultController extends Controller
 
         $formRequest['rangeStart'] = $request->request->get('resumableCurrentStartByte');
         $formRequest['rangeEnd'] = $request->request->get('resumableCurrentEndByte');
-        
+
         $request->request->set('form', $formRequest);
-        
+
         $FileBlob = new FileBlob();
-        
+
         $Form = $this->createFormBuilder($FileBlob)
                 ->add('fileBlob', 'file')
                 ->add('rangeStart', 'text')
                 ->add('rangeEnd', 'text')
                 ->getForm();
-        
+
         $Form->handleRequest($request);
-        
+
         if ($Form->isValid()) {
-            
+
             // File
-            $em = $this->getDoctrine()->getManager();            
+            $em = $this->getDoctrine()->getManager();
             // Find out if we have this File already
             $File = $this->getDoctrine()
                     ->getRepository('EnginewerkEmissionBundle:File')
@@ -138,7 +137,7 @@ class DefaultController extends Controller
                         'name' => $request->request->get('resumableFilename'),
                         'checksum' => $request->request->get('resumableIdentifier'),
                         'size' => $request->request->get('resumableTotalSize')));
-        
+
             // No? Lets create one
             if (null === $File) {
                 $File = new File();
@@ -152,9 +151,9 @@ class DefaultController extends Controller
                 $File->setUploadedBy($this->getUser()->getUserName());
 
                 $Validator = $this->get('validator');
-                
+
                 $errors = $Validator->validate($File);
-                if(count($errors)) {
+                if (count($errors)) {
                      $headers = array(
                             'Content-Type' => 'application/json'
                       );
@@ -163,14 +162,14 @@ class DefaultController extends Controller
                         'status' => 'Error',
                         'message' => (string) $errors,
                     ));
-                    
+
                     return new Response($jsonData, 415, $headers);
                 }
 
                 $em->persist($File);
-            }  
+            }
             ///
-            
+
             // Find out if we have this FileBlob
             $FileBlobInStorage = $this->getDoctrine()
                     ->getRepository('EnginewerkEmissionBundle:FileBlob')
@@ -178,14 +177,14 @@ class DefaultController extends Controller
                         'fileId' => $File->getId(),
                         'rangeStart' => $formRequest['rangeStart'],
                         'rangeEnd' => $formRequest['rangeEnd']));
-            
+
             // No ? Lets create one
             if (null === $FileBlobInStorage) {
-                $FileBlob->setFile($File);  
+                $FileBlob->setFile($File);
                 $em->persist($FileBlob);
-                $em->flush();  
+                $em->flush();
             }
-            
+
             // Do we have whole file?
             // Lets make sum for all renageEnd and check against declared File size
             $query = $this->getDoctrine()->getManager()
@@ -194,16 +193,16 @@ class DefaultController extends Controller
 
             $totalSize = $query->getSingleScalarResult();
 
-            if($totalSize == $File->getSize()) {
-                
+            if ($totalSize == $File->getSize()) {
+
                 // Set isComplete property to true
                 $File->setIsComplete(true);
                 $em->persist($File);
-                $em->flush(); 
-                
+                $em->flush();
+
                 // Return whole data for accessing of file
                 $jsonData = json_encode(array(
-                    'status' => 'Success',  
+                    'status' => 'Success',
                     'data' => array(
                           'id' => $File->getId(),
                           'file_id' => $File->getFileId(),
@@ -222,7 +221,7 @@ class DefaultController extends Controller
                 ));
             } else {
                 $jsonData = json_encode(array(
-                    'status' => 'Success',  
+                    'status' => 'Success',
                     'data' => array(
                           'id' => $File->getId(),
                           'file_id' => $File->getFileId(),
@@ -232,19 +231,19 @@ class DefaultController extends Controller
                       ),
                 ));
             }
-            
+
             $responseCode = 200;
-            
+
         } else {
-            
+
             $jsonData = json_encode(array(
                     'status' => 'Error',
                     'message' => var_export($Form->getErrorsAsString(), true),
                 ));
-            
+
             $responseCode = 415;
         }
-        
+
         $headers = array(
                 'Content-Type' => 'application/json'
           );
@@ -254,47 +253,47 @@ class DefaultController extends Controller
         return $response;
 
     }
-    
+
     /**
      * @Route("/f/{file}", requirements={"file"}, name="show_file")
      * @Template()
-     * 
-     * @param \Symfony\Component\HttpFoundation\Request $request
+     *
+     * @param  \Symfony\Component\HttpFoundation\Request $request
      * @throws type
      */
     public function showFileAction(Request $request)
     {
         $File = $this->getDoctrine()->getRepository('EnginewerkEmissionBundle:File')->findOneBy(array('fileId' => $request->get('file')));
-        
-        if(!$File) {
+
+        if (!$File) {
             throw $this->createNotFoundException('File not found');
         }
-        
+
         return array('File' => $File);
     }
-    
+
     /**
      * @Route("/d/{file}", requirements={"file"}, name="download_file", defaults={"dl" = 1})
      * @Route("/o/{file}", requirements={"file"}, name="open_file")
-     * 
+     *
      * @param \Symfony\Component\HttpFoundation\Request $request
      */
     public function downloadFileAction(Request $request)
     {
         $File = $this->getDoctrine()->getRepository('EnginewerkEmissionBundle:File')->findOneBy(array('fileId' => $request->get('file')));
 
-        if(null === $File) {
+        if (null === $File) {
             throw $this->createNotFoundException('File not found');
         }
-        
+
         $FileBlobs = $this->getDoctrine()
                 ->getRepository('EnginewerkEmissionBundle:FileBlob')
                 ->findBy(array('fileId' => $File->getId()), array('rangeStart' => 'ASC'));
-        
+
         foreach ($FileBlobs as $FileBlob) {
             $filePath = $FileBlob->getAbsolutePath();
 
-            if(!file_exists($filePath) || is_dir($filePath)) {
+            if (!file_exists($filePath) || is_dir($filePath)) {
                 throw $this->createNotFoundException('File doesn`t exists');
             }
         }
@@ -302,25 +301,25 @@ class DefaultController extends Controller
         // TODO Download set_time_limit
         set_time_limit(0);
         $response = new Response();
-       
+
         $response->headers->set('Content-Type', $File->getType());
         $response->headers->set('Content-Length', $File->getSize());
         $response->headers->set('Content-Transfer-Encoding', 'binary');
 
-        if($request->get('dl')) {
+        if ($request->get('dl')) {
             $response->headers->set('Content-Disposition', 'attachment; filename="' . $File->getName().'"');
         }
-        
+
         $response->sendHeaders();
-        
+
         foreach ($FileBlobs as $FileBlob) {
             $filePath = $FileBlob->getAbsolutePath();
             readfile($filePath);
-        }     
-        
+        }
+
         ob_end_flush();
     }
-    
+
     /**
      * @Route("/delete/{file}", requirements={"file"}, name="delete_file")
      * @param \Symfony\Component\HttpFoundation\Request $request
@@ -328,31 +327,31 @@ class DefaultController extends Controller
     public function deleteAction(Request $request)
     {
         $File = $this->getDoctrine()->getRepository('EnginewerkEmissionBundle:File')->findOneBy(array('fileId' => $request->get('file')));
-        
-        if(!$File) {
+
+        if (!$File) {
             $jsonData = json_encode(array(
                     'status' => 'Error',
                     'message' => 'File not found'
                 ));
-            
+
         } else {
-        
+
             try {
                 $em = $this->getDoctrine()->getManager();
                 $em->remove($File);
-                $em->flush();  
-                
+                $em->flush();
+
                 $jsonData = json_encode(array(
                     'status' => 'Success',
                 ));
-                
-            } catch(Exception $e) {
+
+            } catch (Exception $e) {
                 $jsonData = json_encode(array(
                     'status' => 'Error',
                 ));
             }
         }
-        
+
         $headers = array(
                 'Content-Type' => 'application/json'
           );
