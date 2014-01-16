@@ -52,23 +52,23 @@ class DefaultController extends Controller
 
         if (!$File) {
 
-            $jsonData = array(
+            $responseData = array(
                     'status' => 'Error',
                     'message' => 'File "' . $request->get('resumableFilename') . '" , not found'
                 );
 
-            return new JsonResponse($jsonData, 306);
+            return new JsonResponse($responseData, 306);
         } else {
 
             // Check if uploaded chunks are same size as currently delcared
             if ($File->getFileBlobs()->first()->getSize() != $request->get('resumableCurrentChunkSize')) {
 
-                $jsonData = array(
+                $responseData = array(
                     'status' => 'Error',
                     'message' => 'Chunk size differ from previously uploaded'
                 );
 
-                return new JsonResponse($jsonData, 415);
+                return new JsonResponse($responseData, 415);
             }
         }
 
@@ -82,20 +82,20 @@ class DefaultController extends Controller
 
         if (!$FileBlob) {
 
-            $jsonData = array(
+            $responseData = array(
                     'status' => 'Error',
                     'message' => 'Blob not found'
                 );
 
-            return new JsonResponse($jsonData, 306);
+            return new JsonResponse($responseData, 306);
         } else {
 
-            $jsonData = array(
+            $responseData = array(
                     'status' => 'Info',
                     'message' => 'Blob found'
                 );
 
-            return new JsonResponse($jsonData, 200);
+            return new JsonResponse($responseData, 200);
         }
     }
 
@@ -155,12 +155,12 @@ class DefaultController extends Controller
                             'Content-Type' => 'application/json'
                       );
 
-                    $jsonData = array(
+                    $responseData = array(
                         'status' => 'Error',
                         'message' => (string) $errors,
                     );
 
-                    return new JsonResponse($jsonData, 415);
+                    return new JsonResponse($responseData, 415);
                 }
 
                 $em->persist($File);
@@ -197,7 +197,7 @@ class DefaultController extends Controller
                 $em->flush();
 
                 // Return whole data for accessing of file
-                $jsonData = array(
+                $responseData = array(
                     'status' => 'Success',
                     'data' => array(
                           'id' => $File->getId(),
@@ -216,7 +216,7 @@ class DefaultController extends Controller
                       ),
                 );
             } else {
-                $jsonData = array(
+                $responseData = array(
                     'status' => 'Success',
                     'data' => array(
                           'id' => $File->getId(),
@@ -232,7 +232,7 @@ class DefaultController extends Controller
 
         } else {
 
-            $jsonData = array(
+            $responseData = array(
                     'status' => 'Error',
                     'message' => var_export($Form->getErrorsAsString(), true),
                 );
@@ -240,7 +240,7 @@ class DefaultController extends Controller
             $responseCode = 415;
         }
 
-        return new JsonResponse($jsonData, $responseCode);
+        return new JsonResponse($responseData, $responseCode);
     }
 
     /**
@@ -318,7 +318,7 @@ class DefaultController extends Controller
         $File = $this->getDoctrine()->getRepository('EnginewerkEmissionBundle:File')->findOneBy(array('fileId' => $request->get('file')));
 
         if (!$File) {
-            $jsonData = array(
+            $responseData = array(
                     'status' => 'Error',
                     'message' => 'File not found'
                 );
@@ -330,17 +330,17 @@ class DefaultController extends Controller
                 $em->remove($File);
                 $em->flush();
 
-                $jsonData = array(
+                $responseData = array(
                     'status' => 'Success',
                 );
 
             } catch (Exception $e) {
-                $jsonData = array(
+                $responseData = array(
                     'status' => 'Error',
                 );
             }
         }
 
-        return new JsonResponse($jsonData, 200);
+        return new JsonResponse($responseData, 200);
     }
 }
