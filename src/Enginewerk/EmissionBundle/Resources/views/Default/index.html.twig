@@ -185,17 +185,18 @@
             log('Total files: ' + r.files.length);
             
             try {
-                rsp = jQuery.parseJSON(response);
+                responseObject = jQuery.parseJSON(response);
+                var AppResponse = responseObject.response;
             } catch (error) {
                 log('JSON parse error: ' + error);
                 log(response);
             }
 
-            if(rsp) {
-                if(rsp.status === 'Success') {
-                    if(rsp.data) {
+            if(AppResponse) {
+                if(AppResponse.status === 'Success') {
+                    if(AppResponse.data) {
                         
-                        var file = rsp.data;
+                        var file = AppResponse.data;
                         var link = $('<a>')
                         .attr('target', '_blank')
                         .prop('href', file.download_url);
@@ -240,14 +241,14 @@
                     }
 
                 } else {
-                    if(rsp.status === 'Error') {
-                        if(rsp.message) {
+                    if(AppResponse.status === 'Error') {
+                        if(AppResponse.message) {
                             alert('Error occured: ' + rsp.message);
                         } else {
                             alert('Unexpectred error occured');
                         }
-                    } else if (rsp.status === 'Info') { 
-                        info(rsp.status, rsp.message);
+                    } else if (AppResponse.status === 'Info') { 
+                        info(AppResponse.status, AppResponse.message);
                     } else {
                         alert('Unexpectred error occured');
                     }
@@ -263,7 +264,8 @@
         r.on('fileError', function(Resumable, response){
             log('fileError');
             
-            var rsp = JSON.parse(response);
+            responseObject = jQuery.parseJSON(response);
+            var AppResponse = responseObject.response;
             var fileDOMObject = $('#fhash-' + Resumable.uniqueIdentifier);
 
             fileDOMObject.fadeOut(200, function(){
@@ -271,7 +273,7 @@
             });
             
             cursorNormal();
-            alert(Resumable.file.fileName + ' : ' + rsp.message);
+            alert(Resumable.file.fileName + ' : ' + AppResponse.message);
         });
 
         r.on('progress', function() {

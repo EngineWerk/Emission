@@ -84,16 +84,18 @@ $(document).ready( function(){
 
         $.ajax({
             url: clickedObj.attr('href'),
-            }).done(function ( rsp, textStatus  ) {
+            }).done(function ( responseObject ) {
 
-                if(rsp.status === 'Success') {
+                var AppResponse = responseObject.response;
+                
+                if(AppResponse.status === 'Success') {
                     //callbackOnSuccess(imageId, context);                        
                     clickedObj.parent().parent().fadeOut(200, function(){
                         clickedObj.parent().parent().remove();
                     });
                 } else {
-                    if(rsp.status === 'Error' && rsp.message) {
-                        alert(rsp.message);
+                    if(AppResponse.status === 'Error' && AppResponse.message) {
+                        alert(AppResponse.message);
                     } else {
                         log('Wystąpił nieobsługiwalny błąd.');                    
                         //callBackOnError('unknown error', context);

@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 
 use Enginewerk\EmissionBundle\Entity\File;
 use Enginewerk\EmissionBundle\Entity\FileBlob;
+use Enginewerk\EmissionBundle\Response\AppResponse;
 
 class DefaultController extends Controller
 {
@@ -42,6 +43,8 @@ class DefaultController extends Controller
      */
     public function uploadChunkTestAction(Request $request)
     {
+        $appResponse = new AppResponse();
+        
         // Find out if we have this File already
         $File = $this->getDoctrine()
                 ->getRepository('EnginewerkEmissionBundle:File')
@@ -51,24 +54,14 @@ class DefaultController extends Controller
                     'size' => $request->get('resumableTotalSize')));
 
         if (!$File) {
-
-            $responseData = array(
-                    'status' => 'Error',
-                    'message' => 'File "' . $request->get('resumableFilename') . '" , not found'
-                );
-
-            return new JsonResponse($responseData, 306);
+            $appResponse->error('File "' . $request->get('resumableFilename') . '" , not found');
+            return new JsonResponse($appResponse->response(), 306);
         } else {
 
             // Check if uploaded chunks are same size as currently delcared
             if ($File->getFileBlobs()->first()->getSize() != $request->get('resumableCurrentChunkSize')) {
-
-                $responseData = array(
-                    'status' => 'Error',
-                    'message' => 'Chunk size differ from previously uploaded'
-                );
-
-                return new JsonResponse($responseData, 415);
+                $appResponse->error('Chunk size differ from previously uploaded');
+                return new JsonResponse($appResponse->response(), 415);
             }
         }
 
@@ -82,20 +75,14 @@ class DefaultController extends Controller
 
         if (!$FileBlob) {
 
-            $responseData = array(
-                    'status' => 'Error',
-                    'message' => 'Blob not found'
-                );
+            $appResponse->error('Blob not found');
 
-            return new JsonResponse($responseData, 306);
+            return new JsonResponse($appResponse->response(), 306);
         } else {
 
-            $responseData = array(
-                    'status' => 'Info',
-                    'message' => 'Blob found'
-                );
-
-            return new JsonResponse($responseData, 200);
+            $appResponse->info('Blob found');
+            
+            return new JsonResponse($appResponse->response(), 200);
         }
     }
 
@@ -106,6 +93,7 @@ class DefaultController extends Controller
      */
     public function uploadAction(Request $request)
     {
+        $appResponse = new AppResponse();
         $formRequest = $request->request->get('form');
 
         $formRequest['rangeStart'] = $request->request->get('resumableCurrentStartByte');
@@ -151,13 +139,9 @@ class DefaultController extends Controller
 
                 $errors = $Validator->validate($File);
                 if (count($errors)) {
-
-                    $responseData = array(
-                        'status' => 'Error',
-                        'message' => (string) $errors,
-                    );
-
-                    return new JsonResponse($responseData, 415);
+                    $appResponse->error((string) $errors);
+                    
+                    return new JsonResponse($appResponse->response(), 415);
                 }
 
                 $em->persist($File);
@@ -195,8 +179,6 @@ class DefaultController extends Controller
 
                 // Return whole data for accessing of file
                 $responseData = array(
-                    'status' => 'Success',
-                    'data' => array(
                           'id' => $File->getId(),
                           'file_id' => $File->getFileId(),
                           'name' => $File->getName(),
@@ -210,34 +192,29 @@ class DefaultController extends Controller
                           'download_url' => $this->generateUrl('download_file', array('file' => $File->getFileId()), true),
                           'open_url' => $this->generateUrl('open_file', array('file' => $File->getFileId()), true),
                           'delete_url' => $this->generateUrl('delete_file', array('file' => $File->getFileId()), true)
-                      ),
-                );
+                    );
             } else {
+                
                 $responseData = array(
-                    'status' => 'Success',
-                    'data' => array(
                           'id' => $File->getId(),
                           'file_id' => $File->getFileId(),
                           'name' => $File->getName(),
                           'type' => $File->getType(),
                           'size' => $File->getSize()
-                      ),
-                );
+                        );
             }
 
             $responseCode = 200;
+            $appResponse->success();
+            $appResponse->data($responseData);
 
         } else {
 
-            $responseData = array(
-                    'status' => 'Error',
-                    'message' => var_export($Form->getErrorsAsString(), true),
-                );
-
             $responseCode = 415;
+            $appResponse->error(var_export($Form->getErrorsAsString(), true));
         }
-
-        return new JsonResponse($responseData, $responseCode);
+        
+        return new JsonResponse($appResponse->response(), $responseCode);
     }
 
     /**
@@ -312,32 +289,25 @@ class DefaultController extends Controller
      */
     public function deleteAction(Request $request)
     {
+        $appResponse = new AppResponse();
+
         $File = $this->getDoctrine()->getRepository('EnginewerkEmissionBundle:File')->findOneBy(array('fileId' => $request->get('file')));
 
         if (!$File) {
-            $responseData = array(
-                    'status' => 'Error',
-                    'message' => 'File not found'
-                );
-
+            $appResponse->error('File not found');
         } else {
-
             try {
                 $em = $this->getDoctrine()->getManager();
                 $em->remove($File);
                 $em->flush();
 
-                $responseData = array(
-                    'status' => 'Success',
-                );
+                $appResponse->success();
 
             } catch (Exception $e) {
-                $responseData = array(
-                    'status' => 'Error',
-                );
+                $appResponse->error('Can`t remove File');
             }
         }
 
-        return new JsonResponse($responseData, 200);
+        return new JsonResponse($appResponse->response(), 200);
     }
 }
