@@ -151,9 +151,6 @@ class DefaultController extends Controller
 
                 $errors = $Validator->validate($File);
                 if (count($errors)) {
-                     $headers = array(
-                            'Content-Type' => 'application/json'
-                      );
 
                     $responseData = array(
                         'status' => 'Error',
