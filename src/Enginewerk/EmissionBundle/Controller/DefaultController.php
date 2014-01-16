@@ -7,6 +7,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 use Enginewerk\EmissionBundle\Entity\File;
 use Enginewerk\EmissionBundle\Entity\FileBlob;
@@ -41,10 +42,6 @@ class DefaultController extends Controller
      */
     public function uploadChunkTestAction(Request $request)
     {
-        $headers = array(
-              'Content-Type' => 'application/json'
-        );
-
         // Find out if we have this File already
         $File = $this->getDoctrine()
                 ->getRepository('EnginewerkEmissionBundle:File')
@@ -55,23 +52,23 @@ class DefaultController extends Controller
 
         if (!$File) {
 
-            $jsonData = json_encode(array(
+            $jsonData = array(
                     'status' => 'Error',
                     'message' => 'File "' . $request->get('resumableFilename') . '" , not found'
-                ));
+                );
 
-            return new Response($jsonData, 306, $headers);
+            return new JsonResponse($jsonData, 306);
         } else {
 
             // Check if uploaded chunks are same size as currently delcared
             if ($File->getFileBlobs()->first()->getSize() != $request->get('resumableCurrentChunkSize')) {
 
-                $jsonData = json_encode(array(
+                $jsonData = array(
                     'status' => 'Error',
                     'message' => 'Chunk size differ from previously uploaded'
-                ));
+                );
 
-                return new Response($jsonData, 415, $headers);
+                return new JsonResponse($jsonData, 415);
             }
         }
 
@@ -85,20 +82,20 @@ class DefaultController extends Controller
 
         if (!$FileBlob) {
 
-            $jsonData = json_encode(array(
+            $jsonData = array(
                     'status' => 'Error',
                     'message' => 'Blob not found'
-                ));
+                );
 
-            return new Response($jsonData, 306, $headers);
+            return new JsonResponse($jsonData, 306);
         } else {
 
-            $jsonData = json_encode(array(
+            $jsonData = array(
                     'status' => 'Info',
                     'message' => 'Blob found'
-                ));
+                );
 
-            return new Response($jsonData, 200, $headers);
+            return new JsonResponse($jsonData, 200);
         }
     }
 
@@ -158,17 +155,16 @@ class DefaultController extends Controller
                             'Content-Type' => 'application/json'
                       );
 
-                    $jsonData = json_encode(array(
+                    $jsonData = array(
                         'status' => 'Error',
                         'message' => (string) $errors,
-                    ));
+                    );
 
-                    return new Response($jsonData, 415, $headers);
+                    return new JsonResponse($jsonData, 415);
                 }
 
                 $em->persist($File);
             }
-            ///
 
             // Find out if we have this FileBlob
             $FileBlobInStorage = $this->getDoctrine()
@@ -201,7 +197,7 @@ class DefaultController extends Controller
                 $em->flush();
 
                 // Return whole data for accessing of file
-                $jsonData = json_encode(array(
+                $jsonData = array(
                     'status' => 'Success',
                     'data' => array(
                           'id' => $File->getId(),
@@ -218,9 +214,9 @@ class DefaultController extends Controller
                           'open_url' => $this->generateUrl('open_file', array('file' => $File->getFileId()), true),
                           'delete_url' => $this->generateUrl('delete_file', array('file' => $File->getFileId()), true)
                       ),
-                ));
+                );
             } else {
-                $jsonData = json_encode(array(
+                $jsonData = array(
                     'status' => 'Success',
                     'data' => array(
                           'id' => $File->getId(),
@@ -229,29 +225,22 @@ class DefaultController extends Controller
                           'type' => $File->getType(),
                           'size' => $File->getSize()
                       ),
-                ));
+                );
             }
 
             $responseCode = 200;
 
         } else {
 
-            $jsonData = json_encode(array(
+            $jsonData = array(
                     'status' => 'Error',
                     'message' => var_export($Form->getErrorsAsString(), true),
-                ));
+                );
 
             $responseCode = 415;
         }
 
-        $headers = array(
-                'Content-Type' => 'application/json'
-          );
-
-        $response = new Response($jsonData, $responseCode, $headers);
-
-        return $response;
-
+        return new JsonResponse($jsonData, $responseCode);
     }
 
     /**
@@ -329,10 +318,10 @@ class DefaultController extends Controller
         $File = $this->getDoctrine()->getRepository('EnginewerkEmissionBundle:File')->findOneBy(array('fileId' => $request->get('file')));
 
         if (!$File) {
-            $jsonData = json_encode(array(
+            $jsonData = array(
                     'status' => 'Error',
                     'message' => 'File not found'
-                ));
+                );
 
         } else {
 
@@ -341,23 +330,17 @@ class DefaultController extends Controller
                 $em->remove($File);
                 $em->flush();
 
-                $jsonData = json_encode(array(
+                $jsonData = array(
                     'status' => 'Success',
-                ));
+                );
 
             } catch (Exception $e) {
-                $jsonData = json_encode(array(
+                $jsonData = array(
                     'status' => 'Error',
-                ));
+                );
             }
         }
 
-        $headers = array(
-                'Content-Type' => 'application/json'
-          );
-
-        $response = new Response($jsonData, 200, $headers);
-
-        return $response;
+        return new JsonResponse($jsonData, 200);
     }
 }
