@@ -10,6 +10,7 @@
 <script src="{{ asset('bundles/enginewerkemission/js/vendor/SparkMD5/spark-md5.min.js') }}"></script>
 <script src="{{ asset('bundles/enginewerkemission/js/vendor/jStorage/jstorage.js') }}"></script>
 <script src="{{ asset('bundles/enginewerkemission/js/pasteImageFromClipboard.js') }}"></script>
+<script src="{{ asset('bundles/enginewerkemission/js/app-response.js') }}"></script>
 {% endblock %}
 
 {% block stylesheets %}
@@ -80,7 +81,7 @@
         </div>
     </div>
 
-    <script type="text/javascript">
+    <script type="text/javascript">        
         var url = '{{ path('upload_file') }}'
         var urlChunkTest = '{{ path('upload_file_chunk_test') }}'
         var maxChunkSize = ({% if max_chunk_size > 16 %}16{% else %}{{max_chunk_size}}{% endif %} * 1024 * 1024); // to MB
@@ -180,23 +181,21 @@
             cursorBusy();
         });
         
-        r.on('fileSuccess', function(Resumable, response) {
+        r.on('fileSuccess', function(Resumable, jsonTextResponse) {
 
             log('Total files: ' + r.files.length);
             
             try {
-                responseObject = jQuery.parseJSON(response);
-                var AppResponse = responseObject.response;
+                var app = new AppResponse(null, jsonTextResponse);
             } catch (error) {
                 log('JSON parse error: ' + error);
-                log(response);
+                log(jsonTextResponse);
             }
-
-            if(AppResponse) {
-                if(AppResponse.status === 'Success') {
-                    if(AppResponse.data) {
-                        
-                        var file = AppResponse.data;
+            
+            if(app) {
+                if(app.status.isSuccess()) {
+                    if(app.data) {
+                        var file = app.data;
                         var link = $('<a>')
                         .attr('target', '_blank')
                         .prop('href', file.download_url);
@@ -236,36 +235,32 @@
                              }, 100);
                         }
 
-                    } else {
-                        log("Chunk uploaded");
                     }
-
+                    
                 } else {
-                    if(AppResponse.status === 'Error') {
-                        if(AppResponse.message) {
-                            alert('Error occured: ' + rsp.message);
+                    if(app.status.isError()) {
+                        if(app.message) {
+                            alert('Error occured: ' + app.message);
                         } else {
                             alert('Unexpectred error occured');
                         }
-                    } else if (AppResponse.status === 'Info') { 
-                        info(AppResponse.status, AppResponse.message);
+                    } else if (app.message) { 
+                        alert(app.message);
                     } else {
                         alert('Unexpectred error occured');
                     }
-                    
-                    cursorNormal();
                 }
             } else {
                 alert('Unexpectred error occured');
-                cursorNormal();
-            } 
+            }
+            
+            cursorNormal();
         });
         
-        r.on('fileError', function(Resumable, response){
+        r.on('fileError', function(Resumable, jsonTextResponse){
             log('fileError');
             
-            responseObject = jQuery.parseJSON(response);
-            var AppResponse = responseObject.response;
+            var app = new AppResponse(null, jsonTextResponse);
             var fileDOMObject = $('#fhash-' + Resumable.uniqueIdentifier);
 
             fileDOMObject.fadeOut(200, function(){
@@ -273,7 +268,7 @@
             });
             
             cursorNormal();
-            alert(Resumable.file.fileName + ' : ' + AppResponse.message);
+            alert(Resumable.file.fileName + ' : ' + app.message);
         });
 
         r.on('progress', function() {
