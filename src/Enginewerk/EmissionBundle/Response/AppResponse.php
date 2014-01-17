@@ -38,17 +38,6 @@ class AppResponse
     }
     
     /**
-     * Sets status on Info and response message
-     * 
-     * @param type $message
-     */
-    public function info($message = null)
-    {
-        $this->message = $message;
-        $this->status = 'Info';
-    }
-    
-    /**
      * Sets response data
      * 
      * @param type $data

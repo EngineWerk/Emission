@@ -80,7 +80,7 @@ class DefaultController extends Controller
             return new JsonResponse($appResponse->response(), 306);
         } else {
 
-            $appResponse->info('Blob found');
+            $appResponse->success('Blob found');
             
             return new JsonResponse($appResponse->response(), 200);
         }
