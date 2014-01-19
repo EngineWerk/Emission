@@ -468,7 +468,7 @@
           case 2: break;
           }
         }
-        if($.getOpt('testChunks') && !$.tested) {
+        if($.getOpt('testChunks') && !$.tested && $.fileObjSize > ($.endByte - $.startByte)) {
           $.test();
           return;
         }
