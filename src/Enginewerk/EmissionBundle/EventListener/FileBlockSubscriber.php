@@ -5,14 +5,14 @@ namespace Enginewerk\EmissionBundle\EventListener;
 use Doctrine\Common\EventSubscriber;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 
-use Enginewerk\EmissionBundle\Entity\FileBlob;
+use Enginewerk\EmissionBundle\Entity\FileBlock;
 
 /**
- * FileBlobSubscriber
+ * FileBlockSubscriber
  *
  * @author Paweł Czyżewski <pawel.czyzewski@enginewerk.com>
  */
-class FileBlobSubscriber implements EventSubscriber
+class FileBlockSubscriber implements EventSubscriber
 {
     public function getSubscribedEvents()
     {
@@ -23,19 +23,19 @@ class FileBlobSubscriber implements EventSubscriber
     
     public function preRemove(LifecycleEventArgs $args)
     {
-        $FileBlob = $args->getEntity();
+        $FileBlock = $args->getEntity();
         
-        if ($FileBlob instanceof FileBlob) {
+        if ($FileBlock instanceof FileBlock) {
             $query = $args->getEntityManager()
-                    ->createQuery('SELECT COUNT(f.id) as totalNumber FROM EnginewerkEmissionBundle:FileBlob f WHERE f.fileHash = :fileHash')
-                    ->setParameter('fileHash', $FileBlob->getFileHash());
+                    ->createQuery('SELECT COUNT(f.id) as totalNumber FROM EnginewerkEmissionBundle:FileBlock f WHERE f.fileHash = :fileHash')
+                    ->setParameter('fileHash', $FileBlock->getFileHash());
             
             $totalNumber = $query->getSingleScalarResult();
 
             if(null === $totalNumber || 1 == $totalNumber) {
                 
                 $em = $args->getEntityManager();
-                $Block = $em->getRepository('EnginewerkEmissionBundle:BinaryBlock')->findOneByChecksum($FileBlob->getFileHash());
+                $Block = $em->getRepository('EnginewerkEmissionBundle:BinaryBlock')->findOneByChecksum($FileBlock->getFileHash());
                 $em->remove($Block);
                 $em->flush();
             }

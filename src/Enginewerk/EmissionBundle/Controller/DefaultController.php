@@ -8,7 +8,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
-use Enginewerk\EmissionBundle\Entity\FileBlob;
+use Enginewerk\EmissionBundle\Entity\FileBlock;
 use Enginewerk\EmissionBundle\Response\AppResponse;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
@@ -32,9 +32,9 @@ class DefaultController extends Controller
 
         $Files = $Query->getResult();
 
-        $FileBlob = new FileBlob();
-        $Form = $this->createFormBuilder($FileBlob)
-                ->add('fileBlob', null, array('mapped' => false))
+        $FileBlock = new FileBlock();
+        $Form = $this->createFormBuilder($FileBlock)
+                ->add('fileBlock', null, array('mapped' => false))
                 ->add('save', 'submit')
                 ->getForm();
 
@@ -73,14 +73,14 @@ class DefaultController extends Controller
             throw $this->createNotFoundException('File not found');
         }
 
-        $FileBlobs = $this->getDoctrine()
-                ->getRepository('EnginewerkEmissionBundle:FileBlob')
+        $FileBlocks = $this->getDoctrine()
+                ->getRepository('EnginewerkEmissionBundle:FileBlock')
                 ->findBy(array('fileId' => $File->getId()), array('rangeStart' => 'ASC'));
 
         $blocks = array();
-        foreach ($FileBlobs as $FileBlob) {
+        foreach ($FileBlocks as $FileBlock) {
             $Block = $this->getDoctrine()
-                ->getRepository('EnginewerkEmissionBundle:BinaryBlock')->findOneByChecksum($FileBlob->getFileHash());
+                ->getRepository('EnginewerkEmissionBundle:BinaryBlock')->findOneByChecksum($FileBlock->getFileHash());
 
             $filePath = $Block->getPathname();
 

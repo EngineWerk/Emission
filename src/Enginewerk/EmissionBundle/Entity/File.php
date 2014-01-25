@@ -111,9 +111,9 @@ class File
     protected $uploadedBy;
 
     /**
-     * @ORM\OneToMany(targetEntity="FileBlob", mappedBy="file", cascade={"remove"})
+     * @ORM\OneToMany(targetEntity="FileBlock", mappedBy="file", cascade={"remove"})
      */
-    protected $fileBlobs;
+    protected $fileBlocks;
 
     /**
      * @ORM\Column(name="isComplete", type="boolean", options={"default" = false})
@@ -123,7 +123,7 @@ class File
 
     public function __construct()
     {
-        $this->fileBlobs = new ArrayCollection();
+        $this->fileBlocks = new ArrayCollection();
     }
 
     /**
@@ -162,14 +162,11 @@ class File
     /**
      * Set fileHash.
      *
-     *
      * @param  string $fileHash
      * @return File
      */
     public function setFileHash($fileHash)
     {
-        throw new \Exception('"FileHash" value is immunable');
-
         $this->fileHash = $fileHash;
 
         return $this;
@@ -372,36 +369,36 @@ class File
     }
 
     /**
-     * Add fileBlobs
+     * Add fileBlocks
      *
-     * @param  \Enginewerk\EmissionBundle\Entity\FileBlob $fileBlobs
+     * @param  \Enginewerk\EmissionBundle\Entity\FileBlock $fileBlocks
      * @return File
      */
-    public function addFileBlob(\Enginewerk\EmissionBundle\Entity\FileBlob $fileBlobs)
+    public function addFileBlock(\Enginewerk\EmissionBundle\Entity\FileBlock $fileBlocks)
     {
-        $this->fileBlobs[] = $fileBlobs;
+        $this->fileBlocks[] = $fileBlocks;
 
         return $this;
     }
 
     /**
-     * Remove fileBlobs
+     * Remove fileBlocks
      *
-     * @param \Enginewerk\EmissionBundle\Entity\FileBlob $fileBlobs
+     * @param \Enginewerk\EmissionBundle\Entity\FileBlock $fileBlocks
      */
-    public function removeFileBlob(\Enginewerk\EmissionBundle\Entity\FileBlob $fileBlobs)
+    public function removeFileBlock(\Enginewerk\EmissionBundle\Entity\FileBlock $fileBlocks)
     {
-        $this->fileBlobs->removeElement($fileBlobs);
+        $this->fileBlocks->removeElement($fileBlocks);
     }
 
     /**
-     * Get fileBlobs
+     * Get fileBlocks
      *
      * @return \Doctrine\Common\Collections\Collection
      */
-    public function getFileBlobs()
+    public function getFileBlocks()
     {
-        return $this->fileBlobs;
+        return $this->fileBlocks;
     }
 
     /**

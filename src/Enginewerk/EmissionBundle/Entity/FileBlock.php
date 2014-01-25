@@ -6,12 +6,13 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * File
+ * FileBlock
+ * 
  * @ORM\Entity
  * @ORM\HasLifecycleCallbacks
- * @ORM\Table(name="file_blob")
+ * @ORM\Table(name="file_block")
  */
-class FileBlob
+class FileBlock
 {
     /**
      * @ORM\Id
@@ -65,7 +66,7 @@ class FileBlob
     protected $updatedAt;
 
     /**
-     * @ORM\ManyToOne(targetEntity="File", inversedBy="fileBlobs", cascade={"persist", "refresh"})
+     * @ORM\ManyToOne(targetEntity="File", inversedBy="FileBlocks", cascade={"persist", "refresh"})
      * @ORM\JoinColumn(name="fileId", referencedColumnName="id", onDelete="cascade")
      */
     protected $file;
@@ -114,7 +115,7 @@ class FileBlob
      * Set size
      *
      * @param  integer  $size
-     * @return FileBlob
+     * @return FileBlock
      */
     public function setSize($size)
     {
@@ -137,7 +138,7 @@ class FileBlob
      * Set createdAt
      *
      * @param  \DateTime $createdAt
-     * @return FileBlob
+     * @return FileBlock
      */
     public function setCreatedAt(\DateTime $createdAt)
     {
@@ -160,7 +161,7 @@ class FileBlob
      * Set updatedAt
      *
      * @param  \DateTime $updatedAt
-     * @return FileBlob
+     * @return FileBlock
      */
     public function setUpdatedAt(\DateTime $updatedAt)
     {
@@ -183,7 +184,7 @@ class FileBlob
      * Set rangeStart
      *
      * @param  integer  $rangeStart
-     * @return FileBlob
+     * @return FileBlock
      */
     public function setRangeStart($rangeStart)
     {
@@ -206,7 +207,7 @@ class FileBlob
      * Set rangeEnd
      *
      * @param  integer  $rangeEnd
-     * @return FileBlob
+     * @return FileBlock
      */
     public function setRangeEnd($rangeEnd)
     {
@@ -252,7 +253,7 @@ class FileBlob
      * Set fileId
      *
      * @param  integer  $fileId
-     * @return FileBlob
+     * @return FileBlock
      */
     public function setFileId($fileId)
     {

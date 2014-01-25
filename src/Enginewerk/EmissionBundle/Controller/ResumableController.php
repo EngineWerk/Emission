@@ -8,7 +8,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 use Enginewerk\EmissionBundle\Entity\File;
-use Enginewerk\EmissionBundle\Entity\FileBlob;
+use Enginewerk\EmissionBundle\Entity\FileBlock;
 use Enginewerk\EmissionBundle\Response\AppResponse;
 
 /**
@@ -41,22 +41,22 @@ class ResumableController extends Controller
         } else {
 
             // Check if uploaded chunks are same size as currently delcared
-            if ($File->getFileBlobs()->first()->getSize() != $request->get('resumableCurrentChunkSize')) {
+            if ($File->getFileBlocks()->first()->getSize() != $request->get('resumableCurrentChunkSize')) {
                 $appResponse->error('Chunk size differ from previously uploaded');
 
                 return new JsonResponse($appResponse->response(), 415);
             }
         }
 
-        // Find out if we have this FileBlob already
-        $FileBlob = $this->getDoctrine()
-                ->getRepository('EnginewerkEmissionBundle:FileBlob')
+        // Find out if we have this FileBlock already
+        $FileBlock = $this->getDoctrine()
+                ->getRepository('EnginewerkEmissionBundle:FileBlock')
                 ->findOneBy(array(
                     'fileId' => $File->getId(),
                     'rangeStart' => $request->get('resumableCurrentStartByte'),
                     'rangeEnd' => $request->get('resumableCurrentEndByte')));
 
-        if (!$FileBlob) {
+        if (!$FileBlock) {
 
             $appResponse->error('Blob not found');
 
@@ -84,10 +84,10 @@ class ResumableController extends Controller
 
         $request->request->set('form', $formRequest);
 
-        $FileBlob = new FileBlob();
+        $FileBlock = new FileBlock();
 
-        $Form = $this->createFormBuilder($FileBlob)
-                ->add('fileBlob', 'file', array('mapped' => false))
+        $Form = $this->createFormBuilder($FileBlock)
+                ->add('fileBlock', 'file', array('mapped' => false))
                 ->add('rangeStart', 'text')
                 ->add('rangeEnd', 'text')
                 ->getForm();
@@ -111,8 +111,8 @@ class ResumableController extends Controller
                 $File = new File();
 
                 $File->setName($request->request->get('resumableFilename'));
-                $File->setExtensionName($Form->get('fileBlob')->getData()->guessExtension());
-                $File->setType($Form->get('fileBlob')->getData()->getMimeType());
+                $File->setExtensionName($Form->get('fileBlock')->getData()->guessExtension());
+                $File->setType($Form->get('fileBlock')->getData()->getMimeType());
                 $File->setSize($request->request->get('resumableTotalSize'));
                 $File->setChecksum($request->request->get('resumableIdentifier'));
                 $File->setIsComplete(false);
@@ -130,46 +130,46 @@ class ResumableController extends Controller
                 $em->persist($File);
             }
 
-            // Find out if we have this FileBlob
-            $FileBlobInStorage = $this->getDoctrine()
-                    ->getRepository('EnginewerkEmissionBundle:FileBlob')
+            // Find out if we have this FileBlock
+            $FileBlockInStorage = $this->getDoctrine()
+                    ->getRepository('EnginewerkEmissionBundle:FileBlock')
                     ->findOneBy(array(
                         'fileId' => $File->getId(),
                         'rangeStart' => $formRequest['rangeStart'],
                         'rangeEnd' => $formRequest['rangeEnd']));
 
             // No ? Lets create one
-            if (null === $FileBlobInStorage) {
+            if (null === $FileBlockInStorage) {
 
                 $blockRepository = $this->getDoctrine()->getRepository('EnginewerkEmissionBundle:BinaryBlock');
 
-                $uploadedFile = $Form->get('fileBlob')->getData();
+                $uploadedFile = $Form->get('fileBlock')->getData();
                 $block = $blockRepository->storeUploadedFile($uploadedFile);
 
-                $FileBlob->setFile($File);
+                $FileBlock->setFile($File);
 
                 $createdAt = new \DateTime();
                 $createdAt->setTimestamp(time());
 
-                if (null === $FileBlob->getRangeStart()) {
-                    $FileBlob->setRangeStart(0);
-                    $FileBlob->setRangeEnd($block->getSize());
+                if (null === $FileBlock->getRangeStart()) {
+                    $FileBlock->setRangeStart(0);
+                    $FileBlock->setRangeEnd($block->getSize());
                 }
 
-                $FileBlob->setFileHash($block->getChecksum());
-                $FileBlob->setSize($block->getSize());
+                $FileBlock->setFileHash($block->getChecksum());
+                $FileBlock->setSize($block->getSize());
 
-                $FileBlob->setUpdatedAt($createdAt);
-                $FileBlob->setCreatedAt($createdAt);
+                $FileBlock->setUpdatedAt($createdAt);
+                $FileBlock->setCreatedAt($createdAt);
 
-                $em->persist($FileBlob);
+                $em->persist($FileBlock);
                 $em->flush();
             }
 
             // Do we have whole file?
             // Lets make sum for all renageEnd and check against declared File size
             $query = $this->getDoctrine()->getManager()
-                    ->createQuery('SELECT SUM(f.size) as totalSize FROM EnginewerkEmissionBundle:FileBlob f WHERE f.fileId = :fileId')
+                    ->createQuery('SELECT SUM(f.size) as totalSize FROM EnginewerkEmissionBundle:FileBlock f WHERE f.fileId = :fileId')
                     ->setParameter('fileId', $File->getId());
 
             $totalSize = $query->getSingleScalarResult();
