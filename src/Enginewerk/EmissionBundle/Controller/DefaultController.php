@@ -12,6 +12,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Enginewerk\EmissionBundle\Entity\File;
 use Enginewerk\EmissionBundle\Entity\FileBlob;
 use Enginewerk\EmissionBundle\Response\AppResponse;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 /**
  * DefaultController
@@ -88,7 +89,7 @@ class DefaultController extends Controller
 
         // TODO Download set_time_limit
         set_time_limit(0);
-        $response = new Response();
+        $response = new StreamedResponse();
 
         $response->headers->set('Content-Type', $File->getType());
         $response->headers->set('Content-Length', $File->getSize());
@@ -100,12 +101,14 @@ class DefaultController extends Controller
 
         $response->sendHeaders();
 
-        foreach ($FileBlobs as $FileBlob) {
-            $filePath = $FileBlob->getAbsolutePath();
-            readfile($filePath);
-        }
-
-        ob_end_flush();
+        $response->setCallback(function() use ($FileBlobs) {
+            foreach($FileBlobs as $FileBlob) {
+                $filePath = $FileBlob->getAbsolutePath();
+                readfile($filePath);
+            }
+        });
+        
+        return $response;
     }
 
     /**
