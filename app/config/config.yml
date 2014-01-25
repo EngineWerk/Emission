@@ -91,12 +91,7 @@ services:
     session.handler.pdo:
         class:     Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler
         arguments: ["@pdo", "%pdo.db_options%"]   
-        
-    enginewerk.twig.enginewerk_extension:
-        class: Enginewerk\EmissionBundle\Twig\EmissionExtension
-        tags:
-            - { name: twig.extension }        
-        
+              
 hwi_oauth:
     firewall_name: secured_area
     resource_owners:

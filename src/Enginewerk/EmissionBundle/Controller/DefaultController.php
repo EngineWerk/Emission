@@ -6,12 +6,11 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
-use Enginewerk\EmissionBundle\Entity\File;
 use Enginewerk\EmissionBundle\Entity\FileBlob;
 use Enginewerk\EmissionBundle\Response\AppResponse;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 /**
  * DefaultController
@@ -35,7 +34,7 @@ class DefaultController extends Controller
 
         $FileBlob = new FileBlob();
         $Form = $this->createFormBuilder($FileBlob)
-                ->add('fileBlob')
+                ->add('fileBlob', null, array('mapped' => false))
                 ->add('save', 'submit')
                 ->getForm();
 
@@ -78,17 +77,24 @@ class DefaultController extends Controller
                 ->getRepository('EnginewerkEmissionBundle:FileBlob')
                 ->findBy(array('fileId' => $File->getId()), array('rangeStart' => 'ASC'));
 
+        $blocks = array();
         foreach ($FileBlobs as $FileBlob) {
-            $filePath = $FileBlob->getAbsolutePath();
+            $Block = $this->getDoctrine()
+                ->getRepository('EnginewerkEmissionBundle:BinaryBlock')->findOneByChecksum($FileBlob->getFileHash());
+
+            $filePath = $Block->getPathname();
 
             if (!file_exists($filePath) || is_dir($filePath)) {
                 throw $this->createNotFoundException('File doesn`t exists');
             }
+
+            $blocks[] = $filePath;
         }
 
         // TODO Download set_time_limit
         set_time_limit(0);
-        $response = new Response();
+
+        $response = new StreamedResponse();
 
         $response->headers->set('Content-Type', $File->getType());
         $response->headers->set('Content-Length', $File->getSize());
@@ -100,12 +106,13 @@ class DefaultController extends Controller
 
         $response->sendHeaders();
 
-        foreach ($FileBlobs as $FileBlob) {
-            $filePath = $FileBlob->getAbsolutePath();
-            readfile($filePath);
-        }
+        $response->setCallback(function () use ($blocks) {
+            foreach ($blocks as $blockFilePath) {
+                readfile($blockFilePath);
+            }
+        });
 
-        ob_end_flush();
+        return $response;
     }
 
     /**

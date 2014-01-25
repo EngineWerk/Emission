@@ -25,7 +25,7 @@ class ResumableController extends Controller
     public function uploadChunkTestAction(Request $request)
     {
         $appResponse = new AppResponse();
-        
+
         // Find out if we have this File already
         $File = $this->getDoctrine()
                 ->getRepository('EnginewerkEmissionBundle:File')
@@ -36,12 +36,14 @@ class ResumableController extends Controller
 
         if (!$File) {
             $appResponse->error('File "' . $request->get('resumableFilename') . '" , not found');
+
             return new JsonResponse($appResponse->response(), 306);
         } else {
 
             // Check if uploaded chunks are same size as currently delcared
             if ($File->getFileBlobs()->first()->getSize() != $request->get('resumableCurrentChunkSize')) {
                 $appResponse->error('Chunk size differ from previously uploaded');
+
                 return new JsonResponse($appResponse->response(), 415);
             }
         }
@@ -62,7 +64,7 @@ class ResumableController extends Controller
         } else {
 
             $appResponse->success('Blob found');
-            
+
             return new JsonResponse($appResponse->response(), 200);
         }
     }
@@ -85,7 +87,7 @@ class ResumableController extends Controller
         $FileBlob = new FileBlob();
 
         $Form = $this->createFormBuilder($FileBlob)
-                ->add('fileBlob', 'file')
+                ->add('fileBlob', 'file', array('mapped' => false))
                 ->add('rangeStart', 'text')
                 ->add('rangeEnd', 'text')
                 ->getForm();
@@ -121,7 +123,7 @@ class ResumableController extends Controller
                 $errors = $Validator->validate($File);
                 if (count($errors)) {
                     $appResponse->error((string) $errors);
-                    
+
                     return new JsonResponse($appResponse->response(), 415);
                 }
 
@@ -138,7 +140,28 @@ class ResumableController extends Controller
 
             // No ? Lets create one
             if (null === $FileBlobInStorage) {
+
+                $blockRepository = $this->getDoctrine()->getRepository('EnginewerkEmissionBundle:BinaryBlock');
+
+                $uploadedFile = $Form->get('fileBlob')->getData();
+                $block = $blockRepository->storeUploadedFile($uploadedFile);
+
                 $FileBlob->setFile($File);
+
+                $createdAt = new \DateTime();
+                $createdAt->setTimestamp(time());
+
+                if (null === $FileBlob->getRangeStart()) {
+                    $FileBlob->setRangeStart(0);
+                    $FileBlob->setRangeEnd($block->getSize());
+                }
+
+                $FileBlob->setFileHash($block->getChecksum());
+                $FileBlob->setSize($block->getSize());
+
+                $FileBlob->setUpdatedAt($createdAt);
+                $FileBlob->setCreatedAt($createdAt);
+
                 $em->persist($FileBlob);
                 $em->flush();
             }
@@ -175,7 +198,7 @@ class ResumableController extends Controller
                           'delete_url' => $this->generateUrl('delete_file', array('file' => $File->getFileId()), true)
                     );
             } else {
-                
+
                 $responseData = array(
                           'id' => $File->getId(),
                           'file_id' => $File->getFileId(),
@@ -194,7 +217,7 @@ class ResumableController extends Controller
             $responseCode = 415;
             $appResponse->error(var_export($Form->getErrorsAsString(), true));
         }
-        
+
         return new JsonResponse($appResponse->response(), $responseCode);
     }
 }

@@ -24,7 +24,7 @@ class AppKernel extends Kernel
             new Enginewerk\EmissionBundle\EnginewerkEmissionBundle(),
             new HWI\Bundle\OAuthBundle\HWIOAuthBundle(),
             
-            new Enginewerk\OAuthBundle\OAuthBundle()
+            new Enginewerk\OAuthBundle\OAuthBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {
