@@ -143,4 +143,39 @@ class DefaultController extends Controller
 
         return new JsonResponse($appResponse->response(), 200);
     }
+
+    /**
+     * @Route("/{file}/expiration/{date}", requirements={"file"}, defaults={"date" = "never"}, name="file_expiration_date")
+     * @param \Symfony\Component\HttpFoundation\Request $request
+     */
+    public function fileExpirationDateAction(Request $request)
+    {
+        $appResponse = new AppResponse();
+
+        $File = $this->getDoctrine()->getRepository('EnginewerkEmissionBundle:File')->findOneBy(array('fileId' => $request->get('file')));
+
+        if (!$File) {
+            $appResponse->error('File not found');
+        } else {
+            if ('never' == $request->get('date')) {
+                $expirationDate = null;
+            } else {
+                $expirationDate = new \DateTime($request->get('date'));
+            }
+
+            $em = $this->getDoctrine()->getManager();
+            $File->setExpirationDate($expirationDate);
+
+            try {
+                $em->flush();
+                $appResponse->success();
+                
+            } catch (Exception $ex) {
+                $appResponse->error('Can`t change expiration date');
+                $this->get('logger')->error(sprintf('Can`t change expiration date of File #%s. %s', $File->getId(), $ex->getMessage()));
+            }
+        }
+
+        return new JsonResponse($appResponse->response(), 200);
+    }
 }

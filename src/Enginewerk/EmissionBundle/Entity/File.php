@@ -83,7 +83,7 @@ class File
     protected $size;
 
     /**
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(type="datetime", nullable=true)
      * @var \DateTime
      */
     protected $expirationDate;
@@ -257,7 +257,7 @@ class File
      * @param  \DateTime $expirationDate
      * @return File
      */
-    public function setExpirationDate(\DateTime $expirationDate)
+    public function setExpirationDate(\DateTime $expirationDate = null)
     {
         $this->expirationDate = $expirationDate;
 
