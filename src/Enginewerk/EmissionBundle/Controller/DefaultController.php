@@ -135,8 +135,9 @@ class DefaultController extends Controller
 
                 $appResponse->success();
 
-            } catch (Exception $e) {
+            } catch (Exception $ex) {
                 $appResponse->error('Can`t remove File');
+                $this->get('logger')->error(sprintf('Can`t remove File #%s. %s', $File->getId(), $ex->getMessage()));
             }
         }
 
