@@ -14,6 +14,7 @@ use Enginewerk\EmissionBundle\Generator\Hash;
  * @ORM\Entity
  * @ORM\HasLifecycleCallbacks
  * @ORM\Table(name="file")
+ * @ORM\Entity(repositoryClass="Enginewerk\EmissionBundle\Entity\FileRepository")
  */
 class File
 {
