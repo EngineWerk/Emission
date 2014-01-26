@@ -28,13 +28,20 @@ class BinaryBlockSubscriber implements EventSubscriber
     
     public function removeUpload(LifecycleEventArgs $args)
     {
-        $Block = $args->getEntity();
+        $block = $args->getEntity();
         
-        if ($Block instanceof BinaryBlock) {
-            $filePath = $Block->getPathname();
+        if ($block instanceof BinaryBlock) {
+            $this->removeBinaryBlock($block);
+        }
+    }
+    
+    private function removeBinaryBlock(BinaryBlock $block)
+    {
+        $filePath = $block->getPathname();
 
-            if(file_exists($filePath)) {
-                unlink($filePath);
+        if(file_exists($filePath)) {
+            if(false === unlink($filePath)) {
+                throw new \Exception(sprintf('Can`t unlink file "%s"', $filePath));
             }
         }
     }
