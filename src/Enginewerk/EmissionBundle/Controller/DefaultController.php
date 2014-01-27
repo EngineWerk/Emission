@@ -7,10 +7,11 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
-
-use Enginewerk\EmissionBundle\Entity\FileBlock;
-use Enginewerk\EmissionBundle\Response\AppResponse;
 use Symfony\Component\HttpFoundation\StreamedResponse;
+
+use Enginewerk\EmissionBundle\Response\AppResponse;
+use Enginewerk\EmissionBundle\Form\Type\ResumableFileType;
+use Enginewerk\EmissionBundle\Form\Type\ResumableFileBlockType;
 
 /**
  * DefaultController
@@ -32,13 +33,10 @@ class DefaultController extends Controller
 
         $Files = $Query->getResult();
 
-        $FileBlock = new FileBlock();
-        $Form = $this->createFormBuilder($FileBlock)
-                ->add('fileBlock', null, array('mapped' => false))
-                ->add('save', 'submit')
-                ->getForm();
+        $fileBlockForm = $this->createForm(new ResumableFileBlockType());
+        $fileForm = $this->createForm(new ResumableFileType());
 
-        return array('Files' => $Files, 'Form' => $Form->createView());
+        return array('Files' => $Files, 'FileBlockForm' => $fileBlockForm->createView(), 'FileForm' => $fileForm->createView());
     }
 
     /**
@@ -103,8 +101,6 @@ class DefaultController extends Controller
         if ($request->get('dl')) {
             $response->headers->set('Content-Disposition', 'attachment; filename="' . $File->getName().'"');
         }
-
-        $response->sendHeaders();
 
         $response->setCallback(function () use ($blocks) {
             foreach ($blocks as $blockFilePath) {

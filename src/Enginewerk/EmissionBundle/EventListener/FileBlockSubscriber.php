@@ -17,7 +17,8 @@ class FileBlockSubscriber implements EventSubscriber
     public function getSubscribedEvents()
     {
         return array(
-            'preRemove'
+            'preRemove',
+            'prePersist'
         );
     }
     
@@ -39,6 +40,17 @@ class FileBlockSubscriber implements EventSubscriber
                 $em->remove($Block);
                 $em->flush();
             }
+        }
+    }
+    
+    public function prePersist(LifecycleEventArgs $args)
+    {
+        $fileBlock = $args->getEntity();
+        
+        if ($fileBlock instanceof FileBlock) {
+            $createdAt = new \DateTime('now');
+            $fileBlock->setUpdatedAt($createdAt);
+            $fileBlock->setCreatedAt($createdAt);
         }
     }
 }

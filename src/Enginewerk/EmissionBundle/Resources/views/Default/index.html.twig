@@ -83,7 +83,7 @@
         var url = '{{ path('upload_file') }}'
         var urlChunkTest = '{{ path('upload_file_chunk_test') }}'
         var maxChunkSize = ({% if max_chunk_size > 16 %}16{% else %}{{max_chunk_size}}{% endif %} * 1024 * 1024); // to MB
-        var postdata = {'form[_token]' : '{{Form._token.vars.value}}'};
+        var postdata = {'_tokenFile' : '{{FileForm._token.vars.value}}', '_tokenFileBlock' : '{{FileBlockForm._token.vars.value}}'};
         
         var pendingFilesNumber = 0;
         
@@ -97,7 +97,7 @@
             forceChunkSize : true,
             testChunks : true,
             query: postdata,
-            fileParameterName : 'form[fileBlock]',
+            fileParameterName : 'form[uploadedFile]',
         });
 
 
@@ -123,6 +123,9 @@
             frOnload = function(e) {
                 log("read chunk");
                 spark.append(e.target.result);                 // append array buffer
+                log("read chunk-x");
+                var md5 = SparkMD5.ArrayBuffer.hash(e.target.result);
+                log("read chunk " + md5);
                 currentChunk++;
 
                 if (currentChunk < chunks) {
@@ -266,7 +269,8 @@
             });
             
             cursorNormal();
-            alert(Resumable.file.fileName + ' : ' + app.message);
+            //log(Resumable.file);
+            alert('File: ' + Resumable.file.name + "\nMessage:\n\n" + app.message);
         });
 
         r.on('progress', function() {
@@ -318,6 +322,42 @@
             
         });
         
+        var computeHashes = function (resumableFile, offset, fileReader) {
+        var round = resumableFile.resumableObj.getOpt('forceChunkSize') ? Math.ceil : Math.floor,
+          chunkSize = resumableFile.getOpt('chunkSize'),
+          numChunks = Math.max(round(resumableFile.file.size / chunkSize), 1),
+          forceChunkSize = resumableFile.getOpt('forceChunkSize'),
+          startByte,
+          endByte,
+          func = (resumableFile.file.slice ? 'slice' : (resumableFile.file.mozSlice ? 'mozSlice' : (resumableFile.file.webkitSlice ? 'webkitSlice' : 'slice'))),
+          bytes;
+
+        resumableFile.hashes = resumableFile.hashes || [];
+        fileReader = fileReader || new FileReader();
+        offset = offset || 0;
+
+        if (resumableFile.resumableObj.cancelled === false) {
+          startByte = offset * chunkSize;
+          endByte = Math.min(resumableFile.file.size, (offset + 1) * chunkSize);
+
+          if (resumableFile.file.size - endByte < chunkSize && !forceChunkSize) {
+            endByte = resumableFile.file.size;
+          }
+          bytes  = resumableFile.file[func](startByte, endByte);
+
+          fileReader.onloadend = function (e) {
+            var spark = SparkMD5.ArrayBuffer.hash(e.target.result);
+            console.log(spark);
+            resumableFile.hashes.push(spark);
+
+            if (numChunks > offset + 1) {
+              computeHashes(resumableFile, offset + 1, fileReader);
+            }
+          };
+
+          fileReader.readAsArrayBuffer(bytes);
+        }
+      };
     </script>
 {% endblock %}
 

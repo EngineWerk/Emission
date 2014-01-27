@@ -60,8 +60,6 @@ class File
      * Name for download name
      *
      * @ORM\Column(type="string", length=255)
-     * @Assert\NotBlank
-     * @Assert\Length(max="255")
      * @var string
      */
     protected $name;
@@ -70,8 +68,6 @@ class File
      * File MIME type
      *
      * @ORM\Column(type="string", length=128)
-     * @Assert\NotBlank
-     * @Assert\Length(min="3", max="128")
      * @var string
      */
     protected $type;
@@ -105,8 +101,6 @@ class File
      * File uploader name
      *
      * @ORM\Column(type="string", length=255)
-     * @Assert\NotBlank
-     * @Assert\Length(min="3", max="255")
      * @var string
      */
     protected $uploadedBy;
@@ -204,29 +198,6 @@ class File
     public function getName()
     {
         return $this->name;
-    }
-
-    /**
-     * Set extensionName
-     *
-     * @param  string $extensionName
-     * @return File
-     */
-    public function setExtensionName($extensionName)
-    {
-        $this->extensionName = $extensionName;
-
-        return $this;
-    }
-
-    /**
-     * Get extensionName
-     *
-     * @return string
-     */
-    public function getExtensionName()
-    {
-        return $this->extensionName;
     }
 
     /**
