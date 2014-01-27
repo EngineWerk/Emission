@@ -6,13 +6,11 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
-use Enginewerk\EmissionBundle\Entity\File;
 use Enginewerk\EmissionBundle\Entity\FileBlob;
 use Enginewerk\EmissionBundle\Response\AppResponse;
-use Symfony\Component\HttpFoundation\StreamedResponse;
 
 /**
  * DefaultController
@@ -90,7 +88,7 @@ class DefaultController extends Controller
         // TODO Download set_time_limit
         set_time_limit(0);
         $response = new StreamedResponse();
-
+        
         $response->headers->set('Content-Type', $File->getType());
         $response->headers->set('Content-Length', $File->getSize());
         $response->headers->set('Content-Transfer-Encoding', 'binary');
@@ -98,8 +96,6 @@ class DefaultController extends Controller
         if ($request->get('dl')) {
             $response->headers->set('Content-Disposition', 'attachment; filename="' . $File->getName().'"');
         }
-
-        $response->sendHeaders();
 
         $response->setCallback(function() use ($FileBlobs) {
             foreach($FileBlobs as $FileBlob) {
