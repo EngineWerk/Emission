@@ -3,12 +3,12 @@
 {% block title %}File list - Emission{% endblock %}
 
 {% block javascripts %}
-<script src="{{ asset('bundles/enginewerkemission/js/jquery-1.7.2.min.js') }}"></script>
-<script src="{{ asset('bundles/enginewerkemission/js/vendor/resumable/resumable.js') }}"></script>
+<script src="{{ asset('bundles/enginewerkemission/vendor/jQuery/jquery-1.7.2.min.js') }}"></script>
+<script src="{{ asset('bundles/enginewerkemission/vendor/Resumable/resumable.js') }}"></script>
+<script src="{{ asset('bundles/enginewerkemission/vendor/CryptoJS/md5.js') }}"></script>
+<script src="{{ asset('bundles/enginewerkemission/vendor/SparkMD5/spark-md5.min.js') }}"></script>
+<script src="{{ asset('bundles/enginewerkemission/vendor/jStorage/jstorage.js') }}"></script>
 <script src="{{ asset('bundles/enginewerkemission/js/base.js') }}"></script>
-<script src="{{ asset('bundles/enginewerkemission/js/md5.js') }}"></script>
-<script src="{{ asset('bundles/enginewerkemission/js/vendor/SparkMD5/spark-md5.min.js') }}"></script>
-<script src="{{ asset('bundles/enginewerkemission/js/vendor/jStorage/jstorage.js') }}"></script>
 <script src="{{ asset('bundles/enginewerkemission/js/pasteImageFromClipboard.js') }}"></script>
 <script src="{{ asset('bundles/enginewerkemission/js/app-response.js') }}"></script>
 <script src="{{ asset('bundles/enginewerkemission/js/resumableFileUpload.js') }}"></script>
@@ -16,7 +16,7 @@
 
 {% block stylesheets %}
 <link rel="stylesheet" href="{{ asset('bundles/enginewerkemission/css/style.css') }}">
-<link rel="stylesheet" href="{{ asset('bundles/enginewerkemission/css/resumable.css') }}">
+<link rel="stylesheet" href="{{ asset('bundles/enginewerkemission/vendor/Resumable/resumable.css') }}">
 {% endblock %}
 
 {% import '::macro.html.twig' as marco %}
