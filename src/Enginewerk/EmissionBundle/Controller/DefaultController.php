@@ -52,7 +52,7 @@ class DefaultController extends Controller
         $file = $this->getDoctrine()->getRepository('EnginewerkEmissionBundle:File')->findOneBy(array('fileId' => $request->get('file')));
 
         if (!$file) {
-            throw $this->createNotFoundException('File not found');
+            throw $this->createNotFoundException(sprintf('File #%s not found.', $request->get('file')));
         }
 
         return array('File' => $file);
@@ -70,7 +70,7 @@ class DefaultController extends Controller
         $file = $this->getDoctrine()->getRepository('EnginewerkEmissionBundle:File')->findOneBy(array('fileId' => $request->get('file')));
 
         if (null === $file) {
-            throw $this->createNotFoundException('File not found');
+            throw $this->createNotFoundException(sprintf('File #%s not found.', $request->get('file')));
         }
 
         $fileBlocks = $this->getDoctrine()
@@ -79,13 +79,14 @@ class DefaultController extends Controller
 
         $blocks = array();
         foreach ($fileBlocks as $fileBlock) {
-            $Block = $this->getDoctrine()
+            $block = $this->getDoctrine()
                 ->getRepository('EnginewerkEmissionBundle:BinaryBlock')->findOneByChecksum($fileBlock->getFileHash());
 
-            $filePath = $Block->getPathname();
+            $filePath = $block->getPathname();
 
             if (!file_exists($filePath) || is_dir($filePath)) {
-                throw $this->createNotFoundException('File doesn`t exists');
+                $this->get('logger')->error(sprintf('BinaryBlock #%s at path "%s" doesn`t exist.', $block->getId(), $block->getPathname()));
+                throw $this->createNotFoundException('File doesn`t exists.');
             }
 
             $blocks[] = $filePath;
@@ -125,7 +126,7 @@ class DefaultController extends Controller
         $file = $this->getDoctrine()->getRepository('EnginewerkEmissionBundle:File')->findOneBy(array('fileId' => $request->get('file')));
 
         if (!$file) {
-            $appResponse->error('File not found');
+            $appResponse->error(sprintf('File #%s not found.', $request->get('file')));
         } else {
             try {
                 $em = $this->getDoctrine()->getManager();
@@ -155,7 +156,7 @@ class DefaultController extends Controller
         $file = $this->getDoctrine()->getRepository('EnginewerkEmissionBundle:File')->findOneBy(array('fileId' => $request->get('file')));
 
         if (!$file) {
-            $appResponse->error('File not found');
+            $appResponse->error(sprintf('File #%s not found.', $request->get('file')));
         } else {
             if ('never' == $request->get('date')) {
                 $expirationDate = null;
