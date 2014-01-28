@@ -134,4 +134,47 @@ class DefaultController extends Controller
 
         return new JsonResponse($appResponse->response(), 200);
     }
+    
+    /**
+     * @Route("/replace/{replace}/with/{replacement}", name="replace_file")
+     */
+    public function replaceFileAction($replace, $replacement)
+    {
+        $appResponse = new AppResponse();
+
+        /** @var $repository \Enginewerk\EmissionBundle\Entity\FileRepository **/
+        $repository = $this->getDoctrine()->getRepository('EnginewerkEmissionBundle:File');
+
+        /** @var $replaceFile \Enginewerk\EmissionBundle\Entity\File **/
+        $replaceFile = $repository->findOneByFileId($replace);
+        if (!$replaceFile) {
+            throw $this->createNotFoundException(sprintf('File #%s not found.', $replace));
+        }
+
+        /** @var $replacementFile \Enginewerk\EmissionBundle\Entity\File **/
+        $replacementFile = $repository->findOneByFileId($replacement);
+        if (!$replacementFile) {
+            throw $this->createNotFoundException(sprintf('File #%s not found.', $replace));
+        }
+
+        if ($replaceFile->getUploadedBy() == $replacementFile->getUploadedBy()) {
+
+            $em = $this->getDoctrine()->getManager();
+            $replacementFile->setFileId($replaceFile->getFileId());
+            $em->remove($replaceFile);
+
+            try {
+                $em->flush();
+                $appResponse->success('File replaced.');
+            } catch (Exception $ex) {
+                $this->get('logger')->error(sprintf('Can`t replace file. [%s] %s', get_class($ex), $ex->getMessage()));
+                $appResponse->error(sprintf('Can`t replace file.'));
+            }
+
+        } else {
+            $appResponse->error(sprintf('Only owner can replace file.'));
+        }
+
+        return new JsonResponse($appResponse->response());
+    }
 }
