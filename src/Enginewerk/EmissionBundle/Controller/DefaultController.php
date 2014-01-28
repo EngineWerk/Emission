@@ -26,17 +26,18 @@ class DefaultController extends Controller
      */
     public function indexAction()
     {
-        $Repository = $this->getDoctrine()->getRepository('EnginewerkEmissionBundle:File');
-        $Query = $Repository->createQueryBuilder('f')
+        /** @var $repository \Enginewerk\EmissionBundle\Entity\FileRepository **/
+        $repository = $this->getDoctrine()->getRepository('EnginewerkEmissionBundle:File');
+        $query = $repository->createQueryBuilder('f')
                 ->orderBy('f.id', 'DESC')
                 ->getQuery();
 
-        $Files = $Query->getResult();
+        $files = $query->getResult();
 
         $fileBlockForm = $this->createForm(new ResumableFileBlockType());
         $fileForm = $this->createForm(new ResumableFileType());
 
-        return array('Files' => $Files, 'FileBlockForm' => $fileBlockForm->createView(), 'FileForm' => $fileForm->createView());
+        return array('Files' => $files, 'FileBlockForm' => $fileBlockForm->createView(), 'FileForm' => $fileForm->createView());
     }
 
     /**
@@ -48,13 +49,13 @@ class DefaultController extends Controller
      */
     public function showFileAction(Request $request)
     {
-        $File = $this->getDoctrine()->getRepository('EnginewerkEmissionBundle:File')->findOneBy(array('fileId' => $request->get('file')));
+        $file = $this->getDoctrine()->getRepository('EnginewerkEmissionBundle:File')->findOneBy(array('fileId' => $request->get('file')));
 
-        if (!$File) {
+        if (!$file) {
             throw $this->createNotFoundException('File not found');
         }
 
-        return array('File' => $File);
+        return array('File' => $file);
     }
 
     /**
@@ -65,20 +66,21 @@ class DefaultController extends Controller
      */
     public function downloadFileAction(Request $request)
     {
-        $File = $this->getDoctrine()->getRepository('EnginewerkEmissionBundle:File')->findOneBy(array('fileId' => $request->get('file')));
+        /** @var $file \Enginewerk\EmissionBundle\Entity\File **/
+        $file = $this->getDoctrine()->getRepository('EnginewerkEmissionBundle:File')->findOneBy(array('fileId' => $request->get('file')));
 
-        if (null === $File) {
+        if (null === $file) {
             throw $this->createNotFoundException('File not found');
         }
 
-        $FileBlocks = $this->getDoctrine()
+        $fileBlocks = $this->getDoctrine()
                 ->getRepository('EnginewerkEmissionBundle:FileBlock')
-                ->findBy(array('fileId' => $File->getId()), array('rangeStart' => 'ASC'));
+                ->findBy(array('fileId' => $file->getId()), array('rangeStart' => 'ASC'));
 
         $blocks = array();
-        foreach ($FileBlocks as $FileBlock) {
+        foreach ($fileBlocks as $fileBlock) {
             $Block = $this->getDoctrine()
-                ->getRepository('EnginewerkEmissionBundle:BinaryBlock')->findOneByChecksum($FileBlock->getFileHash());
+                ->getRepository('EnginewerkEmissionBundle:BinaryBlock')->findOneByChecksum($fileBlock->getFileHash());
 
             $filePath = $Block->getPathname();
 
@@ -94,12 +96,12 @@ class DefaultController extends Controller
 
         $response = new StreamedResponse();
 
-        $response->headers->set('Content-Type', $File->getType());
-        $response->headers->set('Content-Length', $File->getSize());
+        $response->headers->set('Content-Type', $file->getType());
+        $response->headers->set('Content-Length', $file->getSize());
         $response->headers->set('Content-Transfer-Encoding', 'binary');
 
         if ($request->get('dl')) {
-            $response->headers->set('Content-Disposition', 'attachment; filename="' . $File->getName().'"');
+            $response->headers->set('Content-Disposition', 'attachment; filename="' . $file->getName().'"');
         }
 
         $response->setCallback(function () use ($blocks) {
@@ -119,21 +121,22 @@ class DefaultController extends Controller
     {
         $appResponse = new AppResponse();
 
-        $File = $this->getDoctrine()->getRepository('EnginewerkEmissionBundle:File')->findOneBy(array('fileId' => $request->get('file')));
+        /** @var $file \Enginewerk\EmissionBundle\Entity\File **/
+        $file = $this->getDoctrine()->getRepository('EnginewerkEmissionBundle:File')->findOneBy(array('fileId' => $request->get('file')));
 
-        if (!$File) {
+        if (!$file) {
             $appResponse->error('File not found');
         } else {
             try {
                 $em = $this->getDoctrine()->getManager();
-                $em->remove($File);
+                $em->remove($file);
                 $em->flush();
 
                 $appResponse->success();
 
             } catch (Exception $ex) {
                 $appResponse->error('Can`t remove File');
-                $this->get('logger')->error(sprintf('Can`t remove File #%s. %s', $File->getId(), $ex->getMessage()));
+                $this->get('logger')->error(sprintf('Can`t remove File #%s. %s', $file->getId(), $ex->getMessage()));
             }
         }
 
@@ -148,9 +151,10 @@ class DefaultController extends Controller
     {
         $appResponse = new AppResponse();
 
-        $File = $this->getDoctrine()->getRepository('EnginewerkEmissionBundle:File')->findOneBy(array('fileId' => $request->get('file')));
+        /** @var $file \Enginewerk\EmissionBundle\Entity\File **/
+        $file = $this->getDoctrine()->getRepository('EnginewerkEmissionBundle:File')->findOneBy(array('fileId' => $request->get('file')));
 
-        if (!$File) {
+        if (!$file) {
             $appResponse->error('File not found');
         } else {
             if ('never' == $request->get('date')) {
@@ -160,7 +164,7 @@ class DefaultController extends Controller
             }
 
             $em = $this->getDoctrine()->getManager();
-            $File->setExpirationDate($expirationDate);
+            $file->setExpirationDate($expirationDate);
 
             try {
                 $em->flush();
@@ -168,7 +172,7 @@ class DefaultController extends Controller
 
             } catch (Exception $ex) {
                 $appResponse->error('Can`t change expiration date');
-                $this->get('logger')->error(sprintf('Can`t change expiration date of File #%s. %s', $File->getId(), $ex->getMessage()));
+                $this->get('logger')->error(sprintf('Can`t change expiration date of File #%s. %s', $file->getId(), $ex->getMessage()));
             }
         }
 
