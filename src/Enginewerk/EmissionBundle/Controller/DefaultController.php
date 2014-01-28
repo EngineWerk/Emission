@@ -9,8 +9,9 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
-use Enginewerk\EmissionBundle\Entity\FileBlob;
 use Enginewerk\EmissionBundle\Response\AppResponse;
+use Enginewerk\EmissionBundle\Form\Type\ResumableFileType;
+use Enginewerk\EmissionBundle\Form\Type\ResumableFileBlockType;
 
 /**
  * DefaultController
@@ -32,13 +33,10 @@ class DefaultController extends Controller
 
         $Files = $Query->getResult();
 
-        $FileBlob = new FileBlob();
-        $Form = $this->createFormBuilder($FileBlob)
-                ->add('fileBlob')
-                ->add('save', 'submit')
-                ->getForm();
+        $fileBlockForm = $this->createForm(new ResumableFileBlockType());
+        $fileForm = $this->createForm(new ResumableFileType());
 
-        return array('Files' => $Files, 'Form' => $Form->createView());
+        return array('Files' => $Files, 'FileBlockForm' => $fileBlockForm->createView(), 'FileForm' => $fileForm->createView());
     }
 
     /**
@@ -73,22 +71,29 @@ class DefaultController extends Controller
             throw $this->createNotFoundException('File not found');
         }
 
-        $FileBlobs = $this->getDoctrine()
-                ->getRepository('EnginewerkEmissionBundle:FileBlob')
+        $FileBlocks = $this->getDoctrine()
+                ->getRepository('EnginewerkEmissionBundle:FileBlock')
                 ->findBy(array('fileId' => $File->getId()), array('rangeStart' => 'ASC'));
 
-        foreach ($FileBlobs as $FileBlob) {
-            $filePath = $FileBlob->getAbsolutePath();
+        $blocks = array();
+        foreach ($FileBlocks as $FileBlock) {
+            $Block = $this->getDoctrine()
+                ->getRepository('EnginewerkEmissionBundle:BinaryBlock')->findOneByChecksum($FileBlock->getFileHash());
+
+            $filePath = $Block->getPathname();
 
             if (!file_exists($filePath) || is_dir($filePath)) {
                 throw $this->createNotFoundException('File doesn`t exists');
             }
+
+            $blocks[] = $filePath;
         }
 
         // TODO Download set_time_limit
         set_time_limit(0);
+
         $response = new StreamedResponse();
-        
+
         $response->headers->set('Content-Type', $File->getType());
         $response->headers->set('Content-Length', $File->getSize());
         $response->headers->set('Content-Transfer-Encoding', 'binary');
@@ -97,13 +102,12 @@ class DefaultController extends Controller
             $response->headers->set('Content-Disposition', 'attachment; filename="' . $File->getName().'"');
         }
 
-        $response->setCallback(function() use ($FileBlobs) {
-            foreach($FileBlobs as $FileBlob) {
-                $filePath = $FileBlob->getAbsolutePath();
-                readfile($filePath);
+        $response->setCallback(function () use ($blocks) {
+            foreach ($blocks as $blockFilePath) {
+                readfile($blockFilePath);
             }
         });
-        
+
         return $response;
     }
 
@@ -127,13 +131,50 @@ class DefaultController extends Controller
 
                 $appResponse->success();
 
-            } catch (Exception $e) {
+            } catch (Exception $ex) {
                 $appResponse->error('Can`t remove File');
+                $this->get('logger')->error(sprintf('Can`t remove File #%s. %s', $File->getId(), $ex->getMessage()));
             }
         }
 
         return new JsonResponse($appResponse->response(), 200);
     }
+
+    /**
+     * @Route("/{file}/expiration/{date}", requirements={"file"}, defaults={"date" = "never"}, name="file_expiration_date")
+     * @param \Symfony\Component\HttpFoundation\Request $request
+     */
+    public function fileExpirationDateAction(Request $request)
+    {
+        $appResponse = new AppResponse();
+
+        $File = $this->getDoctrine()->getRepository('EnginewerkEmissionBundle:File')->findOneBy(array('fileId' => $request->get('file')));
+
+        if (!$File) {
+            $appResponse->error('File not found');
+        } else {
+            if ('never' == $request->get('date')) {
+                $expirationDate = null;
+            } else {
+                $expirationDate = new \DateTime($request->get('date'));
+            }
+
+            $em = $this->getDoctrine()->getManager();
+            $File->setExpirationDate($expirationDate);
+
+            try {
+                $em->flush();
+                $appResponse->success();
+                
+            } catch (Exception $ex) {
+                $appResponse->error('Can`t change expiration date');
+                $this->get('logger')->error(sprintf('Can`t change expiration date of File #%s. %s', $File->getId(), $ex->getMessage()));
+            }
+        }
+
+        return new JsonResponse($appResponse->response(), 200);
+    }
+}
     
     /**
      * @Route("/replace/{replace}/with/{replacement}", name="replace_file")

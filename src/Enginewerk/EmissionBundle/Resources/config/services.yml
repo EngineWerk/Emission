@@ -1,0 +1,17 @@
+services:
+    enginewerk.twig.enginewerk_extension:
+        class: Enginewerk\EmissionBundle\Twig\EmissionExtension
+        tags:
+            - { name: twig.extension }   
+            
+    enginewerk_emission.file_block:
+        class: Enginewerk\EmissionBundle\EventListener\FileBlockSubscriber
+        tags:
+            - { name: doctrine.event_subscriber, connection: default }        
+
+    enginewerk_emission.binary_block:
+        class: Enginewerk\EmissionBundle\EventListener\BinaryBlockSubscriber
+        tags:
+            - { name: doctrine.event_subscriber, connection: default }             
+            
+          

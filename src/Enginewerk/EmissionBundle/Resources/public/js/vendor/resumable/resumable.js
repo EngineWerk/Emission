@@ -468,7 +468,7 @@
           case 2: break;
           }
         }
-        if($.getOpt('testChunks') && !$.tested && $.fileObjSize > ($.endByte - $.startByte)) {
+        if($.getOpt('testChunks') && !$.tested) {
           $.test();
           return;
         }
@@ -515,8 +515,8 @@
           resumableChunkNumber: $.offset+1,
           resumableChunkSize: $.getOpt('chunkSize'),
           resumableCurrentChunkSize: $.endByte - $.startByte,
-        resumableCurrentStartByte: $.startByte,
-        resumableCurrentEndByte: $.endByte,
+          resumableCurrentStartByte: $.startByte,
+          resumableCurrentEndByte: $.endByte,
           resumableTotalSize: $.fileObjSize,
           resumableType: $.fileObjType,
           resumableIdentifier: $.fileObj.uniqueIdentifier,
@@ -548,7 +548,7 @@
           // Add data from the query options
           data = new FormData();
           $h.each(query, function(k,v){
-            data.append(k,v);
+            data.append('form[' + k + ']',v);
           });
           data.append($.getOpt('fileParameterName'), bytes);
         }
