@@ -165,7 +165,7 @@ class DefaultController extends Controller
             try {
                 $em->flush();
                 $appResponse->success();
-                
+
             } catch (Exception $ex) {
                 $appResponse->error('Can`t change expiration date');
                 $this->get('logger')->error(sprintf('Can`t change expiration date of File #%s. %s', $File->getId(), $ex->getMessage()));
@@ -174,8 +174,7 @@ class DefaultController extends Controller
 
         return new JsonResponse($appResponse->response(), 200);
     }
-}
-    
+
     /**
      * @Route("/replace/{replace}/with/{replacement}", name="replace_file")
      */
