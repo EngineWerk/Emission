@@ -14,11 +14,11 @@
 {% block body %}
 <div id="files" class="files">
     <h2>{{ File.name }}</h2>
-    {% if File.checksum %}Checksum: {{ File.checksum }}<br />{% endif %}
-    Type: {{ File.type }}<br />
-    Size: {{ marco.bytesToSize(File.size) }}<br />
-    Click to 
-    <a href="{{ path('download_file', {'file': File.fileId}) }}">save</a> 
-    <a href="{{ path('open_file', {'file': File.fileId}) }}">open</a> 
+    {% if File.checksum %}{% trans %}gui.file.checksum{% endtrans %}: {{ File.checksum }}<br />{% endif %}
+    {% trans %}gui.file.type{% endtrans %}: {{ File.type }}<br />
+    {% trans %}gui.file.size{% endtrans %}: {{ marco.bytesToSize(File.size) }}<br />
+    {% trans %}gui.click_to{% endtrans %}
+    <a href="{{ path('download_file', {'file': File.fileId}) }}">{% trans %}gui.download_file{% endtrans %}</a> 
+    <a href="{{ path('open_file', {'file': File.fileId}) }}">{% trans %}gui.open_file_in_browser{% endtrans %}</a> 
 </div>
 {% endblock %}

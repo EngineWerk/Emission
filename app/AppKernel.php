@@ -23,7 +23,7 @@ class AppKernel extends Kernel
             new Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
             new Enginewerk\EmissionBundle\EnginewerkEmissionBundle(),
             new HWI\Bundle\OAuthBundle\HWIOAuthBundle(),
-            
+            new JMS\TranslationBundle\JMSTranslationBundle(),
             new Enginewerk\OAuthBundle\OAuthBundle(),
         );
 

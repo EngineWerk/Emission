@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+  <file source-language="pl" datatype="plaintext" original="file.ext">
+    <body>
+      <trans-unit id="ae41389880d5ab0647740e5d87164da3" resname="gui.ask_before_delete_file">
+        <source>gui.ask_before_delete_file</source>
+        <target>Pytaj przed usunięciem pliku</target>
+      </trans-unit>
+      <trans-unit id="3f381f1f4fdbfd080e90577f06597008" resname="gui.click_to">
+        <source>gui.click_to</source>
+        <target>Kliknij, aby</target>
+      </trans-unit>
+      <trans-unit id="1930f013f63102b7524ec96b2322e897" resname="gui.close_settings">
+        <source>gui.close_settings</source>
+        <target>Zamknij ustawienia</target>
+      </trans-unit>
+      <trans-unit id="d3701a386559561bda81a1641604da7b" resname="gui.download_file">
+        <source>gui.download_file</source>
+        <target>Pobierz</target>
+      </trans-unit>
+      <trans-unit id="b2947869977bf2d4332b2fde63b0be57" resname="gui.file.checksum">
+        <source>gui.file.checksum</source>
+        <target>Suma kontrolna</target>
+      </trans-unit>
+      <trans-unit id="8333b30c480be481263e676377ad86eb" resname="gui.file.size">
+        <source>gui.file.size</source>
+        <target>Rozmiar</target>
+      </trans-unit>
+      <trans-unit id="fcf5953474db10e1fbf67a544a94a02f" resname="gui.file.type">
+        <source>gui.file.type</source>
+        <target>Typ</target>
+      </trans-unit>
+      <trans-unit id="ac38f5ebd22a937144e9a59728650675" resname="gui.open_file_in_browser">
+        <source>gui.open_file_in_browser</source>
+        <target>Otwórz w przeglądarce</target>
+      </trans-unit>
+      <trans-unit id="6e43e27b4d17196b91db9d06d07df54f" resname="gui.open_settings">
+        <source>gui.open_settings</source>
+        <target>Otwórz ustawienia</target>
+      </trans-unit>
+      <trans-unit id="67e051df489245772111e5615f4fb002" resname="gui.prompt_for_pasted_image_name">
+        <source>gui.prompt_for_pasted_image_name</source>
+        <target>Pytaj o nazwę wklejanego pliku graficznego</target>
+      </trans-unit>
+      <trans-unit id="db143dc2e19e1c9778479f29aa3d5a39" resname="gui.remove_file">
+        <source>gui.remove_file</source>
+        <target>Usuń</target>
+      </trans-unit>
+      <trans-unit id="442467788c63bcdcae4d4bd52ea43266" resname="gui.show_file">
+        <source>gui.show_file</source>
+        <target>Pokaż</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>
