@@ -8,10 +8,6 @@ services:
         class: Enginewerk\EmissionBundle\EventListener\FileBlockSubscriber
         tags:
             - { name: doctrine.event_subscriber, connection: default }        
-
-    enginewerk_emission.binary_block:
-        class: Enginewerk\EmissionBundle\EventListener\BinaryBlockSubscriber
-        tags:
-            - { name: doctrine.event_subscriber, connection: default }             
+         
             
           

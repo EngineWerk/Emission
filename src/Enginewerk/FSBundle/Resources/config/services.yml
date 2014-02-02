@@ -1,0 +1,9 @@
+services:
+    enginewerk_bbs:
+        class:     Enginewerk\FSBundle\Storage\BinaryStorage
+        arguments: ["@doctrine"] 
+        
+    enginewerk_fs.binary_block:
+        class: Enginewerk\FSBundle\EventListener\BinaryBlockSubscriber
+        tags:
+            - { name: doctrine.event_subscriber, connection: default }            

@@ -134,10 +134,8 @@ class ResumableController extends Controller
             $fileBlockForm = $this->createForm(new ResumableFileBlockType());
             $fileBlockForm->handleRequest($request);
 
-            $blockRepository = $this->getDoctrine()->getRepository('EnginewerkEmissionBundle:BinaryBlock');
-
             $uploadedFile = $fileBlockForm->get('uploadedFile')->getData();
-            $block = $blockRepository->storeUploadedFile($uploadedFile);
+            $block = $this->get('enginewerk_bbs')->put($uploadedFile, $key = null);
 
             $fileBlock = $fileBlockForm->getData();
             $fileBlock->setFile($file);

@@ -35,6 +35,7 @@ class RemoveExpiredFilesCommand extends ContainerAwareCommand
         foreach($files as $file) {
             $output->writeln($file->getName());
             try{
+                // Nie działa z usługą BBS
                 $em->remove($file);
                 $em->flush();
             } catch (\Exception $ex) {

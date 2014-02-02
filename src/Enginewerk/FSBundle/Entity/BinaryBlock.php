@@ -1,6 +1,6 @@
 <?php
 
-namespace Enginewerk\EmissionBundle\Entity;
+namespace Enginewerk\FSBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
  * BinaryBlock
  *
  * @ORM\Table(name="binary_block")
- * @ORM\Entity(repositoryClass="Enginewerk\EmissionBundle\Entity\BinaryBlockRepository")
+ * @ORM\Entity(repositoryClass="Enginewerk\FSBundle\Entity\BinaryBlockRepository")
  */
 class BinaryBlock
 {

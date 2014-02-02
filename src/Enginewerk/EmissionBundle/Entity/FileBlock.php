@@ -11,6 +11,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Entity
  * @ORM\HasLifecycleCallbacks
  * @ORM\Table(name="file_block")
+ * @ORM\Entity(repositoryClass="Enginewerk\EmissionBundle\Entity\FileBlockRepository")
  */
 class FileBlock
 {

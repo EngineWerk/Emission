@@ -1,11 +1,11 @@
 <?php
 
-namespace Enginewerk\EmissionBundle\EventListener;
+namespace Enginewerk\FSBundle\EventListener;
 
 use Doctrine\Common\EventSubscriber;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 
-use Enginewerk\EmissionBundle\Entity\BinaryBlock;
+use Enginewerk\FSBundle\Entity\BinaryBlock;
 
 /**
  * BinaryBlockSubscriber

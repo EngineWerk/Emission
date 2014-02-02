@@ -25,6 +25,7 @@ class AppKernel extends Kernel
             new HWI\Bundle\OAuthBundle\HWIOAuthBundle(),
             new JMS\TranslationBundle\JMSTranslationBundle(),
             new Enginewerk\OAuthBundle\OAuthBundle(),
+            new Enginewerk\FSBundle\EnginewerkFSBundle()
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {

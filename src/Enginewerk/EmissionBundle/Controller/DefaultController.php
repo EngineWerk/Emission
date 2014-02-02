@@ -78,10 +78,10 @@ class DefaultController extends Controller
                 ->findBy(array('fileId' => $file->getId()), array('rangeStart' => 'ASC'));
 
         $blocks = array();
+        $storage = $this->get('enginewerk_bbs');
         foreach ($fileBlocks as $fileBlock) {
-            $block = $this->getDoctrine()
-                ->getRepository('EnginewerkEmissionBundle:BinaryBlock')->findOneByChecksum($fileBlock->getFileHash());
-
+            
+            $block = $storage->get($fileBlock->getFileHash());
             $filePath = $block->getPathname();
 
             if (!file_exists($filePath) || is_dir($filePath)) {
@@ -124,21 +124,34 @@ class DefaultController extends Controller
 
         /** @var $file \Enginewerk\EmissionBundle\Entity\File **/
         $file = $this->getDoctrine()->getRepository('EnginewerkEmissionBundle:File')->findOneBy(array('fileId' => $request->get('file')));
+        $fileBlockRepository = $this->getDoctrine()->getRepository('EnginewerkEmissionBundle:FileBlock');
+        
+        $binaryBlocksToRemove = array();
+        foreach ($file->getFileBlocks() as $fileBlock) {
+            $usedBlocks = $fileBlockRepository->getUsedBlocksNumber($fileBlock->getFileHash());
+            if(null === $usedBlocks || 1 == $usedBlocks) {
+                $binaryBlocksToRemove[] = $fileBlock->getFileHash();
+            }
+        }
 
         if (!$file) {
             $appResponse->error(sprintf('File #%s not found.', $request->get('file')));
-        } else {
-            try {
-                $em = $this->getDoctrine()->getManager();
-                $em->remove($file);
-                $em->flush();
-
-                $appResponse->success();
-
-            } catch (Exception $ex) {
-                $appResponse->error('Can`t remove File');
-                $this->get('logger')->error(sprintf('Can`t remove File #%s. %s', $file->getId(), $ex->getMessage()));
+            return new JsonResponse($appResponse->response(), 200);
+        }
+        
+        try {
+            $em = $this->getDoctrine()->getManager();
+            $em->remove($file);
+            $em->flush();
+            foreach ($binaryBlocksToRemove as $blockKey) {
+                $this->get('enginewerk_bbs')->delete($blockKey);
             }
+
+            $appResponse->success();
+
+        } catch (Exception $ex) {
+            $appResponse->error('Can`t remove File');
+            $this->get('logger')->error(sprintf('Can`t remove File #%s. %s', $file->getId(), $ex->getMessage()));
         }
 
         return new JsonResponse($appResponse->response(), 200);
@@ -206,6 +219,7 @@ class DefaultController extends Controller
 
             $em = $this->getDoctrine()->getManager();
             $replacementFile->setFileId($replaceFile->getFileId());
+            // Nie działa z usługą BBS
             $em->remove($replaceFile);
 
             try {

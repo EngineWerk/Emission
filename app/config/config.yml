@@ -1,6 +1,7 @@
 imports:
     - { resource: parameters.yml }
     - { resource: security.yml }
+    - { resource: "@EnginewerkFSBundle/Resources/config/services.yml" }
 
 framework:
     #esi:             ~
@@ -90,8 +91,8 @@ services:
 
     session.handler.pdo:
         class:     Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler
-        arguments: ["@pdo", "%pdo.db_options%"]   
-              
+        arguments: ["@pdo", "%pdo.db_options%"] 
+    
 hwi_oauth:
     firewall_name: secured_area
     resource_owners:
@@ -106,4 +107,4 @@ hwi_oauth:
             client_secret:       %windows_live_client_secret%
             scope:               wl.signin
     connect: ~
-        
+    
