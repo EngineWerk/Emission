@@ -236,4 +236,19 @@ class DefaultController extends Controller
 
         return new JsonResponse($appResponse->response());
     }
+    
+    /**
+     * @Route("/files")
+     */
+    public function filesAction()
+    {
+        $files = $this->getDoctrine()->getRepository('EnginewerkEmissionBundle:File')
+                ->getFilesForJsonApi();
+        
+        $appResponse = new AppResponse();
+        $appResponse->success();
+        $appResponse->data($files);
+
+        return new JsonResponse($appResponse->response(), 200);
+    }
 }

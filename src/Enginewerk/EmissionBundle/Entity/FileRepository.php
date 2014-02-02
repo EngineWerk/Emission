@@ -24,4 +24,14 @@ class FileRepository extends EntityRepository
         
         return $query->getResult();
     }
+    
+    public function getFilesForJsonApi()
+    {
+        $query = $this->createQueryBuilder('f')
+                ->select('f.fileId, f.name, f.checksum, f.size, f.type, f.expirationDate, f.uploadedBy, f.isComplete')
+                ->orderBy('f.id', 'DESC')
+                ->getQuery();
+
+        return $query->getArrayResult();
+    }
 }
