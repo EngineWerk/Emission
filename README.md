@@ -10,4 +10,4 @@ Because todays LAN are 100Mbit and more You can share file and get download link
 
 Requirements
 ========
-Web server in LAN.
+PHP >= 5.3.3
