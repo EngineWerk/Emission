@@ -1,0 +1,19 @@
+
+#emissionSimpleSearchContainer {
+    display: none;
+}
+
+#simpleSearchInput {
+    width: 948px;
+    border: 1px solid lightgray;
+    height: 35px;
+}
+
+#simpleSearchInput
+{
+    font-size:24px;
+}
+
+input:focus{
+    
+}

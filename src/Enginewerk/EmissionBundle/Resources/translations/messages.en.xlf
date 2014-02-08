@@ -50,6 +50,10 @@
         <source>gui.show_file</source>
         <target>show</target>
       </trans-unit>
+      <trans-unit id="680cd57db6e96aebc8cee1ef0b22a061" resname="gui.use_simple_search">
+        <source>gui.use_simple_search</source>
+        <target>Use Emission search tool instead of browser native</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>
