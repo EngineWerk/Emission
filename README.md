@@ -1,12 +1,12 @@
-Emission
-========
+# Emission
 Fast store and share files easily.
 Take advantage of LAN bandwidth for fast file sharing.  
 
-For Who?
+Features
 ========
-For those who have slow internet connection and don`t want to wait for files to upload to external services *box like. 
-Because todays LAN are 100Mbit and more You can share file and get download link almost instantly.
+- Large files (~GB) upload via browser
+- Chunked, resumable upload (using [Resumable.js](https://github.com/23/resumable.js))
+- Upload images via clipboard paste (Ctrl+v)
 
 Requirements
 ========
