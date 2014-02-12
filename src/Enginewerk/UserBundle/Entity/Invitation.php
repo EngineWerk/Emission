@@ -3,6 +3,7 @@
 namespace Enginewerk\UserBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Description of Invitation
@@ -21,6 +22,10 @@ class Invitation
 
     /**
      * @ORM\Column(type="string", length=256)
+     * @Assert\Email(
+     *     message = "The email '{{ value }}' is not a valid email.",
+     *     checkMX = false
+     * )
      */
     protected $email;
 
