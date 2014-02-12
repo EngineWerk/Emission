@@ -1,0 +1,6 @@
+{% extends 'HWIOAuthBundle::layout.html.twig' %}
+
+{% block hwi_oauth_content %}
+    <h3>{{ 'header.registration_success' | trans({'%username%': app.user.username}, 'HWIOAuthBundle') }}</h3>
+    <a href="{{ path('enginewerk_emission_default_index') }}" class="btn">{{ 'back' | trans }}</a>
+{% endblock hwi_oauth_content %}

@@ -19,7 +19,4 @@ parameters:
     google_openid_client_id: client_id
     google_openid_client_secret: client_secret
 
-    windows_live_client_id: client_id
-    windows_live_client_secret: client_secret
-
     app.company_name: Awsome Company

@@ -1,0 +1,14 @@
+services:
+    enginewerk.registration.form.type:
+        class: Enginewerk\UserBundle\Form\Type\RegistrationFormType
+        arguments: [%fos_user.model.user.class%]
+        tags: [{ name: "form.type", alias: "enginewerk_user_registration" }]
+
+    enginewerk.invitation.form.type:
+        class: Enginewerk\UserBundle\Form\Type\InvitationFormType
+        arguments: [@enginewerk.invitation.form.data_transformer]
+        tags: [{ name: "form.type", alias: "enginewerk_invitation_type" }]
+
+    enginewerk.invitation.form.data_transformer:
+        class: Enginewerk\UserBundle\Form\DataTransformer\InvitationToCodeTransformer
+        arguments: [@doctrine.orm.entity_manager]

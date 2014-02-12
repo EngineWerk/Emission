@@ -1,13 +1,13 @@
 <?php
 
-namespace Enginewerk\OAuthBundle;
+namespace Enginewerk\UserBundle;
 
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
-class OAuthBundle extends Bundle
+class UserBundle extends Bundle
 {
     public function getParent()
     {
-        return 'HWIOAuthBundle';
+        return 'FOSUserBundle';
     }
 }

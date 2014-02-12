@@ -5,12 +5,16 @@ hwi_oauth_login:
 hwi_oauth_redirect:
     resource: "@HWIOAuthBundle/Resources/config/routing/redirect.xml"
     prefix:   /connect
+    
+hwi_oauth_connect:
+    resource: "@HWIOAuthBundle/Resources/config/routing/connect.xml"
+    prefix:   /connect    
 
 google_login:
-    path: /login/check-google    
-    
-windows_live_login:
-    path: /login/check-windows-live
+    path: /login/check-google
+
+fos_user_security:
+    resource: "@FOSUserBundle/Resources/config/routing/security.xml"
 
 logout:
     path:   /logout
@@ -18,4 +22,4 @@ logout:
 enginewerk_emission:
     resource: "@EnginewerkEmissionBundle/Controller/"
     type:     annotation
-    prefix:   /    
+    prefix:   /

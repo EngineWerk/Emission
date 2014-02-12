@@ -1,6 +1,14 @@
 {% extends '::base.html.twig' %}
 
+{% block stylesheets %}
+<link rel="stylesheet" href="{{ asset('bundles/enginewerkemission/css/style.css') }}">
+<link rel="stylesheet" href="{{ asset('bundles/enginewerkemission/css/font-style.css') }}">
+<link rel="stylesheet" href="{{ asset('bundles/oauth/css/form-style.css') }}">
+{% endblock %}
+
 {% block body %}
+<div class="hwi_oauth_content">
     {% block hwi_oauth_content %}
     {% endblock %}
+</div>    
 {% endblock %}

@@ -17,3 +17,4 @@ app/SymfonyRequirements.php
 #File storage directory
 app/local_fs/main/*
 app/local_fs/block/*
+/src/Enginewerk/EmissionBundle/Entity/*.php~
