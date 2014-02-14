@@ -1,6 +1,6 @@
 <?php
 
-namespace Enginewerk\EmissionBundle\Command;
+namespace Enginewerk\UserBundle\Command;
 
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputOption;
