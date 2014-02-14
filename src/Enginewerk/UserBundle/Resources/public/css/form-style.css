@@ -30,6 +30,7 @@ div.login_form_content div.login_alternative {
 }
 
 div.login_form_content div.oauth_owners {
+    margin: 10% 0;
     width: 100%; 
     text-align: center;
 }

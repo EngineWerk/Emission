@@ -7,13 +7,15 @@
 
 {% block body %}
 <div class="login_form_content">
-    {% block fos_user_content %}
-    {% endblock %}
-    <div class="login_alternative">- OR -</div>
+    {% if hwi_oauth_resource_owners() %}
     <div class="oauth_owners">
     {% for owner in hwi_oauth_resource_owners() %}
         <a href="{{ hwi_oauth_login_url(owner) }}" title="{{ owner | trans({}, 'HWIOAuthBundle') }}" class="oauthLink {{owner}}">{{ owner }} me in</a>
     {% endfor %}
     </div>
+    <div class="login_alternative">- or -</div>
+    {% endif %}
+    {% block fos_user_content %}
+    {% endblock %}
 </div>
 {% endblock %}
