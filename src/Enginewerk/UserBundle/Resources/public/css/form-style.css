@@ -1,0 +1,42 @@
+/* 
+    Created on : 2014-02-12, 19:46:26
+    Author     : Paweł Czyżewski <pawel.czyzewski@enginewerk.com>
+*/
+
+form input[type='text'], form input[type='password'], form input[type='email'] {
+    width: 100%;
+    border: 1px solid lightgray;
+    height: 35px;
+    font-size: 1.2em;
+    padding: 0.1% 0.9%;
+}
+
+form label {
+    color: gray;
+}
+
+div.login_form_content {
+    width: 450px;
+    margin: 0 auto;
+}
+
+div.login_form_content div {
+    margin-bottom: 10px;
+}
+
+div.login_form_content div.login_alternative {
+    width: 100%; 
+    text-align: center;
+}
+
+div.login_form_content div.oauth_owners {
+    width: 100%; 
+    text-align: center;
+}
+
+div.login_form_content div.oauth_owners a {
+    color: gray;
+    text-transform: capitalize;
+}
+
+

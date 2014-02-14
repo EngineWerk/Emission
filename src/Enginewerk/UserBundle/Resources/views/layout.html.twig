@@ -1,0 +1,19 @@
+{% extends '::base.html.twig' %}
+
+{% block stylesheets %}
+<link rel="stylesheet" href="{{ asset('bundles/enginewerkemission/css/font-style.css') }}">
+<link rel="stylesheet" href="{{ asset('bundles/user/css/form-style.css') }}">
+{% endblock %}
+
+{% block body %}
+<div class="login_form_content">
+    {% block fos_user_content %}
+    {% endblock %}
+    <div class="login_alternative">- OR -</div>
+    <div class="oauth_owners">
+    {% for owner in hwi_oauth_resource_owners() %}
+        <a href="{{ hwi_oauth_login_url(owner) }}" title="{{ owner | trans({}, 'HWIOAuthBundle') }}" class="oauthLink {{owner}}">{{ owner }} me in</a>
+    {% endfor %}
+    </div>
+</div>
+{% endblock %}

@@ -36,7 +36,7 @@ twig:
     strict_variables: %kernel.debug%
     globals:
         max_chunk_size: %app.uploader_max_chunk_size%    
-        company_name: %app.company_name% 
+        company_name: %app.company_name%
           
 # Assetic Configuration
 assetic:
@@ -121,11 +121,6 @@ hwi_oauth:
             client_id:           %google_openid_client_id%
             client_secret:       %google_openid_client_secret%
             scope:               "https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile"
-#        windows_live:
-#            type:                windows_live
-#            client_id:           %windows_live_client_id%
-#            client_secret:       %windows_live_client_secret%
-#            scope:               wl.signin
     connect:
         account_connector: hwi_oauth.user.provider.fosub_bridge
     
