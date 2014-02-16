@@ -25,12 +25,14 @@ body {
 #filesTable .fileOptions a:hover { text-decoration: underline;}
 #filesTable .fileSize {text-align: right; }
 
+#filesTable td div {display: inline-block;}
+#filesTable .fileUploadedBy {color:#ddd;}
+#filesTable .fileSize {color:#777;}
+
 #filesTable .fileCreatedAt, 
 #filesTable .fileUpdatedAt, 
 #filesTable .fileExpirationDate, 
 #filesTable .fileHashID, 
-#filesTable .fileUploadedBy, 
-#filesTable .fileType,
 #filesTable .fileOptionsDownloadLink,
 #filesTable .fileOptionsOpenLink {display:none;}
 
@@ -46,7 +48,7 @@ a, a:visited {
 
 #files {
     padding: 10px 10px 10px 10px;
-    background-color: #FbFbFb;
+    /*background-color: #FbFbFb;*/
     border-radius: 0px 0px 10px 10px;
 }
 

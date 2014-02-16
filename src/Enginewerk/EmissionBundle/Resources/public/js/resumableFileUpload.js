@@ -116,17 +116,14 @@ $(function(){
                     var fileNameHash = Resumable.uniqueIdentifier;
                     info(file.name, fileNameHash);
 
-                    var tableRow = '<tr data-file-id="' + file.id + '" id="fhash-' + fileNameHash + '"> \n' + 
-        '<td class="fileName">' + file.name + '</td> \n' + 
-        '<td class="fileHashID">' + file.file_id + '</td> \n' + 
-        '<td class="fileUploadedBy">' + file.uploaded_by + '</td> \n' + 
-        '<td class="fileType">' + file.type + '</td> \n' + 
-        '<td class="fileSize">' + bytesToSize(file.size, 2) + '</td> \n' + 
-        '<td class="fileExpirationDate">' + file.expiration_date + '</td> \n' + 
-        '<td class="fileUpdatedAt">' + file.updated_at + '</td> \n' + 
-        '<td class="fileCreatedAt">' + file.created_at + '</td> \n' + 
-        '<td class="fileOptions"><a href="' + file.show_url + '">show</a> <a href="' + file.download_url + '" class="fileOptionsDownloadLink">save</a> <a href="' + file.open_url + '" class="fileOptionsOpenLink">open</a> - <a href="' + file.delete_url + '" class="remove-file">delete</a></td> \n' + 
-    '</tr>';
+                    var tableRow = '<tr data-file-id="' + file.id + '" id="fhash-' + fileNameHash + '" data-search="' + file.name + '" > \n' + 
+                    '<td>' + 
+                        '<div class="fileName">' + file.name + '</div>' +
+                        '<div class="fileUploadedBy">' + file.uploaded_by + '</div>' +
+                        '<div class="fileSize">' + bytesToSize(file.size, 2) + '</div>' +
+                    '</td>' +
+                    '<td class="fileOptions"><a href="' + file.show_url + '">show</a> <a href="' + file.download_url + '" class="fileOptionsDownloadLink">save</a> <a href="' + file.open_url + '" class="fileOptionsOpenLink">open</a> - <a href="' + file.delete_url + '" class="remove-file">remove</a></td> \n' + 
+                '</tr>';
 
                     $('#fhash-' + fileNameHash).replaceWith(tableRow);
 
