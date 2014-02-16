@@ -5,6 +5,7 @@ namespace Enginewerk\UserBundle\Entity;
 use FOS\UserBundle\Model\User as BaseUser;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * Description of User
@@ -34,6 +35,18 @@ class User extends BaseUser
      * @Assert\NotNull(message="Your invitation is wrong")
      */
     protected $invitation;
+    
+    /**
+     * @ORM\OneToMany(targetEntity="Enginewerk\EmissionBundle\Entity\File", mappedBy="user", cascade={"remove"})
+     */
+    protected $files;
+    
+    public function __construct()
+    {
+        parent::__construct();
+        
+        $this->files = new ArrayCollection();
+    }
 
     /**
      * Get id
@@ -89,5 +102,38 @@ class User extends BaseUser
     public function getInvitation()
     {
         return $this->invitation;
+    }
+
+    /**
+     * Add files
+     *
+     * @param \Enginewerk\EmissionBundle\Entity\File $files
+     * @return User
+     */
+    public function addFile(\Enginewerk\EmissionBundle\Entity\File $files)
+    {
+        $this->files[] = $files;
+
+        return $this;
+    }
+
+    /**
+     * Remove files
+     *
+     * @param \Enginewerk\EmissionBundle\Entity\File $files
+     */
+    public function removeFile(\Enginewerk\EmissionBundle\Entity\File $files)
+    {
+        $this->files->removeElement($files);
+    }
+
+    /**
+     * Get files
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getFiles()
+    {
+        return $this->files;
     }
 }

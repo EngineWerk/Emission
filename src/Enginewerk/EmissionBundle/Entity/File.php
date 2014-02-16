@@ -4,9 +4,8 @@ namespace Enginewerk\EmissionBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
-
 use Doctrine\Common\Collections\ArrayCollection;
-
+use Enginewerk\UserBundle\Entity\User;
 use Enginewerk\EmissionBundle\Generator\Hash;
 
 /**
@@ -45,6 +44,14 @@ class File
      * @var string
      */
     protected $fileHash;
+    
+    /**
+     * File owner
+     * 
+     * @ORM\ManyToOne(targetEntity="\Enginewerk\UserBundle\Entity\User", inversedBy="files", cascade={"persist", "refresh"})
+     * @ORM\JoinColumn(name="userId", referencedColumnName="id", onDelete="cascade")
+     */
+    protected $user;    
 
     /**
      * Checksum of file declared by user.
@@ -96,14 +103,6 @@ class File
      * @var \DateTime
      */
     protected $updatedAt;
-
-    /**
-     * File uploader name
-     *
-     * @ORM\Column(type="string", length=255)
-     * @var string
-     */
-    protected $uploadedBy;
 
     /**
      * @ORM\OneToMany(targetEntity="FileBlock", mappedBy="file", cascade={"remove"})
@@ -440,5 +439,28 @@ class File
     public function getChecksum()
     {
         return $this->checksum;
+    }
+
+    /**
+     * Set user
+     *
+     * @param \Enginewerk\EmissionBundle\Entity\User $user
+     * @return File
+     */
+    public function setUser(\Enginewerk\UserBundle\Entity\User $user = null)
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * Get user
+     *
+     * @return \Enginewerk\EmissionBundle\Entity\User 
+     */
+    public function getUser()
+    {
+        return $this->user;
     }
 }

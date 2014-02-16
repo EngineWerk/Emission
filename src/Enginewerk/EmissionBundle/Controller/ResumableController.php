@@ -100,7 +100,7 @@ class ResumableController extends Controller
                 $file = $fileForm->getData();
                 $file->setType($fileForm->get('uploadedFile')->getData()->getMimeType());
                 $file->setIsComplete(false);
-                $file->setUploadedBy($this->getUser()->getUserName());
+                $file->setUser($this->getUser());
 
                 $em->persist($file);
            } else {
@@ -171,7 +171,7 @@ class ResumableController extends Controller
                       'expiration_date' => $file->getExpirationDate()->format('Y-m-d H:i:s'),
                       'updated_at' => $file->getUpdatedAt()->format('Y-m-d H:i:s'),
                       'created_at' => $file->getCreatedAt()->format('Y-m-d H:i:s'),
-                      'uploaded_by' => $file->getUploadedBy(),
+                      'uploaded_by' => $file->getUser()->getUsername(),
                       'show_url' => $this->generateUrl('show_file', array('file' => $file->getFileId()), true),
                       'download_url' => $this->generateUrl('download_file', array('file' => $file->getFileId()), true),
                       'open_url' => $this->generateUrl('open_file', array('file' => $file->getFileId()), true),
