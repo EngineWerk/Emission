@@ -5,9 +5,7 @@ $(function(){
     
     $(document).keyup(function(event) {
         
-        if (event.keyCode === 27) { 
-            $('#simpleSearchInput').blur();
-            
+        if (event.keyCode === 27) { // escape
             if (listFiltered) {
                 resetFilter();
             }
@@ -65,8 +63,13 @@ $(function(){
 });
 
 var simpleSearchKeyDownControll = function(e) {
-    if (e.keyCode === 114 || (e.ctrlKey && e.keyCode === 70)) { 
+    if (e.keyCode === 114 || (e.ctrlKey && e.keyCode === 70)) { // ctrl + f
         $('#emissionSimpleSearchContainer').toggle();
+        if ($('#emissionSimpleSearchContainer').attr('style') === 'display: block;') {
+            $('#simpleSearchInput').focus();
+        } else {
+            $('#simpleSearchInput').blur();
+        }
         e.preventDefault();
     }
 };
