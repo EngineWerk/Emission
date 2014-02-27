@@ -17,11 +17,14 @@ class BinaryStorage
      * @var \Doctrine\Bundle\DoctrineBundle\Registry
      */
     protected $doctrine;
+    
+    protected $storageRootDirectory;
 
 
-    public function __construct(Registry $doctrine)
+    public function __construct(Registry $doctrine, $storageRootDirectory)
     {
         $this->doctrine = $doctrine;
+        $this->storageRootDirectory = $storageRootDirectory;
     }
     
     /**
@@ -33,14 +36,17 @@ class BinaryStorage
         $checksum = md5_file($uploadedFile->getPathname());
 
         $size = $uploadedFile->getSize();
-        $path = $this->getUploadRootDir() . DIRECTORY_SEPARATOR . $this->getDeepDirFromFileName($checksum);
+        $path = $this->getStorageRootDirectory() . DIRECTORY_SEPARATOR . $this->getDeepDirFromFileName($checksum);
 
         $block = new BinaryBlock();
         $block->setChecksum($checksum);
         $block->setSize($size);
         $block->setPathname($path . DIRECTORY_SEPARATOR . $checksum);
 
-        $this->doctrine->getManager()->persist($block);
+        $this
+                ->getDoctrine()
+                ->getManager()
+                ->persist($block);
 
         $uploadedFile->move($path, $checksum);
         
@@ -49,27 +55,32 @@ class BinaryStorage
     
     public function get($key)
     {
-        $block = $this->doctrine
-                ->getRepository('EnginewerkFSBundle:BinaryBlock')->findOneByChecksum($key);
+        $block = $this
+                ->getDoctrine()
+                ->getRepository('EnginewerkFSBundle:BinaryBlock')
+                ->findOneByChecksum($key);
         
         return $block;
     }
     
     public function delete($key)
     {
-        $em = $this->doctrine->getManager();
-        $block = $this->doctrine->getRepository('EnginewerkFSBundle:BinaryBlock')->findOneByChecksum($key);
+        $em = $this
+                ->getDoctrine()
+                ->getManager();
+        
+        $block = $this
+                ->getDoctrine()
+                ->getRepository('EnginewerkFSBundle:BinaryBlock')
+                ->findOneByChecksum($key);
+        
         $em->remove($block);
         $em->flush();
     }
     
-    private function getUploadRootDir()
+    private function getStorageRootDirectory()
     {
-        $pathComponents = explode(DIRECTORY_SEPARATOR, __DIR__);
-        $pathComponents = array_slice($pathComponents, 0, (count($pathComponents) - 4));
-        $path = implode(DIRECTORY_SEPARATOR, $pathComponents);
-
-        return $path . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR . 'local_fs' . DIRECTORY_SEPARATOR . 'block' ;
+        return $this->storageRootDirectory . DIRECTORY_SEPARATOR . 'local_fs' . DIRECTORY_SEPARATOR . 'block' ;
     }
 
     private function getDeepDirFromFileName($name)
@@ -78,5 +89,13 @@ class BinaryStorage
                 $name[2] . $name[3] . DIRECTORY_SEPARATOR .
                 $name[4] . $name[5] . DIRECTORY_SEPARATOR;
     }
-      
+    
+    /**
+     * 
+     * @return \Doctrine\Bundle\DoctrineBundle\Registry
+     */
+    public function getDoctrine()
+    {
+        return $this->doctrine;
+    }
 }
