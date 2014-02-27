@@ -11,6 +11,15 @@ use Doctrine\ORM\EntityRepository;
  */
 class FileRepository extends EntityRepository
 {
+    public function getFiles()
+    {
+        $query = $this->createQueryBuilder('f')
+                ->orderBy('f.id', 'DESC')
+                ->getQuery();
+
+        return $query->getResult();
+    }
+    
     public function getExpiredFiles(\DateTime $nowDate = null)
     {
         if(null === $nowDate) {

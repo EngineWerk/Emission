@@ -26,13 +26,10 @@ class DefaultController extends Controller
      */
     public function indexAction()
     {
-        /** @var $repository \Enginewerk\EmissionBundle\Entity\FileRepository **/
-        $repository = $this->getDoctrine()->getRepository('EnginewerkEmissionBundle:File');
-        $query = $repository->createQueryBuilder('f')
-                ->orderBy('f.id', 'DESC')
-                ->getQuery();
-
-        $files = $query->getResult();
+        $files = $this
+                ->getDoctrine()
+                ->getRepository('EnginewerkEmissionBundle:File')
+                ->getFiles();
 
         $fileBlockForm = $this->createForm(new ResumableFileBlockType());
         $fileForm = $this->createForm(new ResumableFileType());
@@ -49,7 +46,10 @@ class DefaultController extends Controller
      */
     public function showFileAction(Request $request)
     {
-        $file = $this->getDoctrine()->getRepository('EnginewerkEmissionBundle:File')->findOneBy(array('fileId' => $request->get('file')));
+        $file = $this
+                ->getDoctrine()
+                ->getRepository('EnginewerkEmissionBundle:File')
+                ->findOneBy(array('fileId' => $request->get('file')));
 
         if (!$file) {
             throw $this->createNotFoundException(sprintf('File #%s not found.', $request->get('file')));
@@ -67,13 +67,17 @@ class DefaultController extends Controller
     public function downloadFileAction(Request $request)
     {
         /** @var $file \Enginewerk\EmissionBundle\Entity\File **/
-        $file = $this->getDoctrine()->getRepository('EnginewerkEmissionBundle:File')->findOneBy(array('fileId' => $request->get('file')));
+        $file = $this
+                ->getDoctrine()
+                ->getRepository('EnginewerkEmissionBundle:File')
+                ->findOneBy(array('fileId' => $request->get('file')));
 
         if (null === $file) {
             throw $this->createNotFoundException(sprintf('File #%s not found.', $request->get('file')));
         }
 
-        $fileBlocks = $this->getDoctrine()
+        $fileBlocks = $this
+                ->getDoctrine()
                 ->getRepository('EnginewerkEmissionBundle:FileBlock')
                 ->findBy(array('fileId' => $file->getId()), array('rangeStart' => 'ASC'));
 
@@ -123,8 +127,14 @@ class DefaultController extends Controller
         $appResponse = new AppResponse();
 
         /** @var $file \Enginewerk\EmissionBundle\Entity\File **/
-        $file = $this->getDoctrine()->getRepository('EnginewerkEmissionBundle:File')->findOneBy(array('fileId' => $request->get('file')));
-        $fileBlockRepository = $this->getDoctrine()->getRepository('EnginewerkEmissionBundle:FileBlock');
+        $file = $this
+                ->getDoctrine()
+                ->getRepository('EnginewerkEmissionBundle:File')
+                ->findOneBy(array('fileId' => $request->get('file')));
+        
+        $fileBlockRepository = $this
+                ->getDoctrine()
+                ->getRepository('EnginewerkEmissionBundle:FileBlock');
         
         $binaryBlocksToRemove = array();
         foreach ($file->getFileBlocks() as $fileBlock) {
@@ -140,7 +150,9 @@ class DefaultController extends Controller
         }
         
         try {
-            $em = $this->getDoctrine()->getManager();
+            $em = $this
+                    ->getDoctrine()
+                    ->getManager();
             $em->remove($file);
             $em->flush();
             foreach ($binaryBlocksToRemove as $blockKey) {
@@ -166,7 +178,10 @@ class DefaultController extends Controller
         $appResponse = new AppResponse();
 
         /** @var $file \Enginewerk\EmissionBundle\Entity\File **/
-        $file = $this->getDoctrine()->getRepository('EnginewerkEmissionBundle:File')->findOneBy(array('fileId' => $request->get('file')));
+        $file = $this
+                ->getDoctrine()
+                ->getRepository('EnginewerkEmissionBundle:File')
+                ->findOneBy(array('fileId' => $request->get('file')));
 
         if (!$file) {
             $appResponse->error(sprintf('File #%s not found.', $request->get('file')));
@@ -177,7 +192,9 @@ class DefaultController extends Controller
                 $expirationDate = new \DateTime($request->get('date'));
             }
 
-            $em = $this->getDoctrine()->getManager();
+            $em = $this
+                    ->getDoctrine()
+                    ->getManager();
             $file->setExpirationDate($expirationDate);
 
             try {
@@ -201,7 +218,9 @@ class DefaultController extends Controller
         $appResponse = new AppResponse();
 
         /** @var $repository \Enginewerk\EmissionBundle\Entity\FileRepository **/
-        $repository = $this->getDoctrine()->getRepository('EnginewerkEmissionBundle:File');
+        $repository = $this
+                ->getDoctrine()
+                ->getRepository('EnginewerkEmissionBundle:File');
 
         /** @var $replaceFile \Enginewerk\EmissionBundle\Entity\File **/
         $replaceFile = $repository->findOneByFileId($replace);
@@ -217,7 +236,9 @@ class DefaultController extends Controller
 
         if ($replaceFile->getUploadedBy() == $replacementFile->getUploadedBy()) {
 
-            $em = $this->getDoctrine()->getManager();
+            $em = $this
+                    ->getDoctrine()
+                    ->getManager();
             $replacementFile->setFileId($replaceFile->getFileId());
             // Nie działa z usługą BBS
             $em->remove($replaceFile);
@@ -242,7 +263,9 @@ class DefaultController extends Controller
      */
     public function filesAction()
     {
-        $files = $this->getDoctrine()->getRepository('EnginewerkEmissionBundle:File')
+        $files = $this
+                ->getDoctrine()
+                ->getRepository('EnginewerkEmissionBundle:File')
                 ->getFilesForJsonApi();
         
         $appResponse = new AppResponse();
