@@ -49,7 +49,7 @@ class File
      * File owner
      * 
      * @ORM\ManyToOne(targetEntity="\Enginewerk\UserBundle\Entity\User", inversedBy="files", cascade={"persist", "refresh"})
-     * @ORM\JoinColumn(name="userId", referencedColumnName="id", onDelete="cascade")
+     * @ORM\JoinColumn(name="user_id", referencedColumnName="id", onDelete="cascade")
      */
     protected $user;    
 
