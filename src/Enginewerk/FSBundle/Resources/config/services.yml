@@ -1,7 +1,7 @@
 services:
     enginewerk_bbs:
         class:     Enginewerk\FSBundle\Storage\BinaryStorage
-        arguments: ["@doctrine", "%kernel.root_dir%"] 
+        arguments: ["@doctrine", "%kernel.root_dir%/local_fs/binary/"] 
         
     enginewerk_fs.binary_block:
         class: Enginewerk\FSBundle\EventListener\BinaryBlockSubscriber

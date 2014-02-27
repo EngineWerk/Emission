@@ -5,6 +5,7 @@ namespace Enginewerk\FSBundle\Storage;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Enginewerk\FSBundle\Entity\BinaryBlock;
 use Doctrine\Bundle\DoctrineBundle\Registry;
+use Enginewerk\FSBundle\Storage\File;
 
 /**
  * Description of BinaryStorage
@@ -34,25 +35,28 @@ class BinaryStorage
     public function put(UploadedFile $uploadedFile)
     {
         $checksum = md5_file($uploadedFile->getPathname());
-
         $size = $uploadedFile->getSize();
-        $path = $this->getStorageRootDirectory() . DIRECTORY_SEPARATOR . $this->getDeepDirFromFileName($checksum);
-
+        
         $block = new BinaryBlock();
         $block->setChecksum($checksum);
         $block->setSize($size);
-        $block->setPathname($path . DIRECTORY_SEPARATOR . $checksum);
 
         $this
                 ->getDoctrine()
                 ->getManager()
                 ->persist($block);
 
+        $path = $this->getStorageRootDirectory() . DIRECTORY_SEPARATOR . $this->getDeepDirFromFileName($checksum);
         $uploadedFile->move($path, $checksum);
         
         return $block;
     }
     
+    /**
+     * 
+     * @param string $key
+     * @return Enginewerk\FSBundle\Storage\File
+     */
     public function get($key)
     {
         $block = $this
@@ -60,7 +64,19 @@ class BinaryStorage
                 ->getRepository('EnginewerkFSBundle:BinaryBlock')
                 ->findOneByChecksum($key);
         
-        return $block;
+        $file = new File();
+        $file->setChecksum($block->getChecksum());
+        
+        $pathname = implode(DIRECTORY_SEPARATOR, array(
+            $this->getStorageRootDirectory(), 
+            $this->getDeepDirFromFileName($block->getChecksum()), 
+            $block->getChecksum())
+                );
+        
+        $file->setPathname($pathname);
+        $file->setSize($block->getSize());
+
+        return $file;
     }
     
     public function delete($key)
@@ -80,7 +96,7 @@ class BinaryStorage
     
     private function getStorageRootDirectory()
     {
-        return $this->storageRootDirectory . DIRECTORY_SEPARATOR . 'local_fs' . DIRECTORY_SEPARATOR . 'block' ;
+        return $this->storageRootDirectory;
     }
 
     private function getDeepDirFromFileName($name)

@@ -36,13 +36,6 @@ class BinaryBlock
     private $size;
 
     /**
-     * @var string
-     *
-     * @ORM\Column(name="pathname", type="string")
-     */
-    private $pathname;
-
-    /**
      * Get id
      *
      * @return integer
@@ -73,29 +66,6 @@ class BinaryBlock
     public function getChecksum()
     {
         return $this->checksum;
-    }
-
-    /**
-     * Get pathname
-     *
-     * @return string
-     */
-    public function getPathname()
-    {
-        return $this->pathname;
-    }
-
-    /**
-     * Set pathname
-     *
-     * @param  string      $pathname
-     * @return BinaryBlock
-     */
-    public function setPathname($pathname)
-    {
-        $this->pathname = $pathname;
-
-        return $this;
     }
 
     /**
