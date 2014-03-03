@@ -13,6 +13,8 @@ use Enginewerk\EmissionBundle\Response\AppResponse;
 use Enginewerk\EmissionBundle\Form\Type\ResumableFileType;
 use Enginewerk\EmissionBundle\Form\Type\ResumableFileBlockType;
 
+use Enginewerk\EmissionBundle\FileResponse\ChunkedFile as ResponseFile;
+
 /**
  * DefaultController
  *
@@ -55,7 +57,7 @@ class DefaultController extends Controller
             throw $this->createNotFoundException(sprintf('File #%s not found.', $request->get('file')));
         }
 
-        return array('File' => $file);
+            return array('File' => $file);
     }
 
     /**
@@ -76,25 +78,22 @@ class DefaultController extends Controller
             throw $this->createNotFoundException(sprintf('File #%s not found.', $request->get('file')));
         }
 
+        // to RF1
         $fileBlocks = $this
                 ->getDoctrine()
                 ->getRepository('EnginewerkEmissionBundle:FileBlock')
                 ->findBy(array('fileId' => $file->getId()), array('rangeStart' => 'ASC'));
 
-        $blocks = array();
         $storage = $this->get('enginewerk_bbs');
+        $blocks = array();
         foreach ($fileBlocks as $fileBlock) {
-            
             $block = $storage->get($fileBlock->getFileHash());
-            $filePath = $block->getPathname();
-
-            if (!file_exists($filePath) || is_dir($filePath)) {
-                $this->get('logger')->error(sprintf('BinaryBlock #%s at path "%s" doesn`t exist.', $block->getId(), $block->getPathname()));
-                throw $this->createNotFoundException('File doesn`t exists.');
-            }
-
-            $blocks[] = $filePath;
+            $blocks[] = $block;
         }
+        
+        $responseFile = new ResponseFile();
+        $responseFile->setChunks($blocks);
+        // end to RF1
 
         // TODO Download set_time_limit
         set_time_limit(0);
@@ -109,10 +108,8 @@ class DefaultController extends Controller
             $response->headers->set('Content-Disposition', 'attachment; filename="' . $file->getName().'"');
         }
 
-        $response->setCallback(function () use ($blocks) {
-            foreach ($blocks as $blockFilePath) {
-                readfile($blockFilePath);
-            }
+        $response->setCallback(function () use ($responseFile) {
+            $responseFile->read();
         });
 
         return $response;
