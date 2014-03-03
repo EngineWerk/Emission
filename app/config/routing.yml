@@ -1,10 +1,10 @@
-hwi_oauth_login:
-    resource: "@HWIOAuthBundle/Resources/config/routing/login.xml"
-    prefix:   /oalogin
-
 fos_user_security:
     resource: "@FOSUserBundle/Resources/config/routing/security.xml"   
     prefix:   /
+
+hwi_oauth_login:
+    resource: "@HWIOAuthBundle/Resources/config/routing/login.xml"
+    prefix:   /oa
 
 hwi_oauth_redirect:
     resource: "@HWIOAuthBundle/Resources/config/routing/redirect.xml"
@@ -16,9 +16,6 @@ hwi_oauth_connect:
    
 google_login:
     path: /login/check-google
-
-fos_user_security:
-    resource: "@FOSUserBundle/Resources/config/routing/security.xml"
 
 logout:
     path:   /logout

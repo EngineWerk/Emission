@@ -9,9 +9,6 @@ security:
     providers:
         fos_userbundle:
             id: fos_user.user_provider.username_email
-                    
-#        oauth.user_provider:
-#            id: hwi_oauth.user.provider
 
     firewalls:
         dev:
@@ -34,12 +31,13 @@ security:
                 resource_owners:
                     google:             "/login/check-google"
                 login_path:        /login
-                failure_path:      /login
+                failure_path:      /oa
                 oauth_user_provider:
                     service: hwi_oauth.user.provider.fosub_bridge
             logout: ~
         
     access_control:
         - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/oa, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/connect, role: IS_AUTHENTICATED_ANONYMOUSLY }       
         - { path: ^/, role: ROLE_USER }
