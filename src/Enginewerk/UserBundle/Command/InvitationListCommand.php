@@ -36,7 +36,8 @@ class InvitationListCommand extends ContainerAwareCommand
         foreach ($invitations as $invitation) {
             $output->write($invitation->getCode() . ' ');
             $output->write($invitation->getEmail());
-            $output->writeln(($invitation->getSent()) ? ' sent' : ' not sent');
+            $output->write(($invitation->getSent()) ? ' sent' : ' !sent');
+            $output->writeln(($invitation->getUser()) ? ' connected' : ' !connected');
         }
     }
 }
