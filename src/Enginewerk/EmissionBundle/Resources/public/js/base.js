@@ -80,6 +80,7 @@ $(document).ready( function(){
             }
         }
    
+        clickedObj.parent().parent().fadeOut(100);
         cursorBusy();
 
         $.ajax({
@@ -90,14 +91,13 @@ $(document).ready( function(){
                 
                 if(app.status.isSuccess()) {
                     //callbackOnSuccess(imageId, context);                        
-                    clickedObj.parent().parent().fadeOut(200, function(){
-                        clickedObj.parent().parent().remove();
-                    });
+                    clickedObj.parent().parent().remove();
                 } else {
                     if(app.status.isError() && app.message) {
                         alert(app.message);
                     } else {
-                        log('Wystąpił nieobsługiwalny błąd.');                    
+                        log('Wystąpił nieobsługiwalny błąd.');
+                        clickedObj.parent().parent().fadeIn(200)
                         //callBackOnError('unknown error', context);
                     }
                 }
