@@ -30,7 +30,7 @@ $().ready(function() {
         var userFilename = null;
         
         if($.jStorage.get('app.settings.prompt_for_screenshot_filename', 'yes') === 'yes') {
-            var userFilename = prompt("Please enter your name", defaultFilename );
+            var userFilename = prompt("Please enter file name", defaultFilename );
         } else {
             userFilename = defaultFilename;
         }
@@ -45,7 +45,7 @@ $().ready(function() {
             file.name = defaultFilename;
         }
         
-        r.addFile(file);
+        window.resumable.addFile(file);
     }
 
 

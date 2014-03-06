@@ -12,6 +12,8 @@ $(function(){
         fileParameterName : 'form[uploadedFile]',
     });
 
+    // Expose to window scope
+    window.resumable = r;
 
     // Resumable.js isn't supported, fall back on a different method
     if(!r.support) {
