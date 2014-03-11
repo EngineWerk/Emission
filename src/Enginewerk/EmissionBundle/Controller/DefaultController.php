@@ -57,7 +57,14 @@ class DefaultController extends Controller
             throw $this->createNotFoundException(sprintf('File #%s not found.', $request->get('file')));
         }
 
+        if ($request->isXmlHttpRequest()) {
+            $appResponse = new AppResponse();
+            $appResponse->success();
+            $appResponse->data($this->renderView('EnginewerkEmissionBundle:Default:showFileContent.html.twig', array('File' => $file)));
+            return new JsonResponse($appResponse->response(), 200);
+        } else {
             return array('File' => $file);
+        }
     }
 
     /**

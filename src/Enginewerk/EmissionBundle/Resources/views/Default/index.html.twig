@@ -11,10 +11,12 @@
 <script src="{{ asset('bundles/enginewerkemission/js/app-response.js') }}"></script>
 <script src="{{ asset('bundles/enginewerkemission/js/resumableFileUpload.js') }}"></script>
 <script src="{{ asset('bundles/enginewerkemission/js/simple-search.js') }}"></script>
+<script src="{{ asset('bundles/enginewerkemission/js/show-file.js') }}"></script>
 {% endblock %}
 
 {% block stylesheets %}
 <link rel="stylesheet" href="{{ asset('bundles/enginewerkemission/css/simple-search.css') }}">
+<link rel="stylesheet" href="{{ asset('bundles/enginewerkemission/css/show-file.css') }}">
 <link rel="stylesheet" href="{{ asset('bundles/enginewerkemission/css/font-style.css') }}">
 <link rel="stylesheet" href="{{ asset('bundles/enginewerkemission/css/style.css') }}">
 <link rel="stylesheet" href="{{ asset('bundles/enginewerkemission/vendor/Resumable/resumable.css') }}">
@@ -31,6 +33,7 @@
         <div><input type="checkbox" id="promptForScreenshotFilename"/><label for="promptForScreenshotFilename">{% trans %}gui.prompt_for_pasted_image_name{% endtrans %}</label></div>
         <div><input type="checkbox" id="askBeforeDeleteCheckBox"/><label for="askBeforeDeleteCheckBox">{% trans %}gui.ask_before_delete_file{% endtrans %}</label></div>        
         <div><input type="checkbox" id="enableSimpleSearchCheckBox"/><label for="enableSimpleSearchCheckBox">{% trans %}gui.use_simple_search{% endtrans %}</label></div>
+        <div><input type="checkbox" id="enableAutoFilePreviewCheckBox"/><label for="enableAutoFilePreviewCheckBox">{% trans %}gui.auto_file_preview{% endtrans %}</label></div>
     </div>
     
     <div id="emissionMainMenuContainer">
@@ -65,7 +68,7 @@
                     </td>
                     {% if File.isComplete == 1 %}
                         <td class="fileOptions">
-                            <a href="{{ path('show_file', {'file': File.fileId}) }}">{% trans %}gui.show_file{% endtrans %}</a> 
+                            <a class="show_file" href="{{ path('show_file', {'file': File.fileId}) }}">{% trans %}gui.show_file{% endtrans %}</a> 
                             <a href="{{ path('download_file', {'file': File.fileId}) }}" class="fileOptionsDownloadLink">{% trans %}gui.download_file{% endtrans %}</a> 
                             <a href="{{ path('open_file', {'file': File.fileId}) }}" class="fileOptionsOpenLink">{% trans %}gui.open_file_in_browser{% endtrans %}</a> - 
                             <a href="{{ path('delete_file', {'file': File.fileId}) }}" class="remove-file" data-filename="{{ File.name }}">{% trans %}gui.remove_file{% endtrans %}</a>
@@ -79,6 +82,23 @@
             {% endfor %}
                 </tbody>
             </table>
+        </div>
+    </div>
+
+    <div id="filePreviewWindow" class="filePreview" style="display:none;">
+        <div class="background"></div>
+        <div class="window">
+            <div class="container panel">
+                <div class="toolbar">
+                    <button class="close">close</button>
+                </div>
+                <div class="content">
+                    <h2>Filename</h2>
+                    <a href="">{% trans %}gui.download_file{% endtrans %}</a> 
+                    <a href="">{% trans %}gui.open_file_in_browser{% endtrans %}</a> 
+                    <a href="">{% trans %}preview{% endtrans %}</a> 
+                </div>
+            </div>
         </div>
     </div>
 
@@ -146,6 +166,17 @@
                 } else {
                     simpleSearchDisable();
                 }
+            });
+            
+            // Option - Enable auto file preview
+            if($.jStorage.get('app.settings.enable_auto_file_preview', 'yes') === 'yes') {
+                $('#enableAutoFilePreviewCheckBox').attr('checked', 'checked');
+            }
+            
+            $('#enableAutoFilePreviewCheckBox').change(function(){
+                var option = ($(this).attr('checked') === 'checked') ? 'yes' : 'no';
+                $.jStorage.set('app.settings.enable_auto_file_preview', option);
+                log($.jStorage.get('app.settings.enable_auto_file_preview', 'yes'));
             });
         });
         

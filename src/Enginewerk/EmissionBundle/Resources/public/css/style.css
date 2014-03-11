@@ -2,6 +2,7 @@ html,
 body {
     margin: 0;
     padding: 0;
+    background-color: lightgrey;
 }
 
 #emissionSettingsContainerSwitch img {padding: 0px 5px 0 10px;}
@@ -39,6 +40,7 @@ body {
 #emissionApplicationContainer {
     width: 950px;
     margin: 0 auto;
+    background-color: white;
 }
 
 

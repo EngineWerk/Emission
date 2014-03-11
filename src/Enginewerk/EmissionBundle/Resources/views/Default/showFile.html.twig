@@ -10,16 +10,6 @@
 <link rel="stylesheet" href="{{ asset('bundles/enginewerkemission/vendor/Resumable/resumable.css') }}">
 {% endblock %}
 
-{% import '::macro.html.twig' as marco %}
-
 {% block body %}
-<div id="files" class="files">
-    <h2>{{ File.name }}</h2>
-    {% if File.checksum %}{% trans %}gui.file.checksum{% endtrans %}: {{ File.checksum }}<br />{% endif %}
-    {% trans %}gui.file.type{% endtrans %}: {{ File.type }}<br />
-    {% trans %}gui.file.size{% endtrans %}: {{ marco.bytesToSize(File.size) }}<br />
-    {% trans %}gui.click_to{% endtrans %}
-    <a href="{{ path('download_file', {'file': File.fileId}) }}">{% trans %}gui.download_file{% endtrans %}</a> 
-    <a href="{{ path('open_file', {'file': File.fileId}) }}">{% trans %}gui.open_file_in_browser{% endtrans %}</a> 
-</div>
+{% include "EnginewerkEmissionBundle:Default:showFileContent.html.twig" %}
 {% endblock %}

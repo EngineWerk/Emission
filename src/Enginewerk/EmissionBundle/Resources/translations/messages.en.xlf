@@ -6,6 +6,10 @@
         <source>gui.ask_before_delete_file</source>
         <target>Ask before delete file</target>
       </trans-unit>
+      <trans-unit id="f8ffb163ca53fd9150f5ec37657ece0d" resname="gui.auto_file_preview">
+        <source>gui.auto_file_preview</source>
+        <target>Enable auto file preview</target>
+      </trans-unit>
       <trans-unit id="3f381f1f4fdbfd080e90577f06597008" resname="gui.click_to">
         <source>gui.click_to</source>
         <target>Click to</target>
@@ -38,6 +42,10 @@
         <source>gui.open_settings</source>
         <target>Open settings</target>
       </trans-unit>
+      <trans-unit id="714a29cfb68c48249f9bc588bb808281" resname="gui.preview_file">
+        <source>gui.preview_file</source>
+        <target>preview file</target>
+      </trans-unit>
       <trans-unit id="67e051df489245772111e5615f4fb002" resname="gui.prompt_for_pasted_image_name">
         <source>gui.prompt_for_pasted_image_name</source>
         <target>Prompt for screenshot filename</target>
@@ -53,6 +61,10 @@
       <trans-unit id="680cd57db6e96aebc8cee1ef0b22a061" resname="gui.use_simple_search">
         <source>gui.use_simple_search</source>
         <target>Use Emission search tool instead of browser native</target>
+      </trans-unit>
+      <trans-unit id="5ebeb6065f64f2346dbb00ab789cf001" resname="preview">
+        <source>preview</source>
+        <target>preview</target>
       </trans-unit>
     </body>
   </file>
