@@ -3,22 +3,21 @@
 // Clipboard object. If not, we need to create a 
 // contenteditable element that catches all pasted data 
 
-$().ready(function() {
+$(document).ready( function(){
     
-    if (!window.Clipboard) {
-        var pasteCatcher = document.createElement("div");
+    var pasteCatcher = document.createElement("div");
 
-        // Firefox allows images to be pasted into contenteditable elements
-        pasteCatcher.setAttribute("contenteditable", "");
+    // Firefox allows images to be pasted into contenteditable elements
+    pasteCatcher.setAttribute("contenteditable", "");
 
-        // We can hide the element and append it to the body,
-        pasteCatcher.style.opacity = 0;
-        document.body.insertBefore(pasteCatcher, document.body.firstChild);
+    // We can hide the element and append it to the body,
+    pasteCatcher.style.opacity = 1;
+    pasteCatcher.style.position = 'fixed';
+    document.body.insertBefore(pasteCatcher, document.body.firstChild);
 
-        // as long as we make sure it is always in focus
-        pasteCatcher.focus();
-        document.addEventListener("click", function() { pasteCatcher.focus(); });
-    }
+    // as long as we make sure it is always in focus
+    pasteCatcher.focus();
+    document.addEventListener("click", function() { pasteCatcher.focus(); });
 
     // Add the paste event listener
     window.addEventListener("paste", pasteHandler);
@@ -51,8 +50,7 @@ $().ready(function() {
 
     /* Handle paste events */
     function pasteHandler(e) {
-       // We need to check if event.clipboardData is supported (Chrome)
-       if (window.Clipboard) {
+       if (e.clipboardData.items) {
           // Get the items from the clipboard
           var items = e.clipboardData.items;
           if (items) {
