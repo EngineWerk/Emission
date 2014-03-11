@@ -15,6 +15,5 @@ app/config/parameters.yml
 app/SymfonyRequirements.php
 
 #File storage directory
-app/local_fs/main/*
-app/local_fs/block/*
+app/local_fs/*
 *.php~
