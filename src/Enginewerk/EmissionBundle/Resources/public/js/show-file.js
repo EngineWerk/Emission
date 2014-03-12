@@ -88,6 +88,6 @@ function showFilepreviewFile(clickedObj, showContentBlock) {
     $('#iframePreview').height( showContentBlock.parent().height() - showFileContentBlockHeight - 68);
     
     setTimeout(function(){
-        $('#iframePreview').contents().find('body').css('max-width', '855px');
+        $('#iframePreview').contents().find('img').css('max-width', $('#iframePreview').width() + 'px');
     }, 500);
 }
