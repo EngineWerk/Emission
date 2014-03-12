@@ -55,3 +55,7 @@
 #filePreviewWindow div.container div.content h2 {
     word-break:break-all;
 }
+
+div.showFilePublic {
+    padding: 20px;
+}

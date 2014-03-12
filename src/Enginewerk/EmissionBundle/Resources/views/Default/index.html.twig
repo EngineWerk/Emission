@@ -3,13 +3,13 @@
 {% block javascripts %}
 <script src="{{ asset('bundles/enginewerkemission/vendor/jQuery/jquery-1.7.2.min.js') }}"></script>
 <script src="{{ asset('bundles/enginewerkemission/vendor/Resumable/resumable.js') }}"></script>
+<script src="{{ asset('bundles/enginewerkemission/js/resumableFileUpload.js') }}"></script>
 <script src="{{ asset('bundles/enginewerkemission/vendor/CryptoJS/md5.js') }}"></script>
 <script src="{{ asset('bundles/enginewerkemission/vendor/SparkMD5/spark-md5.min.js') }}"></script>
 <script src="{{ asset('bundles/enginewerkemission/vendor/jStorage/jstorage.js') }}"></script>
 <script src="{{ asset('bundles/enginewerkemission/js/base.js') }}"></script>
 <script src="{{ asset('bundles/enginewerkemission/js/pasteImageFromClipboard.js') }}"></script>
 <script src="{{ asset('bundles/enginewerkemission/js/app-response.js') }}"></script>
-<script src="{{ asset('bundles/enginewerkemission/js/resumableFileUpload.js') }}"></script>
 <script src="{{ asset('bundles/enginewerkemission/js/simple-search.js') }}"></script>
 <script src="{{ asset('bundles/enginewerkemission/js/show-file.js') }}"></script>
 {% endblock %}
@@ -68,7 +68,7 @@
                     </td>
                     {% if File.isComplete == 1 %}
                         <td class="fileOptions">
-                            <a class="show_file" href="{{ path('show_file', {'file': File.fileId}) }}">{% trans %}gui.show_file{% endtrans %}</a> 
+                            <a href="{{ path('show_file', {'file': File.fileId}) }}" class="show_file" data-show-file-content-href="{{ path('show_file_content', {'file': File.fileId}) }}">{% trans %}gui.show_file{% endtrans %}</a> 
                             <a href="{{ path('download_file', {'file': File.fileId}) }}" class="fileOptionsDownloadLink">{% trans %}gui.download_file{% endtrans %}</a> 
                             <a href="{{ path('open_file', {'file': File.fileId}) }}" class="fileOptionsOpenLink">{% trans %}gui.open_file_in_browser{% endtrans %}</a> - 
                             <a href="{{ path('delete_file', {'file': File.fileId}) }}" class="remove-file" data-filename="{{ File.name }}">{% trans %}gui.remove_file{% endtrans %}</a>

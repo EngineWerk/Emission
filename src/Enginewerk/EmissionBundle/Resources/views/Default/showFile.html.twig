@@ -8,8 +8,11 @@
 <link rel="stylesheet" href="{{ asset('bundles/enginewerkemission/css/style.css') }}">
 <link rel="stylesheet" href="{{ asset('bundles/enginewerkemission/css/font-style.css') }}">
 <link rel="stylesheet" href="{{ asset('bundles/enginewerkemission/vendor/Resumable/resumable.css') }}">
+<link rel="stylesheet" href="{{ asset('bundles/enginewerkemission/css/show-file.css') }}">
 {% endblock %}
 
 {% block body %}
+<div class="showFilePublic">
 {% include "EnginewerkEmissionBundle:Default:showFileContent.html.twig" %}
+</div>
 {% endblock %}

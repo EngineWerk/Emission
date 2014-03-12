@@ -1,4 +1,4 @@
-$(function(){
+$(document).ready( function(){
 
     $('a.show_file').live('click', function(event){
         getFileData($(this));
@@ -50,7 +50,7 @@ $(function(){
         cursorBusy();
 
         $.ajax({
-            url: clickedObj.attr('href')
+            url: clickedObj.attr('data-show-file-content-href')
             }).done(function ( json ) {
 
                 var app = new AppResponse(json);
