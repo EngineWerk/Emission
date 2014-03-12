@@ -29,10 +29,9 @@ class BinaryStorage
     }
     
     /**
-     * @param  \Symfony\Component\HttpFoundation\File\UploadedFile $uploadedFile
      * @return \Enginewerk\FSBundle\Entity\BinaryBlock
      */
-    public function put(UploadedFile $uploadedFile)
+    public function put($uploadedFile)
     {
         $checksum = md5_file($uploadedFile->getPathname());
         $size = $uploadedFile->getSize();
@@ -59,10 +58,7 @@ class BinaryStorage
      */
     public function get($key)
     {
-        $block = $this
-                ->getDoctrine()
-                ->getRepository('EnginewerkFSBundle:BinaryBlock')
-                ->findOneByChecksum($key);
+        $block = $this->getBlock($key);
         
         $file = new File();
         $file->setChecksum($block->getChecksum());
@@ -79,16 +75,25 @@ class BinaryStorage
         return $file;
     }
     
+    private function getBlock($key) {
+        return $this
+                ->getDoctrine()
+                ->getRepository('EnginewerkFSBundle:BinaryBlock')
+                ->findOneByChecksum($key);
+    }
+    
     public function delete($key)
     {
         $em = $this
                 ->getDoctrine()
                 ->getManager();
         
-        $block = $this
-                ->getDoctrine()
-                ->getRepository('EnginewerkFSBundle:BinaryBlock')
-                ->findOneByChecksum($key);
+        $block = $this->getBlock($key);
+        $file = $this->get($key);
+        
+        if (file_exists($file->getPathname())) {
+            unlink($file->getPathname());
+        }
         
         $em->remove($block);
         $em->flush();
