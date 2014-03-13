@@ -11,7 +11,7 @@ $(document).ready( function(){
     pasteCatcher.setAttribute("contenteditable", "");
 
     // We can hide the element and append it to the body,
-    pasteCatcher.style.opacity = 1;
+    pasteCatcher.style.opacity = 0;
     pasteCatcher.style.position = 'fixed';
     document.body.insertBefore(pasteCatcher, document.body.firstChild);
 
