@@ -56,8 +56,18 @@ $(function(){
                 r.upload();
 
                 if($('#fhash-' + fileNameHash + '').length === 0 ) {
+                    
+                    var tableRow = '<tr id="fhash-' + fileNameHash + '" data-search="' + file.name + '" > \n' + 
+                    '<td>' + 
+                        '<div class="fileName">' + file.name + '</div>' +
+                        '<div class="fileUploadedBy">' + file.uploaded_by + '</div>' +
+                        '<div class="fileSize">' + bytesToSize(file.size, 2) + '</div>' +
+                    '</td>' +
+                    '<td class="fileOptions">' + 
+                    '</td> \n' + 
+                '</tr>';
 
-                    var tableRow = '<tr id="fhash-' + fileNameHash + '"> \n' + 
+                    var tableRow_ = '<tr id="fhash-' + fileNameHash + '"> \n' + 
                         '<td class="fileName">' + file.name + '</td> \n' + 
                         '<td class="fileHashID"></td> \n' + 
                         '<td class="fileUploadedBy"></td> \n' + 
@@ -124,7 +134,12 @@ $(function(){
                         '<div class="fileUploadedBy">' + file.uploaded_by + '</div>' +
                         '<div class="fileSize">' + bytesToSize(file.size, 2) + '</div>' +
                     '</td>' +
-                    '<td class="fileOptions"><a href="' + file.show_url + '">show</a> <a href="' + file.download_url + '" class="fileOptionsDownloadLink">save</a> <a href="' + file.open_url + '" class="fileOptionsOpenLink">open</a> - <a href="' + file.delete_url + '" class="remove-file">remove</a></td> \n' + 
+                    '<td class="fileOptions">' + 
+                        '<a href="' + file.show_url + '" data-show-file-content-href="' + file.show_url.replace('/f/', '/fc/') + '" class="show_file">show</a> ' +
+                        '<a href="' + file.download_url + '" class="fileOptionsDownloadLink">save</a> ' + 
+                        '<a href="' + file.open_url + '" class="fileOptionsOpenLink">open</a> - ' +
+                        '<a href="' + file.delete_url + '" class="remove-file">remove</a>' + 
+                    '</td> \n' + 
                 '</tr>';
 
                     $('#fhash-' + fileNameHash).replaceWith(tableRow);
