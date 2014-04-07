@@ -396,29 +396,6 @@ class File
     }
 
     /**
-     * Set uploadedBy
-     *
-     * @param  string $uploadedBy
-     * @return File
-     */
-    public function setUploadedBy($uploadedBy)
-    {
-        $this->uploadedBy = $uploadedBy;
-
-        return $this;
-    }
-
-    /**
-     * Get uploadedBy
-     *
-     * @return string
-     */
-    public function getUploadedBy()
-    {
-        return $this->uploadedBy;
-    }
-
-    /**
      * Set checksum
      *
      * @param  string $checksum
