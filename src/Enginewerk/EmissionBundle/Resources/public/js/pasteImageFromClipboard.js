@@ -15,10 +15,6 @@ $(document).ready( function(){
     pasteCatcher.style.position = 'fixed';
     document.body.insertBefore(pasteCatcher, document.body.firstChild);
 
-    // as long as we make sure it is always in focus
-    pasteCatcher.focus();
-    document.addEventListener("click", function() { pasteCatcher.focus(); });
-
     // Add the paste event listener
     window.addEventListener("paste", pasteHandler);
     
@@ -47,9 +43,12 @@ $(document).ready( function(){
         window.resumable.addFile(file);
     }
 
-
     /* Handle paste events */
     function pasteHandler(e) {
+        
+        // Focus on paste Catcher - helps in FF
+        pasteCatcher.focus();
+        
        if (e.clipboardData.items) {
           // Get the items from the clipboard
           var items = e.clipboardData.items;
