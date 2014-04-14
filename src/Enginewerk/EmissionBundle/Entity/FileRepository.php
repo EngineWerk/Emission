@@ -34,12 +34,19 @@ class FileRepository extends EntityRepository
         return $query->getResult();
     }
     
-    public function getFilesForJsonApi()
+    public function getFilesForJsonApi($createdAfter = null)
     {
-        $query = $this->createQueryBuilder('f')
-                ->select('f.fileId, f.name, f.checksum, f.size, f.type, f.expirationDate, f.uploadedBy, f.isComplete')
-                ->orderBy('f.id', 'DESC')
-                ->getQuery();
+        $queryBuilder = $this->createQueryBuilder('f')
+                ->select('f.fileId, f.name, f.checksum, f.size, f.type, f.expirationDate, f.isComplete')
+                ->orderBy('f.id', 'DESC');
+        
+        if($createdAfter) {
+            $queryBuilder
+                    ->where('f.createdAt > ?1')
+                    ->setParameter(1, $createdAfter->format('Y-m-d H:i:s'));
+        }
+        
+        $query = $queryBuilder->getQuery();
 
         return $query->getArrayResult();
     }

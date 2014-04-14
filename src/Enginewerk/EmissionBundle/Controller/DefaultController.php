@@ -280,14 +280,16 @@ class DefaultController extends Controller
     }
     
     /**
-     * @Route("/files")
+     * @Route("/files/{created_after}", defaults={"created_after" = null})
      */
-    public function filesAction()
+    public function filesAction($created_after)
     {
+        $createdAfter = ($created_after) ? new \DateTime($created_after) : null;
+
         $files = $this
                 ->getDoctrine()
                 ->getRepository('EnginewerkEmissionBundle:File')
-                ->getFilesForJsonApi();
+                ->getFilesForJsonApi($createdAfter);
         
         $appResponse = new AppResponse();
         $appResponse->success();
