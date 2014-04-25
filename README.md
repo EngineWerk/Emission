@@ -1,7 +1,6 @@
 Emission
 ========================
-Test [![Build Status](https://travis-ci.org/EngineWerk/Emission.svg?branch=master)](https://travis-ci.org/EngineWerk/Emission)
-========================
+Test [![Build Status](https://travis-ci.org/EngineWerk/Emission.svg?branch=master)](https://travis-ci.org/EngineWerk/Emission).
 
 Fast store and share files easily.
 Take advantage of LAN bandwidth for fast file sharing.  
