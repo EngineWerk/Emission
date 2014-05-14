@@ -20,12 +20,13 @@ Clone repository.
     
 Install dependencies via [composer](https://getcomposer.org/download/).
 
+    cd ./emission
     composer install
 
 You will be asked to provide:
 
 - Database connection parameters
-- Google OAuth 2.0 parameters (Web application Client ID, Client secret). Create with [Google Cloud Console](https://cloud.google.com/console/project)
+- Google OAuth 2.0 parameters (Web application Client ID, Client secret). Create with [Google Cloud Console](https://cloud.google.com/console/project) (required unless you don`t want to enable OAuth login)
 
 Follow:
 
