@@ -1,6 +1,6 @@
 Emission
 ========================
-Test [![Build Status](https://travis-ci.org/EngineWerk/Emission.svg?branch=master)](https://travis-ci.org/EngineWerk/Emission).
+[![Build Status](https://travis-ci.org/EngineWerk/Emission.svg?branch=master)](https://travis-ci.org/EngineWerk/Emission)
 
 Fast store and share files easily.
 Take advantage of LAN bandwidth for fast file sharing.  
@@ -8,7 +8,7 @@ Take advantage of LAN bandwidth for fast file sharing.
 Features
 ========
 - Large files (~GB) upload via browser
-- Chunked, resumable upload (using [Resumable.js](https://github.com/23/resumable.js))
+- Resumable upload (using [Resumable.js](https://github.com/23/resumable.js))
 - Upload images via clipboard paste (Ctrl+v)
 
 Requirements
