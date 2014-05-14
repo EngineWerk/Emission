@@ -2,10 +2,9 @@
 
 namespace Enginewerk\FSBundle\Storage;
 
-use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\HttpFoundation\File\File;
 use Enginewerk\FSBundle\Entity\BinaryBlock;
 use Doctrine\Bundle\DoctrineBundle\Registry;
-use Enginewerk\FSBundle\Storage\File;
 
 /**
  * Description of BinaryStorage
@@ -29,14 +28,18 @@ class BinaryStorage
     }
     
     /**
-     * @return \Enginewerk\FSBundle\Entity\BinaryBlock
+     * 
+     * @param type $key
+     * @param \Symfony\Component\HttpFoundation\File\File $uploadedFile
+     * @return integer
      */
-    public function put($uploadedFile)
+    public function put($key, $uploadedFile)
     {
         $checksum = md5_file($uploadedFile->getPathname());
         $size = $uploadedFile->getSize();
         
         $block = new BinaryBlock();
+        $block->setUrn($key);
         $block->setChecksum($checksum);
         $block->setSize($size);
 
@@ -45,41 +48,39 @@ class BinaryStorage
                 ->getManager()
                 ->persist($block);
 
-        $path = $this->getStorageRootDirectory() . DIRECTORY_SEPARATOR . $this->getDeepDirFromFileName($checksum);
-        $uploadedFile->move($path, $checksum);
+        $path = $this->getStorageRootDirectory() . DIRECTORY_SEPARATOR . $this->getDeepDirFromFileName($key);
+        $uploadedFile->move($path, $key);
         
-        return $block;
+        return $size;
     }
     
     /**
      * 
      * @param string $key
-     * @return Enginewerk\FSBundle\Storage\File
+     * 
+     * @return \Symfony\Component\HttpFoundation\File\File
      */
     public function get($key)
     {
         $block = $this->getBlock($key);
         
-        $file = new File();
-        $file->setChecksum($block->getChecksum());
-        
         $pathname = implode(DIRECTORY_SEPARATOR, array(
             $this->getStorageRootDirectory(), 
-            $this->getDeepDirFromFileName($block->getChecksum()), 
-            $block->getChecksum())
+            $this->getDeepDirFromFileName($block->getUrn()), 
+            $block->getUrn())
                 );
         
-        $file->setPathname($pathname);
-        $file->setSize($block->getSize());
+        $file = new File($pathname);
 
         return $file;
     }
     
-    private function getBlock($key) {
+    private function getBlock($key) 
+    {
         return $this
                 ->getDoctrine()
                 ->getRepository('EnginewerkFSBundle:BinaryBlock')
-                ->findOneByChecksum($key);
+                ->findOneByUrn($key);
     }
     
     public function delete($key)
@@ -99,7 +100,7 @@ class BinaryStorage
         $em->flush();
     }
     
-    private function getStorageRootDirectory()
+    public function getStorageRootDirectory()
     {
         return $this->storageRootDirectory;
     }

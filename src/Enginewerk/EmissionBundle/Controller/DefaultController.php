@@ -29,9 +29,8 @@ class DefaultController extends Controller
     public function indexAction()
     {
         $files = $this
-                ->getDoctrine()
-                ->getRepository('EnginewerkEmissionBundle:File')
-                ->getFiles();
+                ->get('emission_file_storage')
+                ->findAll();
 
         $fileBlockForm = $this->createForm(new ResumableFileBlockType());
         $fileForm = $this->createForm(new ResumableFileType());
@@ -49,9 +48,8 @@ class DefaultController extends Controller
     public function showFileAction(Request $request)
     {
         $file = $this
-                ->getDoctrine()
-                ->getRepository('EnginewerkEmissionBundle:File')
-                ->findOneBy(array('fileId' => $request->get('file')));
+                ->get('emission_file_storage')
+                ->find($request->get('file'));
 
         if (!$file) {
             throw $this->createNotFoundException(sprintf('File #%s not found.', $request->get('file')));
@@ -69,9 +67,8 @@ class DefaultController extends Controller
     public function showFileContentAction(Request $request)
     {
         $file = $this
-                ->getDoctrine()
-                ->getRepository('EnginewerkEmissionBundle:File')
-                ->findOneBy(array('fileId' => $request->get('file')));
+                ->get('emission_file_storage')
+                ->find($request->get('file'));
 
         if (!$file) {
             throw $this->createNotFoundException(sprintf('File #%s not found.', $request->get('file')));
@@ -94,9 +91,8 @@ class DefaultController extends Controller
     {
         /** @var $file \Enginewerk\EmissionBundle\Entity\File **/
         $file = $this
-                ->getDoctrine()
-                ->getRepository('EnginewerkEmissionBundle:File')
-                ->findOneBy(array('fileId' => $request->get('file')));
+                ->get('emission_file_storage')
+                ->find($request->get('file'));
 
         if (null === $file) {
             throw $this->createNotFoundException(sprintf('File #%s not found.', $request->get('file')));
@@ -109,6 +105,8 @@ class DefaultController extends Controller
                 ->findBy(array('fileId' => $file->getId()), array('rangeStart' => 'ASC'));
 
         $storage = $this->get('enginewerk_bbs');
+        /* @var $storage Enginewerk\FSBundle\Storage\BinaryStorage */
+        
         $blocks = array();
         foreach ($fileBlocks as $fileBlock) {
             $block = $storage->get($fileBlock->getFileHash());
@@ -149,9 +147,8 @@ class DefaultController extends Controller
 
         /** @var $file \Enginewerk\EmissionBundle\Entity\File **/
         $file = $this
-                ->getDoctrine()
-                ->getRepository('EnginewerkEmissionBundle:File')
-                ->findOneBy(array('fileId' => $request->get('file')));
+                ->get('emission_file_storage')
+                ->find($request->get('file'));
         
         $fileBlockRepository = $this
                 ->getDoctrine()
@@ -200,9 +197,8 @@ class DefaultController extends Controller
 
         /** @var $file \Enginewerk\EmissionBundle\Entity\File **/
         $file = $this
-                ->getDoctrine()
-                ->getRepository('EnginewerkEmissionBundle:File')
-                ->findOneBy(array('fileId' => $request->get('file')));
+                ->get('emission_file_storage')
+                ->find($request->get('file'));
 
         if (!$file) {
             $appResponse->error(sprintf('File #%s not found.', $request->get('file')));

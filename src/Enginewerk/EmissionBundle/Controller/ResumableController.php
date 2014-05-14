@@ -90,7 +90,6 @@ class ResumableController extends Controller
 
         // No? Lets create one
         if (null === $file) {
-            
             $request->files->set('file', $request->files->get('form'));
             $request->request->set('file', $fileFormRequest);
             $fileForm = $this->createForm(new ResumableFileType());
@@ -135,12 +134,15 @@ class ResumableController extends Controller
             $fileBlockForm->handleRequest($request);
 
             $uploadedFile = $fileBlockForm->get('uploadedFile')->getData();
-            $block = $this->get('enginewerk_bbs')->put($uploadedFile, $key = null);
+            /* @var $uploadedFile \Symfony\Component\HttpFoundation\File\UploadedFile  */
+            $key = sha1(microtime() . $uploadedFile->getPathname());
+            
+            $size = $this->get('enginewerk_bbs')->put($key, $uploadedFile);
 
             $fileBlock = $fileBlockForm->getData();
             $fileBlock->setFile($file);
-            $fileBlock->setFileHash($block->getChecksum());
-            $fileBlock->setSize($block->getSize());
+            $fileBlock->setFileHash($key);
+            $fileBlock->setSize($size);
             
             $em->persist($fileBlock);
             $em->flush();
