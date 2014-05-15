@@ -27,7 +27,7 @@ $(function(){
         cursorBusy();
 
         var file = resumable.file;
-        resumable.pause();
+        resumable.pause(); // Pasue particular file to compute hash
 
         var blobSlice = File.prototype.slice || File.prototype.mozSlice || File.prototype.webkitSlice,
         chunkSize = maxChunkSize,                               // read in chunks of 2MB
@@ -36,6 +36,8 @@ $(function(){
         spark = new SparkMD5.ArrayBuffer(),
         frOnload = function(e) {
             log("read chunk");
+            info("e.target.result", e.target.result);
+            log(e.target.result);
             spark.append(e.target.result);                 // append array buffer
             log("read chunk-x");
             var md5 = SparkMD5.ArrayBuffer.hash(e.target.result);
@@ -52,7 +54,7 @@ $(function(){
                 info(file.name, fileNameHash);
                 pendingFilesNumber++;
 
-                resumable.pause();
+                resumable.pause(); // Resume upload of particular file
                 r.upload();
 
                 if($('#fhash-' + fileNameHash + '').length === 0 ) {
@@ -67,24 +69,13 @@ $(function(){
                     '</td> \n' + 
                 '</tr>';
 
-                    var tableRow_ = '<tr id="fhash-' + fileNameHash + '"> \n' + 
-                        '<td class="fileName">' + file.name + '</td> \n' + 
-                        '<td class="fileHashID"></td> \n' + 
-                        '<td class="fileUploadedBy"></td> \n' + 
-                        '<td class="fileType"></td> \n' + 
-                        '<td class="fileSize">' + bytesToSize(file.size, 2) + '</td> \n' + 
-                        '<td class="fileExpirationDate"></td> \n' + 
-                        '<td class="fileUpdatedAt"></td> \n' + 
-                        '<td class="fileCreatedAt"></td> \n' + 
-                        '<td></td> \n' + 
-                    '</tr>';
-
                     $('#filesTable tbody').prepend(tableRow);
                 }
             }
         },
-        frOnerror = function () {
-            log('Md5 compute error');
+        frOnerror = function (e) {
+            info('MD5 computation error', e);
+            cursorNormal();
         };
 
         function loadNext() {
@@ -108,7 +99,7 @@ $(function(){
 
     r.on('fileSuccess', function(Resumable, jsonTextResponse) {
 
-        log('Total files: ' + r.files.length);
+        info('Total files: ', r.files.length);
 
         try {
             var app = new AppResponse(null, jsonTextResponse);
