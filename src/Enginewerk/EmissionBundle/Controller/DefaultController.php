@@ -13,8 +13,6 @@ use Enginewerk\EmissionBundle\Response\AppResponse;
 use Enginewerk\EmissionBundle\Form\Type\ResumableFileType;
 use Enginewerk\EmissionBundle\Form\Type\ResumableFileBlockType;
 
-use Enginewerk\EmissionBundle\FileResponse\ChunkedFile as ResponseFile;
-
 /**
  * DefaultController
  *
@@ -47,17 +45,16 @@ class DefaultController extends Controller
      */
     public function showFileAction(Request $request)
     {
-        $file = $this
-                ->get('emission_file_storage')
-                ->find($request->get('file'));
+        $efs = $this->get('emission_file_storage');
+        /* @var $efs \Enginewerk\EmissionBundle\Storage\FileStorage */
 
-        if (!$file) {
+        if (null === ($file = $efs->find($request->get('file')))) {
             throw $this->createNotFoundException(sprintf('File #%s not found.', $request->get('file')));
         }
 
         return array('File' => $file);
     }
-    
+
     /**
      * @Route("/fc/{file}", requirements={"file"}, name="show_file_content")
      *
@@ -66,18 +63,17 @@ class DefaultController extends Controller
      */
     public function showFileContentAction(Request $request)
     {
-        $file = $this
-                ->get('emission_file_storage')
-                ->find($request->get('file'));
+        $efs = $this->get('emission_file_storage');
+        /* @var $efs \Enginewerk\EmissionBundle\Storage\FileStorage */
 
-        if (!$file) {
+        if (null === ($file = $efs->find($request->get('file')))) {
             throw $this->createNotFoundException(sprintf('File #%s not found.', $request->get('file')));
         }
 
         $appResponse = new AppResponse();
         $appResponse->success();
         $appResponse->data($this->renderView('EnginewerkEmissionBundle:Default:showFileContent.html.twig', array('File' => $file)));
-        
+
         return new JsonResponse($appResponse->response(), 200);
     }
 
@@ -89,33 +85,14 @@ class DefaultController extends Controller
      */
     public function downloadFileAction(Request $request)
     {
-        /** @var $file \Enginewerk\EmissionBundle\Entity\File **/
-        $file = $this
-                ->get('emission_file_storage')
-                ->find($request->get('file'));
+        $efs = $this->get('emission_file_storage');
+        /* @var $efs \Enginewerk\EmissionBundle\Storage\FileStorage */
 
-        if (null === $file) {
+        if (null === ($file = $efs->find($request->get('file')))) {
             throw $this->createNotFoundException(sprintf('File #%s not found.', $request->get('file')));
         }
 
-        // to RF1
-        $fileBlocks = $this
-                ->getDoctrine()
-                ->getRepository('EnginewerkEmissionBundle:FileBlock')
-                ->findBy(array('fileId' => $file->getId()), array('rangeStart' => 'ASC'));
-
-        $storage = $this->get('enginewerk_bbs');
-        /* @var $storage Enginewerk\FSBundle\Storage\BinaryStorage */
-        
-        $blocks = array();
-        foreach ($fileBlocks as $fileBlock) {
-            $block = $storage->get($fileBlock->getFileHash());
-            $blocks[] = $block;
-        }
-        
-        $responseFile = new ResponseFile();
-        $responseFile->setChunks($blocks);
-        // end to RF1
+        $responseFile = $efs->getFileForDownload($request->get('file'));
 
         // TODO Download set_time_limit
         set_time_limit(0);
@@ -145,38 +122,17 @@ class DefaultController extends Controller
     {
         $appResponse = new AppResponse();
 
-        /** @var $file \Enginewerk\EmissionBundle\Entity\File **/
-        $file = $this
-                ->get('emission_file_storage')
-                ->find($request->get('file'));
-        
-        $fileBlockRepository = $this
-                ->getDoctrine()
-                ->getRepository('EnginewerkEmissionBundle:FileBlock');
-        
-        $binaryBlocksToRemove = array();
-        foreach ($file->getFileBlocks() as $fileBlock) {
-            $usedBlocks = $fileBlockRepository->getUsedBlocksNumber($fileBlock->getFileHash());
-            if(null === $usedBlocks || 1 == $usedBlocks) {
-                $binaryBlocksToRemove[] = $fileBlock->getFileHash();
-            }
-        }
+        $efs = $this->get('emission_file_storage');
+        /* @var $efs \Enginewerk\EmissionBundle\Storage\FileStorage */
 
-        if (!$file) {
+        if (null === $efs->find($request->get('file'))) {
             $appResponse->error(sprintf('File #%s not found.', $request->get('file')));
+
             return new JsonResponse($appResponse->response(), 200);
         }
-        
-        try {
-            $em = $this
-                    ->getDoctrine()
-                    ->getManager();
-            $em->remove($file);
-            $em->flush();
-            foreach ($binaryBlocksToRemove as $blockKey) {
-                $this->get('enginewerk_bbs')->delete($blockKey);
-            }
 
+        try {
+            $efs->delete($request->get('file'));
             $appResponse->success();
 
         } catch (Exception $ex) {
@@ -195,12 +151,10 @@ class DefaultController extends Controller
     {
         $appResponse = new AppResponse();
 
-        /** @var $file \Enginewerk\EmissionBundle\Entity\File **/
-        $file = $this
-                ->get('emission_file_storage')
-                ->find($request->get('file'));
+        $efs = $this->get('emission_file_storage');
+        /* @var $efs \Enginewerk\EmissionBundle\Storage\FileStorage */
 
-        if (!$file) {
+        if (null === $efs->find($request->get('file'))) {
             $appResponse->error(sprintf('File #%s not found.', $request->get('file')));
         } else {
             if ('never' == $request->get('date')) {
@@ -209,13 +163,9 @@ class DefaultController extends Controller
                 $expirationDate = new \DateTime($request->get('date'));
             }
 
-            $em = $this
-                    ->getDoctrine()
-                    ->getManager();
-            $file->setExpirationDate($expirationDate);
-
             try {
-                $em->flush();
+                $efs->alterExpirationDate($request->get('file'), $expirationDate);
+
                 $appResponse->success();
 
             } catch (Exception $ex) {
@@ -234,47 +184,21 @@ class DefaultController extends Controller
     {
         $appResponse = new AppResponse();
 
-        /** @var $repository \Enginewerk\EmissionBundle\Entity\FileRepository **/
-        $repository = $this
-                ->getDoctrine()
-                ->getRepository('EnginewerkEmissionBundle:File');
+        $efs = $this->get('emission_file_storage');
+        /* @var $efs \Enginewerk\EmissionBundle\Storage\FileStorage */
 
-        /** @var $replaceFile \Enginewerk\EmissionBundle\Entity\File **/
-        $replaceFile = $repository->findOneByFileId($replace);
-        if (!$replaceFile) {
-            throw $this->createNotFoundException(sprintf('File #%s not found.', $replace));
-        }
+        try {
+            $efs->replace($replace, $replacement);
+            $appResponse->success('File replaced.');
 
-        /** @var $replacementFile \Enginewerk\EmissionBundle\Entity\File **/
-        $replacementFile = $repository->findOneByFileId($replacement);
-        if (!$replacementFile) {
-            throw $this->createNotFoundException(sprintf('File #%s not found.', $replace));
-        }
-
-        if ($replaceFile->getUploadedBy() == $replacementFile->getUploadedBy()) {
-
-            $em = $this
-                    ->getDoctrine()
-                    ->getManager();
-            $replacementFile->setFileId($replaceFile->getFileId());
-            // Nie działa z usługą BBS
-            $em->remove($replaceFile);
-
-            try {
-                $em->flush();
-                $appResponse->success('File replaced.');
-            } catch (Exception $ex) {
-                $this->get('logger')->error(sprintf('Can`t replace file. [%s] %s', get_class($ex), $ex->getMessage()));
-                $appResponse->error(sprintf('Can`t replace file.'));
-            }
-
-        } else {
-            $appResponse->error(sprintf('Only owner can replace file.'));
+        } catch (Exception $ex) {
+            $this->get('logger')->error(sprintf('Can`t replace file. [%s] %s', get_class($ex), $ex->getMessage()));
+            $appResponse->error(sprintf('Can`t replace file.'));
         }
 
         return new JsonResponse($appResponse->response());
     }
-    
+
     /**
      * @Route("/files/{created_after}", defaults={"created_after" = null})
      */
@@ -286,7 +210,7 @@ class DefaultController extends Controller
                 ->getDoctrine()
                 ->getRepository('EnginewerkEmissionBundle:File')
                 ->getFilesForJsonApi($createdAfter);
-        
+
         $appResponse = new AppResponse();
         $appResponse->success();
         $appResponse->data($files);
