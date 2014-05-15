@@ -1,38 +1,42 @@
 Emission
-========================
+====
+[![Build Status](https://travis-ci.org/EngineWerk/Emission.svg?branch=master)](https://travis-ci.org/EngineWerk/Emission)
 
 Fast store and share files easily.
 Take advantage of LAN bandwidth for fast file sharing.  
 
-Features
-========
+###Features
 - Large files (~GB) upload via browser
-- Chunked, resumable upload (using [Resumable.js](https://github.com/23/resumable.js))
+- Resumable upload (using [Resumable.js](https://github.com/23/resumable.js))
 - Upload images via clipboard paste (Ctrl+v)
 
-Requirements
-========
+###Requirements
 PHP >= 5.3.3
 
-Installation
-========
+###Installation
 Clone repository.
 
     git clone https://github.com/EngineWerk/Emission.git emission
     
-Install dependencies via composer.
+Install dependencies via [composer](https://getcomposer.org/download/).
 
+    cd ./emission
     composer install
 
 You will be asked to provide:
 
 - Database connection parameters
-- Google OAuth 2.0 parameters (Web application Client ID, Client secret). Create with [Google Cloud Console](https://cloud.google.com/console/project)
+- Google OAuth 2.0 parameters (Web application Client ID, Client secret). Create with [Google Cloud Console](https://cloud.google.com/console/project) (required unless you don`t want to enable OAuth login)
+
+Follow:
+
+- Symfony`s [permissions setup](http://symfony.com/doc/current/book/installation.html#configuration-and-setup)
+- webserver [configuration](http://symfony.com/doc/current/cookbook/configuration/web_server_configuration.html)
     
 Create database tables.
 
     app/console dotrine:schema:update --force
 
-Generate user invitation codes.
+Generate user invitation code.
 
     app/console invitation:add user@acme.com
