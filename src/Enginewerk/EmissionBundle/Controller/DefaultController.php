@@ -32,8 +32,25 @@ class DefaultController extends Controller
 
         $fileBlockForm = $this->createForm(new ResumableFileBlockType());
         $fileForm = $this->createForm(new ResumableFileType());
+        
+        $capabilities = array(
+            'memory_limit' => ini_get('memory_limit'),
+            'post_max_size' => ini_get('post_max_size'),
+            'upload_max_filesize' => ini_get('upload_max_filesize'),
+            'browser_file_memory_limit' => $this->container->getParameter('app.uploader_max_chunk_size')
+            );
+        
+        $uploaderCapabilities = $capabilities;
+        sort($uploaderCapabilities, SORT_NUMERIC);
+        $maxUploadFileSize = (int) $uploaderCapabilities[0];
 
-        return array('Files' => $files, 'FileBlockForm' => $fileBlockForm->createView(), 'FileForm' => $fileForm->createView());
+        return array(
+            'Files' => $files, 
+            'FileBlockForm' => $fileBlockForm->createView(), 
+            'FileForm' => $fileForm->createView(),
+            'Capabilities' => $capabilities,
+            'MaxUploadFileSize' => $maxUploadFileSize
+                );
     }
 
     /**
