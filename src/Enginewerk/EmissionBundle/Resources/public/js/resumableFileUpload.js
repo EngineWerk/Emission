@@ -21,7 +21,7 @@ $(function(){
     }
 
     r.assignBrowse(document.getElementById('browse'));
-    r.assignDrop(document.getElementById('emissionApplicationContainer'));
+    r.assignDrop(document.getElementById('dropbox'));
 
     r.on('fileAdded', function(resumable, event) {
         cursorBusy();
@@ -134,25 +134,6 @@ $(function(){
                 '</tr>';
 
                     $('#fhash-' + fileNameHash).replaceWith(tableRow);
-
-                    pendingFilesNumber--;
-
-                    if(pendingFilesNumber === 0) {
-
-                        cursorNormal();
-                        setTimeout(function() {
-
-                            $('#dropbox_progress div.progressHolder').fadeTo(200, 0.01, function(){
-                                setTimeout(function(){
-                                    $('#dropbox_progress').find('.progress').width(0);
-                                    setTimeout(function(){
-                                        $('#dropbox_progress div.progressHolder').fadeTo(100, 1);
-                                    }, 200);
-                                }, 300);
-                            });
-                         }, 100);
-                    }
-
                 }
 
             } else {
@@ -168,6 +149,25 @@ $(function(){
                     alert('Unexpectred error occured');
                 }
             }
+
+            pendingFilesNumber--;
+
+            if(pendingFilesNumber === 0) {
+
+                cursorNormal();
+                setTimeout(function() {
+
+                    $('#dropbox_progress div.progressHolder').fadeTo(200, 0.01, function(){
+                        setTimeout(function(){
+                            $('#dropbox_progress').find('.progress').width(0);
+                            setTimeout(function(){
+                                $('#dropbox_progress div.progressHolder').fadeTo(100, 1);
+                            }, 200);
+                        }, 300);
+                    });
+                 }, 100);
+            }
+                    
         } else {
             alert('Unexpectred error occured');
         }
