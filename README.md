@@ -1,9 +1,11 @@
 Emission
 ====
+Web browser file sharing application.
+
 [![Build Status](https://travis-ci.org/EngineWerk/Emission.svg?branch=master)](https://travis-ci.org/EngineWerk/Emission)
 
 ###Features
-- Large files (~GB) upload via browser
+- Large files (~GB) upload
 - Resumable upload (using [Resumable.js](https://github.com/23/resumable.js))
 - Upload images via clipboard paste (Ctrl+v)
 
