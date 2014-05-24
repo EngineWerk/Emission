@@ -16,27 +16,26 @@ class StorageService
      * @var \Doctrine\Bundle\DoctrineBundle\Registry
      */
     protected $doctrine;
-    
-    protected $storage;
 
+    protected $storage;
 
     public function __construct(Registry $doctrine, $storage)
     {
         $this->doctrine = $doctrine;
         $this->storage = $storage;
     }
-    
+
     /**
-     * 
-     * @param type $key
-     * @param \Symfony\Component\HttpFoundation\File\File $uploadedFile
+     *
+     * @param  type                                        $key
+     * @param  \Symfony\Component\HttpFoundation\File\File $uploadedFile
      * @return integer
      */
     public function put($key, $uploadedFile)
     {
         $checksum = md5_file($uploadedFile->getPathname());
         $size = $uploadedFile->getSize();
-        
+
         $block = new BinaryBlock();
         $block->setUrn($key);
         $block->setChecksum($checksum);
@@ -46,16 +45,18 @@ class StorageService
                 ->getDoctrine()
                 ->getManager()
                 ->persist($block);
-        
-        $this->storage->put($key, $uploadedFile);
-        
+
+        $this
+                ->storage
+                ->put($key, $uploadedFile);
+
         return $size;
     }
-    
+
     /**
-     * 
+     *
      * @param string $key
-     * 
+     *
      * @return \Symfony\Component\HttpFoundation\File\File
      */
     public function get($key)
@@ -65,31 +66,31 @@ class StorageService
 
         return $file;
     }
-    
-    private function getBlock($key) 
+
+    private function getBlock($key)
     {
         return $this
                 ->getDoctrine()
                 ->getRepository('EnginewerkFSBundle:BinaryBlock')
                 ->findOneByUrn($key);
     }
-    
+
     public function delete($key)
     {
         $em = $this
                 ->getDoctrine()
                 ->getManager();
-        
+
         $block = $this->getBlock($key);
-        
+
         $this->storage->delete($block->getUrn());
-        
+
         $em->remove($block);
         $em->flush();
     }
-    
+
     /**
-     * 
+     *
      * @return \Doctrine\Bundle\DoctrineBundle\Registry
      */
     private function getDoctrine()
