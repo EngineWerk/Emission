@@ -15,11 +15,11 @@ class LocalStorage implements StorageInterface
     {
         $this->storageRootDirectory = $storageRootDirectory;
     }
-    
+
     /**
-     * 
-     * @param type $key
-     * @param \Symfony\Component\HttpFoundation\File\File $uploadedFile
+     *
+     * @param  type                                        $key
+     * @param  \Symfony\Component\HttpFoundation\File\File $uploadedFile
      * @return integer
      */
     public function put($key, $uploadedFile)
@@ -27,24 +27,24 @@ class LocalStorage implements StorageInterface
         $size = $uploadedFile->getSize();
         $path = $this->getStorageRootDirectory() . DIRECTORY_SEPARATOR . $this->getDeepDirFromFileName($key);
         $uploadedFile->move($path, $key);
-        
+
         return $size;
     }
-    
+
     /**
-     * 
+     *
      * @param string $key
-     * 
+     *
      * @return \Symfony\Component\HttpFoundation\File\File
      */
     public function get($key)
-    {         
+    {
         $pathname = implode(DIRECTORY_SEPARATOR, array(
-            $this->getStorageRootDirectory(), 
-            $this->getDeepDirFromFileName($key), 
+            $this->getStorageRootDirectory(),
+            $this->getDeepDirFromFileName($key),
             $key)
                 );
-        
+
         $file = new File($pathname);
 
         return $file;
@@ -56,7 +56,7 @@ class LocalStorage implements StorageInterface
             unlink($key);
         }
     }
-    
+
     private function getStorageRootDirectory()
     {
         return $this->storageRootDirectory;
