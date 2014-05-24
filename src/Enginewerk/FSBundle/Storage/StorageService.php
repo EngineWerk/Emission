@@ -57,7 +57,7 @@ class StorageService
      *
      * @param string $key
      *
-     * @return \Symfony\Component\HttpFoundation\File\File
+     * @return \Enginewerk\FSBundle\Storage\File
      */
     public function get($key)
     {

@@ -97,7 +97,7 @@ services:
     session.handler.pdo:
         class:     Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler
         arguments: ["@pdo", "%pdo.db_options%"] 
-        
+               
 fos_user:
     db_driver: orm
     firewall_name: secure_area
@@ -107,7 +107,18 @@ fos_user:
             enabled:    false # change to true for required email confirmation
         form:
             type: enginewerk_user_registration            
-    
+
+knp_gaufrette:
+    adapters:
+        data_local:
+            local:
+                directory:  "%kernel.root_dir%/local_fs/binary/"         
+    filesystems:
+        binary_storage:
+            adapter:        data_local
+            alias:          binary_storage         
+    stream_wrapper: ~
+                
 hwi_oauth:
     firewall_name: secured_area
     fosub:

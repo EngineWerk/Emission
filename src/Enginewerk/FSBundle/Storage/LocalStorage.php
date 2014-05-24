@@ -2,8 +2,6 @@
 
 namespace Enginewerk\FSBundle\Storage;
 
-use Symfony\Component\HttpFoundation\File\File;
-
 /**
  * Description of LocalStorage
  *
@@ -35,7 +33,7 @@ class LocalStorage implements StorageInterface
      *
      * @param string $key
      *
-     * @return \Symfony\Component\HttpFoundation\File\File
+     * @return \Enginewerk\FSBundle\Storage\File
      */
     public function get($key)
     {

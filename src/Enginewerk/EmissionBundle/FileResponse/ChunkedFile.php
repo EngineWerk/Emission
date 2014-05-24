@@ -23,7 +23,8 @@ class ChunkedFile implements FileInterface
     protected function checkIfFileIsReadable()
     {
         foreach ($this->getChunks() as $chunk) {
-            if (!file_exists($chunk->getPathname()) || is_dir($chunk->getPathname())) {
+            /* @var $chunk \Enginewerk\FSBundle\Storage\File */
+            if (!$chunk->isFile() || !$chunk->isReadable()) {
                 throw new \Exception(sprintf('File part is not readable from path "%s"', $chunk->getPathname()));
             }
         }
