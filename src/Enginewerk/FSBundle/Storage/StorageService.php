@@ -2,29 +2,28 @@
 
 namespace Enginewerk\FSBundle\Storage;
 
-use Symfony\Component\HttpFoundation\File\File;
 use Enginewerk\FSBundle\Entity\BinaryBlock;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 
 /**
- * Description of BinaryStorage
+ * Description of StorageService
  *
  * @author Paweł Czyżewski <pawel.czyzewski@enginewerk.com>
  */
-class BinaryStorage
+class StorageService
 {
     /**
      * @var \Doctrine\Bundle\DoctrineBundle\Registry
      */
     protected $doctrine;
     
-    protected $storageRootDirectory;
+    protected $storage;
 
 
-    public function __construct(Registry $doctrine, $storageRootDirectory)
+    public function __construct(Registry $doctrine, $storage)
     {
         $this->doctrine = $doctrine;
-        $this->storageRootDirectory = $storageRootDirectory;
+        $this->storage = $storage;
     }
     
     /**
@@ -47,9 +46,8 @@ class BinaryStorage
                 ->getDoctrine()
                 ->getManager()
                 ->persist($block);
-
-        $path = $this->getStorageRootDirectory() . DIRECTORY_SEPARATOR . $this->getDeepDirFromFileName($key);
-        $uploadedFile->move($path, $key);
+        
+        $this->storage->put($key, $uploadedFile);
         
         return $size;
     }
@@ -63,14 +61,7 @@ class BinaryStorage
     public function get($key)
     {
         $block = $this->getBlock($key);
-        
-        $pathname = implode(DIRECTORY_SEPARATOR, array(
-            $this->getStorageRootDirectory(), 
-            $this->getDeepDirFromFileName($block->getUrn()), 
-            $block->getUrn())
-                );
-        
-        $file = new File($pathname);
+        $file = $this->storage->get($block->getUrn());
 
         return $file;
     }
@@ -90,33 +81,18 @@ class BinaryStorage
                 ->getManager();
         
         $block = $this->getBlock($key);
-        $file = $this->get($key);
         
-        if (file_exists($file->getPathname())) {
-            unlink($file->getPathname());
-        }
+        $this->storage->delete($block->getUrn());
         
         $em->remove($block);
         $em->flush();
-    }
-    
-    public function getStorageRootDirectory()
-    {
-        return $this->storageRootDirectory;
-    }
-
-    private function getDeepDirFromFileName($name)
-    {
-        return $name[0] . $name[1] . DIRECTORY_SEPARATOR .
-                $name[2] . $name[3] . DIRECTORY_SEPARATOR .
-                $name[4] . $name[5] . DIRECTORY_SEPARATOR;
     }
     
     /**
      * 
      * @return \Doctrine\Bundle\DoctrineBundle\Registry
      */
-    public function getDoctrine()
+    private function getDoctrine()
     {
         return $this->doctrine;
     }
