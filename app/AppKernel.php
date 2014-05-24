@@ -28,7 +28,7 @@ class AppKernel extends Kernel
             new FOS\UserBundle\FOSUserBundle(),
             new Enginewerk\UserBundle\UserBundle(),
             new Enginewerk\FSBundle\EnginewerkFSBundle(),
-            
+            new Knp\Bundle\GaufretteBundle\KnpGaufretteBundle(),  
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {
