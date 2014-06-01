@@ -152,7 +152,7 @@ class DefaultController extends Controller
             $efs->delete($request->get('file'));
             $appResponse->success();
 
-        } catch (Exception $ex) {
+        } catch (\Exception $ex) {
             $appResponse->error('Can`t remove File');
             $this->get('logger')->error(sprintf('Can`t remove File #%s. %s', $file->getId(), $ex->getMessage()));
         }
@@ -185,7 +185,7 @@ class DefaultController extends Controller
 
                 $appResponse->success();
 
-            } catch (Exception $ex) {
+            } catch (\Exception $ex) {
                 $appResponse->error('Can`t change expiration date');
                 $this->get('logger')->error(sprintf('Can`t change expiration date of File #%s. %s', $file->getId(), $ex->getMessage()));
             }
