@@ -67,7 +67,7 @@ class FileBlock
     protected $updatedAt;
 
     /**
-     * @ORM\ManyToOne(targetEntity="File", inversedBy="FileBlocks", cascade={"persist", "refresh"})
+     * @ORM\ManyToOne(targetEntity="File", inversedBy="fileBlocks", cascade={"persist", "refresh"})
      * @ORM\JoinColumn(name="fileId", referencedColumnName="id", onDelete="cascade")
      */
     protected $file;
