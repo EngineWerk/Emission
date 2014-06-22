@@ -1,7 +1,5 @@
 <?php
 
-date_default_timezone_set('Europe/Warsaw');
-
 use Symfony\Component\HttpKernel\Kernel;
 use Symfony\Component\Config\Loader\LoaderInterface;
 
