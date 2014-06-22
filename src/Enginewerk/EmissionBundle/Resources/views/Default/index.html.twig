@@ -104,9 +104,11 @@
 
     <script type="text/javascript">        
         // memory_limit: {{ Capabilities.memory_limit }}, upload_max_filesize: {{ Capabilities.upload_max_filesize }}, post_max_size: {{ Capabilities.post_max_size }}, browser_file_memory_limit: {{ Capabilities.browser_file_memory_limit }}
-        var url = '{{ path('upload_file') }}'
-        var urlChunkTest = '{{ path('upload_file_chunk_test') }}'
+        var url = '{{ path('upload_file') }}';
+        var urlChunkTest = '{{ path('upload_file_chunk_test') }}';
         var maxChunkSize = ({{ MaxUploadFileSize }} * 1024 * 1024); // to MB
+        
+        var appUserName = '{{ app.user.username }}';
         
         var postdata = {'_tokenFile' : '{{FileForm._token.vars.value}}', '_tokenFileBlock' : '{{FileBlockForm._token.vars.value}}'};
         var pendingFilesNumber = 0;

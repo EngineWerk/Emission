@@ -23,74 +23,84 @@ $(function(){
     r.assignBrowse(document.getElementById('browse'));
     r.assignDrop(document.getElementById('dropbox'));
 
-    r.on('fileAdded', function(resumable, event) {
+    r.on('fileAdded', function(resumableFile, event) {
+        info('File added to queue' , resumableFile.file.name);
         cursorBusy();
 
-        var file = resumable.file;
-        resumable.pause(); // Pasue particular file to compute hash
-
-        var blobSlice = File.prototype.slice || File.prototype.mozSlice || File.prototype.webkitSlice,
-        chunkSize = maxChunkSize,                               // read in chunks of 2MB
-        chunks = Math.ceil(file.size / chunkSize),
-        currentChunk = 0,
-        spark = new SparkMD5.ArrayBuffer(),
-        frOnload = function(e) {
-            log("read chunk");
-            info("e.target.result", e.target.result);
-            log(e.target.result);
-            spark.append(e.target.result);                 // append array buffer
-            log("read chunk-x");
-            var md5 = SparkMD5.ArrayBuffer.hash(e.target.result);
-            log("read chunk " + md5);
-            currentChunk++;
-
-            if (currentChunk < chunks) {
-                loadNext();
-            } else {
-                resumable.uniqueIdentifier = spark.end();
-                cursorNormal();
-
-                var fileNameHash = resumable.uniqueIdentifier;
-                info(file.name, fileNameHash);
-                pendingFilesNumber++;
-
-                resumable.pause(); // Resume upload of particular file
-                r.upload();
-
-                if($('#fhash-' + fileNameHash + '').length === 0 ) {
-                    
-                    var tableRow = '<tr id="fhash-' + fileNameHash + '" data-search="' + file.name + '" > \n' + 
+        var file = resumableFile.file;
+        
+        var tableRow = '<tr id="fhash-' + Math.random() + '" data-search="' + file.name + '" > \n' + 
                     '<td>' + 
+                        '<div class="status"></div>' +
                         '<div class="fileName">' + file.name + '</div>' +
-                        '<div class="fileUploadedBy">' + file.uploaded_by + '</div>' +
+                        '<div class="fileUploadedBy">' + appUserName + '</div>' +
                         '<div class="fileSize">' + bytesToSize(file.size, 2) + '</div>' +
                     '</td>' +
                     '<td class="fileOptions">' + 
                     '</td> \n' + 
                 '</tr>';
+        
+        var fileRow = $(tableRow);
+        $('#filesTable tbody').prepend(fileRow);
+        
+        resumableFile.pause(); // Pasue particular file to compute hash
 
-                    $('#filesTable tbody').prepend(tableRow);
+        var blobSlice = File.prototype.slice || File.prototype.mozSlice || File.prototype.webkitSlice;
+        var chunkSize = maxChunkSize;
+        var chunks = Math.ceil(file.size / chunkSize);
+        var currentChunk = 1;
+        var spark = new SparkMD5.ArrayBuffer();
+        
+        fileReaderOnload = function(e) {
+            info('Loaded chunk for', file.name);
+            
+            spark.append(e.target.result);                 // append array buffer
+            var md5 = SparkMD5.ArrayBuffer.hash(e.target.result);
+            $('div.status:first', fileRow).html('Processed: ' + Math.round((currentChunk * 100 / chunks), 0) + '% &nbsp;');
+            info('Chunk "' + currentChunk + '" MD5 hash for file ' + file.name + ':', md5);
+
+            currentChunk++;
+            if (currentChunk <= chunks) {
+                loadNext();
+            } else {
+                resumableFile.uniqueIdentifier = spark.end();
+                cursorNormal();
+
+                var fileNameHash = resumableFile.uniqueIdentifier;
+                info(file.name, fileNameHash);
+                pendingFilesNumber++;
+
+                resumableFile.pause(); // Resume upload of particular file
+                r.upload();
+
+                if($('#fhash-' + fileNameHash + '').length === 0 ) {
+                    fileRow.attr('id', 'fhash-' + fileNameHash);
+                } else {
+                    fileRow.remove();
                 }
             }
         },
-        frOnerror = function (e) {
+        fileReaderOnerror = function (e) {
             info('MD5 computation error', e);
             cursorNormal();
         };
 
         function loadNext() {
+            
+            info('Processing chunk for ' + file.name + ':', currentChunk + ' out of ' + chunks);
             var fileReader = new FileReader();
-            fileReader.onload = frOnload;
-            fileReader.onerror = frOnerror;
+            fileReader.onload = fileReaderOnload;
+            fileReader.onerror = fileReaderOnerror;
 
-            var start = currentChunk * chunkSize,
+            var start = (currentChunk - 1)* chunkSize,
                 end = ((start + chunkSize) >= file.size) ? file.size : start + chunkSize;
 
             fileReader.readAsArrayBuffer(blobSlice.call(file, start, end));
+            
         };
 
+        $('div.status:first', fileRow).html('Processing... &nbsp;');
         loadNext();
-
     });
 
     r.on('uploadStart', function(){
