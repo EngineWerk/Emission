@@ -58,7 +58,7 @@ class InvitationRemoveCommand extends ContainerAwareCommand
             try {
                 $em->flush();
                 $output->writeln(' success');
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 $output->writeln(' faild: ' . $e->getMessage());
             }
 

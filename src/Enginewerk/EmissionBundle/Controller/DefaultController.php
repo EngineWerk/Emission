@@ -208,7 +208,7 @@ class DefaultController extends Controller
             $efs->replace($replace, $replacement);
             $appResponse->success('File replaced.');
 
-        } catch (Exception $ex) {
+        } catch (\Exception $ex) {
             $this->get('logger')->error(sprintf('Can`t replace file. [%s] %s', get_class($ex), $ex->getMessage()));
             $appResponse->error(sprintf('Can`t replace file.'));
         }

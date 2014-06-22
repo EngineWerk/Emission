@@ -45,7 +45,7 @@ class InvitationAddCommand extends ContainerAwareCommand
         try {
             $em->flush();
             $output->writeln(' with code: ' . $invitation->getCode());
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $output->writeln(' faild: ' . $e->getMessage());
         }
     }
