@@ -1,4 +1,5 @@
-$(function(){
+$(function () {
+    
     var r = new Resumable({
         target: url, 
         targetChunkTestUrl: urlChunkTest,
@@ -16,14 +17,12 @@ $(function(){
     window.resumable = r;
 
     // Resumable.js isn't supported, fall back on a different method
-    if(!r.support) {
+    if (!r.support) {
         alert('File upload not supported');
     }
+    
+    function handleFileAdded (resumableFile, event) {
 
-    r.assignBrowse(document.getElementById('browse'));
-    r.assignDrop(document.getElementById('dropbox'));
-
-    r.on('fileAdded', function(resumableFile, event) {
         info('File added to queue' , resumableFile.file.name);
         cursorBusy();
 
@@ -101,13 +100,10 @@ $(function(){
 
         $('div.status:first', fileRow).html('Processing... &nbsp;');
         loadNext();
-    });
-
-    r.on('uploadStart', function(){
-        cursorBusy();
-    });
-
-    r.on('fileSuccess', function(Resumable, jsonTextResponse) {
+   
+    };
+    
+    function handleFileUploadSuccess (Resumable, jsonTextResponse) {
 
         info('Total files: ', r.files.length);
 
@@ -122,10 +118,6 @@ $(function(){
             if(app.status.isSuccess()) {
                 if(app.data) {
                     var file = app.data;
-                    var link = $('<a>')
-                    .attr('target', '_blank')
-                    .prop('href', file.download_url);
-
                     var fileNameHash = Resumable.uniqueIdentifier;
                     info(file.name, fileNameHash);
 
@@ -183,9 +175,9 @@ $(function(){
         }
 
         cursorNormal();
-    });
+    };
 
-    r.on('fileError', function(Resumable, jsonTextResponse){
+    function handleFileUploadError (Resumable, jsonTextResponse) {
         log('fileError');
 
         var app = new AppResponse(null, jsonTextResponse);
@@ -196,48 +188,34 @@ $(function(){
         });
 
         cursorNormal();
-        //log(Resumable.file);
+
         alert('File: ' + Resumable.file.name + "\nMessage:\n\n" + app.message);
-    });
-
-    r.on('progress', function() {
+    }
+    
+    function updateProgressBar () {
         $('#dropbox_progress').find('.progress').width($('#dropbox_progress').find('.progressHolder').width() * r.progress());
+    }
+    
+    r.assignBrowse(document.getElementById('browse'));
+    r.assignDrop(document.getElementById('dropbox'));
+
+    r.on('fileAdded', function (resumableFile, event) {
+        handleFileAdded(resumableFile, event);
+    });
+    
+    r.on('uploadStart', function () {
+        cursorBusy();
     });
 
-    var computeHashes = function (resumableFile, offset, fileReader) {
-        var round = resumableFile.resumableObj.getOpt('forceChunkSize') ? Math.ceil : Math.floor,
-          chunkSize = resumableFile.getOpt('chunkSize'),
-          numChunks = Math.max(round(resumableFile.file.size / chunkSize), 1),
-          forceChunkSize = resumableFile.getOpt('forceChunkSize'),
-          startByte,
-          endByte,
-          func = (resumableFile.file.slice ? 'slice' : (resumableFile.file.mozSlice ? 'mozSlice' : (resumableFile.file.webkitSlice ? 'webkitSlice' : 'slice'))),
-          bytes;
+    r.on('fileSuccess', function (Resumable, jsonTextResponse) {
+        handleFileUploadSuccess(Resumable, jsonTextResponse);
+    });
+    
+    r.on('fileError', function (Resumable, jsonTextResponse) {
+        handleFileUploadError(Resumable, jsonTextResponse);
+    });
 
-        resumableFile.hashes = resumableFile.hashes || [];
-        fileReader = fileReader || new FileReader();
-        offset = offset || 0;
-
-        if (resumableFile.resumableObj.cancelled === false) {
-          startByte = offset * chunkSize;
-          endByte = Math.min(resumableFile.file.size, (offset + 1) * chunkSize);
-
-          if (resumableFile.file.size - endByte < chunkSize && !forceChunkSize) {
-            endByte = resumableFile.file.size;
-          }
-          bytes  = resumableFile.file[func](startByte, endByte);
-
-          fileReader.onloadend = function (e) {
-            var spark = SparkMD5.ArrayBuffer.hash(e.target.result);
-            log(spark);
-            resumableFile.hashes.push(spark);
-
-            if (numChunks > offset + 1) {
-              computeHashes(resumableFile, offset + 1, fileReader);
-            }
-          };
-
-          fileReader.readAsArrayBuffer(bytes);
-        }
-      };
+    r.on('progress', function () {
+        updateProgressBar();
+    });
 });
