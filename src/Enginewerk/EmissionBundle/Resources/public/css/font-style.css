@@ -4,10 +4,9 @@
 */
 
 @charset "UTF-8";
-@import url('http://fonts.googleapis.com/css?family=Lato:100,400,700,900');
 
 body {
-    font: 14px Helvetica, "Lato", 'DroidSerifRegular', "Helvetica Neue", "Helvetica", Arial, sans-serif;
+    font: 0.9em 'Helvetica Neue', 'Helvetica', Arial, sans-serif;
     line-height: 1.4em;
     color: #333333;
     -webkit-font-smoothing: antialiased;
