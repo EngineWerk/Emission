@@ -117,25 +117,7 @@ $(function () {
         if(app) {
             if(app.status.isSuccess()) {
                 if(app.data) {
-                    var file = app.data;
-                    var fileNameHash = Resumable.uniqueIdentifier;
-                    info(file.name, fileNameHash);
-
-                    var tableRow = '<tr data-file-id="' + file.id + '" id="fhash-' + fileNameHash + '" data-search="' + file.name + '" > \n' + 
-                    '<td>' + 
-                        '<div class="fileName">' + file.name + '</div>' +
-                        '<div class="fileUploadedBy">' + file.uploaded_by + '</div>' +
-                        '<div class="fileSize">' + bytesToSize(file.size, 2) + '</div>' +
-                    '</td>' +
-                    '<td class="fileOptions">' + 
-                        '<a href="' + file.show_url + '" data-show-file-content-href="' + file.show_url.replace('/f/', '/fc/') + '" class="show_file">show</a> ' +
-                        '<a href="' + file.download_url + '" class="fileOptionsDownloadLink">save</a> ' + 
-                        '<a href="' + file.open_url + '" class="fileOptionsOpenLink">open</a> - ' +
-                        '<a href="' + file.delete_url + '" class="remove-file">remove</a>' + 
-                    '</td> \n' + 
-                '</tr>';
-
-                    $('#fhash-' + fileNameHash).replaceWith(tableRow);
+                    updateFileRowView(app.data, Resumable.uniqueIdentifier);
                 }
 
             } else {
@@ -176,10 +158,28 @@ $(function () {
 
         cursorNormal();
     };
+    
+    function updateFileRowView (file, fileNameHash) {
+        info(file.name, fileNameHash);
+        var tableRow = 
+            '<tr data-file-id="' + file.id + '" id="fhash-' + fileNameHash + '" data-search="' + file.name + '" > \n' + 
+                '<td>' + 
+                    '<div class="fileName">' + file.name + '</div>' +
+                    '<div class="fileUploadedBy">' + file.uploaded_by + '</div>' +
+                    '<div class="fileSize">' + bytesToSize(file.size, 2) + '</div>' +
+                '</td>' +
+                '<td class="fileOptions">' + 
+                    '<a href="' + file.show_url + '" data-show-file-content-href="' + file.show_url.replace('/f/', '/fc/') + '" class="show_file">show</a> ' +
+                    '<a href="' + file.download_url + '" class="fileOptionsDownloadLink">save</a> ' + 
+                    '<a href="' + file.open_url + '" class="fileOptionsOpenLink">open</a> - ' +
+                    '<a href="' + file.delete_url + '" class="remove-file">remove</a>' + 
+                '</td> \n' + 
+            '</tr>';
+
+        $('#fhash-' + fileNameHash).replaceWith(tableRow);
+    }
 
     function handleFileUploadError (Resumable, jsonTextResponse) {
-        log('fileError');
-
         var app = new AppResponse(null, jsonTextResponse);
         var fileDOMObject = $('#fhash-' + Resumable.uniqueIdentifier);
 
