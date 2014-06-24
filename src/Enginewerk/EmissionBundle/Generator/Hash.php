@@ -26,15 +26,15 @@ class Hash
      */
     public static function genereateRandomHash($length = 4, $charFeed = null)
     {
-        if($length <= 0)
-            throw new Exception('Lenght lower than, or equal 0');
+        if ($length <= 0) {
+            throw new \Exception('Length lower than, or equal 0');
+        }
         
         $hash = '';
         
         $feedMaxIndex = strlen(self::$feed) - 1;
         
-        for($i=1; $i<=$length; $i++)
-        {
+        for ($i=1; $i<=$length; $i++) {
             $hash .= self::$feed[rand(0, $feedMaxIndex)];
         }
         
