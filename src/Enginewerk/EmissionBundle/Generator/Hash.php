@@ -11,9 +11,9 @@ class Hash
 {
     private static $feed = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
     
-    public static function generate($sequence = null, $length = null)
+    public static function generate($sequence = null, $length = null, $characters = null)
     {
-        return self::generateSequencedHash($sequence);
+        return self::generateSequencedHash($sequence, $length, $characters);
     }
     
     /**
@@ -26,16 +26,17 @@ class Hash
      */
     public static function genereateRandomHash($length = 4, $charFeed = null)
     {
+        $charFeed  = ($charFeed) ? $charFeed : self::$feed;
+        
         if ($length <= 0) {
             throw new \Exception('Length lower than, or equal 0');
         }
         
         $hash = '';
-        
-        $feedMaxIndex = strlen(self::$feed) - 1;
+        $feedMaxIndex = strlen($charFeed) - 1;
         
         for ($i=1; $i<=$length; $i++) {
-            $hash .= self::$feed[rand(0, $feedMaxIndex)];
+            $hash .= $charFeed[rand(0, $feedMaxIndex)];
         }
         
         return $hash;
@@ -50,11 +51,13 @@ class Hash
      */
     public static function generateSequencedHash($sequence = null, $length = null, $characters = null)
     {
-        if($characters === null)
+        if ($characters === null) {
             $characters = self::$feed;
+        }
         
-        if($sequence === null || $sequence == '')
+        if ($sequence === null || $sequence == '') {
             return $characters[0];
+        }
         
         $sidChars = str_split($sequence);
         
@@ -69,8 +72,9 @@ class Hash
             {
                 $sidChars[$position] = $characters[0];
                 
-                if(!isset($sidChars[$position+1]))
+                if (!isset($sidChars[$position+1])) {
                     $sidChars[$position+1] = $characters[0];
+                }
             } 
             else 
             {
@@ -90,9 +94,10 @@ class Hash
     {
         $currentPosition = strpos($characters, $currentValue);
         
-        if($currentPosition === (strlen($characters) - 1))
+        if($currentPosition === (strlen($characters) - 1)) {
             return null;
-        else
+        } else {
             return $characters[$currentPosition + 1];
+        }
     }
 }
