@@ -111,7 +111,6 @@ class DefaultController extends Controller
 
         $responseFile = $efs->getFileForDownload($request->get('file'));
 
-        // TODO Download set_time_limit
         set_time_limit(0);
 
         $response = new StreamedResponse();

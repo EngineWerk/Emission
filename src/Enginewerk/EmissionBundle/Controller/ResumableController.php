@@ -61,8 +61,6 @@ class ResumableController extends Controller
     }
 
     /**
-     * TODO Validating minimum chunk size
-     *
      * @Route("/upload", name="upload_file")
      */
     public function uploadAction(Request $request)
