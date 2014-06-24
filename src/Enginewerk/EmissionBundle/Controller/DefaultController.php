@@ -138,28 +138,28 @@ class DefaultController extends Controller
     /**
      * @Route("/delete/{file}", requirements={"file"}, name="delete_file")
      * @Method({"GET"})
-     * @param \Symfony\Component\HttpFoundation\Request $request
      */
     public function deleteAction(Request $request)
     {
+        $fileId = $request->get('file');
         $appResponse = new AppResponse();
 
         $efs = $this->get('emission_file_storage');
         /* @var $efs \Enginewerk\EmissionBundle\Storage\FileStorage */
 
-        if (null === $efs->find($request->get('file'))) {
-            $appResponse->error(sprintf('File #%s not found.', $request->get('file')));
+        if (null === $efs->find($fileId)) {
+            $appResponse->error(sprintf('File #%s not found.', $fileId));
 
             return new JsonResponse($appResponse->response(), 200);
         }
 
         try {
-            $efs->delete($request->get('file'));
+            $efs->delete($fileId);
             $appResponse->success();
 
         } catch (\Exception $ex) {
             $appResponse->error('Can`t remove File');
-            $this->get('logger')->error(sprintf('Can`t remove File #%s. %s', $file->getId(), $ex->getMessage()));
+            $this->get('logger')->error(sprintf('Can`t remove File #%s. %s', $fileId, $ex->getMessage()));
         }
 
         return new JsonResponse($appResponse->response(), 200);
