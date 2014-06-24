@@ -4,6 +4,7 @@ namespace Enginewerk\EmissionBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -22,6 +23,7 @@ class DefaultController extends Controller
 {
     /**
      * @Route("/")
+     * @Method({"GET"})
      * @Template()
      */
     public function indexAction()
@@ -55,6 +57,7 @@ class DefaultController extends Controller
 
     /**
      * @Route("/f/{file}", requirements={"file"}, name="show_file")
+     * @Method({"GET"})
      * @Template()
      *
      * @param  \Symfony\Component\HttpFoundation\Request $request
@@ -74,6 +77,7 @@ class DefaultController extends Controller
 
     /**
      * @Route("/fc/{file}", requirements={"file"}, name="show_file_content")
+     * @Method({"GET"})
      *
      * @param  \Symfony\Component\HttpFoundation\Request $request
      * @throws type
@@ -97,6 +101,7 @@ class DefaultController extends Controller
     /**
      * @Route("/d/{file}", requirements={"file"}, name="download_file", defaults={"dl" = 1})
      * @Route("/o/{file}", requirements={"file"}, name="open_file")
+     * @Method({"GET"})
      *
      * @param \Symfony\Component\HttpFoundation\Request $request
      */
@@ -132,6 +137,7 @@ class DefaultController extends Controller
 
     /**
      * @Route("/delete/{file}", requirements={"file"}, name="delete_file")
+     * @Method({"GET"})
      * @param \Symfony\Component\HttpFoundation\Request $request
      */
     public function deleteAction(Request $request)
@@ -161,6 +167,7 @@ class DefaultController extends Controller
 
     /**
      * @Route("/{file}/expiration/{date}", requirements={"file"}, defaults={"date" = "never"}, name="file_expiration_date")
+     * @Method({"GET"})
      * @param \Symfony\Component\HttpFoundation\Request $request
      */
     public function fileExpirationDateAction(Request $request)
@@ -195,6 +202,7 @@ class DefaultController extends Controller
 
     /**
      * @Route("/replace/{replace}/with/{replacement}", name="replace_file")
+     * @Method({"GET"})
      */
     public function replaceFileAction($replace, $replacement)
     {
@@ -217,6 +225,7 @@ class DefaultController extends Controller
 
     /**
      * @Route("/files/{created_after}", defaults={"created_after" = null})
+     * @Method({"GET"})
      */
     public function filesAction($created_after)
     {

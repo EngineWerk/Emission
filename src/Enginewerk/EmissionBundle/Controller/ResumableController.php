@@ -4,6 +4,7 @@ namespace Enginewerk\EmissionBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
@@ -20,6 +21,7 @@ class ResumableController extends Controller
 {
     /**
      * @Route("/uploadChunkTest", name="upload_file_chunk_test")
+     * @Method({"GET"})
      */
     public function uploadChunkTestAction(Request $request)
     {
@@ -62,6 +64,7 @@ class ResumableController extends Controller
 
     /**
      * @Route("/upload", name="upload_file")
+     * @Method({"POST"})
      */
     public function uploadAction(Request $request)
     {
