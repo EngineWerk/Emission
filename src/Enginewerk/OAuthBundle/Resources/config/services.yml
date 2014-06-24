@@ -1,0 +1,24 @@
+services:
+    hwi_oauth.user.provider:
+        class: HWI\Bundle\OAuthBundle\Security\Core\User\OAuthUserProvider
+
+    hwi_oauth.user.provider.fosub_bridge:
+        class: HWI\Bundle\OAuthBundle\Security\Core\User\FOSUBUserProvider
+        arguments: [@fos_user.user_manager, {google: google}]
+
+hwi_oauth:
+   firewall_name: secured_area
+   fosub:
+       username_iterations: 30
+       properties:
+           # these properties will be used/redefined later in the custom FOSUBUserProvider service.
+           google: google
+   resource_owners:
+       google:
+           type:                google
+           client_id:           %google_openid_client_id%
+           client_secret:       %google_openid_client_secret%
+           scope:               "https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile"
+   connect:
+       account_connector: hwi_oauth.user.provider.fosub_bridge
+
