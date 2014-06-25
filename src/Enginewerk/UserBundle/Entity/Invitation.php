@@ -39,7 +39,7 @@ class Invitation
     protected $sent = false;
 
     /**
-     * @ORM\OneToOne(targetEntity="User", mappedBy="invitation", cascade={"persist", "merge"})
+     * @ORM\OneToOne(targetEntity="User", mappedBy="invitation", inversedBy="user", cascade={"persist", "merge"})
      */
     protected $user;
 
