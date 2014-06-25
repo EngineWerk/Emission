@@ -30,7 +30,7 @@ class User extends BaseUser
     protected $google;
 
     /**
-     * @ORM\OneToOne(targetEntity="Invitation", mappedBy="user", inversedBy="invitation")
+     * @ORM\OneToOne(targetEntity="Invitation", mappedBy="user", inversedBy="user")
      * @ORM\JoinColumn(name="invitation_id", referencedColumnName="code")
      * @Assert\NotNull(message="Your invitation is wrong")
      */
