@@ -37,7 +37,7 @@ class FileRepository extends EntityRepository
     public function getFilesForJsonApi($createdAfter = null)
     {
         $queryBuilder = $this->createQueryBuilder('f')
-                ->select('f.fileId, f.name, f.checksum, f.size, f.type, f.expirationDate, f.isComplete')
+                ->select('f.fileId, f.name, f.checksum, f.size, f.type, f.expirationDate, f.complete')
                 ->orderBy('f.id', 'DESC');
         
         if($createdAfter) {

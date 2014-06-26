@@ -110,10 +110,10 @@ class File
     protected $fileBlocks;
 
     /**
-     * @ORM\Column(name="isComplete", type="boolean", options={"default" = false})
+     * @ORM\Column(name="complete", type="boolean", options={"default" = false})
      * @var integer
      */
-    protected $isComplete;
+    protected $complete;
 
     public function __construct()
     {
@@ -373,29 +373,6 @@ class File
     }
 
     /**
-     * Set isComplete
-     *
-     * @param  boolean $isComplete
-     * @return File
-     */
-    public function setIsComplete($isComplete)
-    {
-        $this->isComplete = $isComplete;
-
-        return $this;
-    }
-
-    /**
-     * Get isComplete
-     *
-     * @return boolean
-     */
-    public function getIsComplete()
-    {
-        return $this->isComplete;
-    }
-
-    /**
      * Set checksum
      *
      * @param  string $checksum
@@ -439,5 +416,28 @@ class File
     public function getUser()
     {
         return $this->user;
+    }
+
+    /**
+     * Set complete
+     *
+     * @param boolean $complete
+     * @return File
+     */
+    public function setComplete($complete)
+    {
+        $this->complete = $complete;
+
+        return $this;
+    }
+
+    /**
+     * Get complete
+     *
+     * @return boolean 
+     */
+    public function getComplete()
+    {
+        return $this->complete;
     }
 }

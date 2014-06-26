@@ -100,7 +100,7 @@ class ResumableController extends Controller
             if ($fileForm->isValid()) {
                 $file = $fileForm->getData();
                 $file->setType($fileForm->get('uploadedFile')->getData()->getMimeType());
-                $file->setIsComplete(false);
+                $file->setComplete(false);
                 $file->setUser($this->getUser());
 
                 $em->persist($file);
@@ -160,8 +160,8 @@ class ResumableController extends Controller
 
         if ($totalSize == $file->getSize()) {
 
-            // Set isComplete property to true
-            $file->setIsComplete(true);
+            // Set complete property to true
+            $file->setComplete(true);
             $em->persist($file);
             $em->flush();
 

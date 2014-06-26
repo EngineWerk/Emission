@@ -275,7 +275,7 @@
         case 'success':
           if(_error) return;
           $.resumableObj.fire('fileProgress', $); // it's at least progress
-          if($.isComplete()) {
+          if($.complete()) {
             $.resumableObj.fire('fileSuccess', $, message);
           }
           break;
@@ -352,7 +352,7 @@
         });
         return(uploading);
       };    
-      $.isComplete = function(){
+      $.complete = function(){
         var outstanding = false;
         $h.each($.chunks, function(chunk){
           var status = chunk.status();
@@ -655,7 +655,7 @@
       // The are no more outstanding chunks to upload, check is everything is done
       var outstanding = false;
       $h.each($.files, function(file){
-        if(!file.isComplete()) {
+        if(!file.complete()) {
           outstanding = true;
           return(false);
         }
