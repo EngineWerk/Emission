@@ -8,6 +8,9 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
+use Enginewerk\UserBundle\Entity\Invitation;
+use Exception;
+
 /**
  * Removes User invitation
  *
@@ -15,6 +18,8 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class InvitationRemoveCommand extends ContainerAwareCommand
 {
+    protected $forceRemove = null;
+
     protected function configure()
     {
         $this
@@ -22,48 +27,76 @@ class InvitationRemoveCommand extends ContainerAwareCommand
             ->setDescription('Removes not sent User invitation from database')
             ->addArgument('email', InputArgument::REQUIRED, 'User email')
             ->addOption('code', null, InputOption::VALUE_OPTIONAL, 'User invitation code')
+            ->addOption('force', null, InputOption::VALUE_NONE, 'Force remove')
         ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $this->forceRemove = ($input->getOption('force')) ? true : false;
+
         $output->write('Removing for "' . $input->getArgument('email') . '"');
 
-        $em = $this->getContainer()->get('doctrine')->getManager();
-        $repository = $this->getContainer()->get('doctrine')->getRepository('UserBundle:Invitation');
+        $repository = $this
+                ->getEntityManager()
+                ->getRepository('UserBundle:Invitation')
+                ;
 
         if ($input->getOption('code')) {
-            $invitations = $repository->findOneByEmailAndCodeAndSent($input->getArgument('email'), $input->getOption('code'), false);
+            $invitations = $repository->findByEmailAndCode($input->getArgument('email'), $input->getOption('code'));
         } else {
-            $invitations = $repository->findBy(array('sent' => false, 'email' => $input->getArgument('email')));
+            $invitations = $repository->findByEmail($input->getArgument('email'));
         }
 
-        $invitationNumber = count($invitations);
-
-        if ($invitationNumber) {
-
-            if ($invitationNumber > 1) {
-                foreach ($invitations as $invitation) {
-                    $em->remove($invitation);
-                }
-
-                $output->write(' ' . $invitationNumber);
-                $output->write(' occurences');
-            } else {
-                $em->remove(array_pop($invitations));
-                $output->write(' ' . $invitationNumber);
-                $output->write(' occurence');
-            }
-
-            try {
-                $em->flush();
-                $output->writeln(' success');
-            } catch (\Exception $e) {
-                $output->writeln(' faild: ' . $e->getMessage());
-            }
-
+        if ($invitations) {
+            $this->removeInvitations($invitations, $output);
         } else {
             $output->writeln(' faild...no match');
         }
+    }
+
+    protected function removeInvitation(Invitation $invitation)
+    {
+        if ($invitation->getSent() === true && $this->forceRemove === false) {
+            throw new Exception('Invitation state is "sent" and therefore cannot be removed');
+        }
+
+        $this
+                ->getEntityManager()
+                ->remove($invitation)
+                ;
+        $this
+                ->getEntityManager()
+                ->flush()
+                ;
+    }
+
+    protected function removeInvitations($invitations, OutputInterface $output)
+    {
+        foreach ($invitations as $invitation) {
+
+            $output->write(' Trying: ' . $invitation->getCode());
+
+            try {
+                $this->removeInvitation($invitation);
+                $output->writeln(' success');
+            } catch (Exception $e) {
+                $output->writeln(' faild: ' . $e->getMessage());
+            }
+        }
+    }
+
+    /**
+     * Get a doctrine entity manager.
+     *
+     * @return \Doctrine\ORM\EntityManager
+     */
+    protected function getEntityManager()
+    {
+        return $this
+                ->getContainer()
+                ->get('doctrine')
+                ->getManager()
+                ;
     }
 }
