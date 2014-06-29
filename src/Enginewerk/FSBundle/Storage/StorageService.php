@@ -5,6 +5,8 @@ namespace Enginewerk\FSBundle\Storage;
 use Enginewerk\FSBundle\Entity\BinaryBlock;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 
+use \Exception;
+
 /**
  * Description of StorageService
  *
