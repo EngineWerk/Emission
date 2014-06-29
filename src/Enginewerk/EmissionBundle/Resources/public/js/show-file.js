@@ -21,9 +21,13 @@ $(document).ready( function(){
     function openFilePreviewWindow() {
 
         console.info('Window height', $(window).height());
+        console.info('Window width', $(window).width());
+        
+        $('#filePreviewWindow div.window').css('width', $(window).width() - 50 + 'px');
         
         $('#filePreviewWindow').attr('style', 'display:block');
         $('#filePreviewWindow').css('height', $(window).height()+ 'px');
+        $('#filePreviewWindow').css('width', $(window).width()+ 'px');
         $('#filePreviewWindow div.container').css('height', ($(window).height() - 50) + 'px');
         
         filePreviewWindowOpened = true;
