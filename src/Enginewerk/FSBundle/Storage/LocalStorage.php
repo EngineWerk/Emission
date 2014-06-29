@@ -59,11 +59,11 @@ class LocalStorage implements StorageInterface
         $pathname = $this->pathname($key);
 
         if (file_exists($pathname) === false) {
-            throw new RuntimeException(sprintf('File with key "%s" not found.', $key));
+            throw new RuntimeException(sprintf('File with key "%s" not found under path "%s".', $key, $pathname));
         }
 
         if (unlink($pathname) === false) {
-            throw new RuntimeException(sprintf('Can`t delete file with key "%s"', $key));
+            throw new RuntimeException(sprintf('Can`t delete file with key "%s" from path "%s"', $key, $pathname));
         }
     }
 
