@@ -16,7 +16,7 @@ class RemoveExpiredFilesCommand extends ContainerAwareCommand
     protected function configure()
     {
         $this
-            ->setName('emission:remove-expired')
+            ->setName('emission:remove:expired-files')
             ->setDescription('Removes expired files')
         ;
     }
@@ -26,18 +26,26 @@ class RemoveExpiredFilesCommand extends ContainerAwareCommand
         $date = new \DateTime('now');
         $output->writeln($date->format('Y-m-d H:i:s'));
 
-        $repository = $this->getContainer()->get('doctrine')->getRepository('EnginewerkEmissionBundle:File');
-        $em = $this->getContainer()->get('doctrine')->getManager();
+        $efs = $this->getContainer()->get('emission_file_storage');
+        /* @var $efs \Enginewerk\EmissionBundle\Storage\FileStorage */  
+        
+        $repository = $this
+                ->getContainer()
+                ->get('doctrine')
+                ->getRepository('EnginewerkEmissionBundle:File');
+        
         $files = $repository->getExpiredFiles();
 
         foreach ($files as $file) {
+            /* @var $file \Enginewerk\EmissionBundle\Entity\File */
             $output->writeln($file->getName());
             try {
-                // Nie działa z usługą BBS
-                $em->remove($file);
-                $em->flush();
-            } catch (\Exception $ex) {
-                $this->getContainer()->get('logger')->error(sprintf('Can`t remove File #%s. %s', $file->getId(), $ex->getMessage()));
+                $efs->delete($file->getFileId());
+            } catch (\Exception $e) {
+                $this
+                        ->getContainer()
+                        ->get('logger')
+                        ->error(sprintf('Can`t remove File #%s. %s', $file->getFileId(), $e->getMessage()));
             }
         }
     }
