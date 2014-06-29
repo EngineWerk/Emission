@@ -3,7 +3,8 @@
 namespace Enginewerk\EmissionBundle\Storage;
 
 use \Doctrine\Bundle\DoctrineBundle\Registry;
-use Enginewerk\EmissionBundle\FileResponse\ChunkedFile;
+use \Enginewerk\EmissionBundle\FileResponse\ChunkedFile;
+use \RuntimeException;
 
 /**
  * Description of FileStorage
@@ -46,12 +47,21 @@ class FileStorage
                 ->getDoctrine()
                 ->getManager();
 
+        $em->getConnection()->beginTransaction();
         $em->remove($file);
-        $em->flush();
-
-        foreach ($binaryBlocksToRemove as $blockKey) {
-            $this->binaryObjectStorage->delete($blockKey);
+        
+        try {
+            foreach ($binaryBlocksToRemove as $blockKey) {
+                $this->binaryObjectStorage->delete($blockKey);
+            }
+            $em->flush();
+        } catch (RuntimeException $e) {
+            $em->getConnection()->rollback();
+            $em->close();
+            throw $e;
         }
+        
+        
     }
 
     public function get($key)
