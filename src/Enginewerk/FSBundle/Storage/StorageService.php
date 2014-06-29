@@ -83,10 +83,19 @@ class StorageService
 
         $block = $this->getBlock($key);
 
-        $this->storage->delete($block->getUrn());
-
+        $em->getConnection()->beginTransaction();
         $em->remove($block);
-        $em->flush();
+        
+        try {
+            $this->storage->delete($block->getUrn());  
+            $em->flush();
+            
+            $em->getConnection()->commit();
+        } catch (Exception $e) {
+            $em->getConnection()->rollback();
+            $em->close();
+            throw $e;
+        }
     }
 
     /**

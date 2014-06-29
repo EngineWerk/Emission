@@ -2,6 +2,8 @@
 
 namespace Enginewerk\FSBundle\Storage;
 
+use \RuntimeException;
+
 /**
  * Description of LocalStorage
  *
@@ -50,8 +52,12 @@ class LocalStorage implements StorageInterface
 
     public function delete($key)
     {
-        if (file_exists($key)) {
-            unlink($key);
+        if (file_exists($key) === false) {
+            throw new RuntimeException(sprintf('File with key "%s" not found.', $key));
+        }
+        
+        if (unlink($key) === false) {
+            throw new RuntimeException(sprintf('Can`t delete file with key "%s"', $key));
         }
     }
 
