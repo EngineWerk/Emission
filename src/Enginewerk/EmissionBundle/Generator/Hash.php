@@ -11,17 +11,17 @@ class Hash
 {
     private static $feed = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
     
-    public static function generate($sequence = null, $length = null, $characters = null)
+    public static function generate($sequence = null, $characters = null)
     {
-        return self::generateSequencedHash($sequence, $length, $characters);
+        return self::generateSequencedHash($sequence, $characters);
     }
     
     /**
      * Generate random Hash at specified lenght based on "feed"
      * 
-     * @param type $length
-     * @param type $charFeed
-     * @return type
+     * @param int $length
+     * @param string $charFeed
+     * @return string
      * @throws Exception
      */
     public static function genereateRandomHash($length = 4, $charFeed = null)
@@ -46,10 +46,11 @@ class Hash
      * Returns "next" hash, based on $sequence
      * B afer A, C afer B, ABC after ABB
      * 
-     * @param type $lastSID
-     * @return type
+     * @param string $sequence
+     * @param string $characters
+     * @return string
      */
-    public static function generateSequencedHash($sequence = null, $length = null, $characters = null)
+    public static function generateSequencedHash($sequence = null, $characters = null)
     {
         if ($characters === null) {
             $characters = self::$feed;
@@ -90,6 +91,12 @@ class Hash
         return implode('', $sidChars);
     }
     
+    /**
+     * 
+     * @param string $currentValue
+     * @param string $characters
+     * @return string
+     */
     private static function getNextFeedValue($currentValue, $characters)
     {
         $currentPosition = strpos($characters, $currentValue);
