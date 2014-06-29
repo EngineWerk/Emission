@@ -11,8 +11,8 @@
 
 #filePreviewWindow div.window {
     height: 100%;
-    width: 950px;
-    
+    min-width: 450px;
+
     position: relative;
 }
 
@@ -22,8 +22,8 @@
     -webkit-box-shadow: 1px 2px 10px 0px rgba(50, 50, 50, 0.82);
     -moz-box-shadow:    1px 2px 10px 0px rgba(50, 50, 50, 0.82);
     box-shadow:         1px 2px 10px 0px rgba(50, 50, 50, 0.82);
-    
-    width: 870px;
+        
+    width: 98.5%;
     
     margin: 15px;
     padding: 10px 25px;
@@ -58,4 +58,8 @@
 
 div.showFilePublic {
     padding: 20px;
+}
+
+div.showFilePublic a.preview_file {
+    display: none;
 }
