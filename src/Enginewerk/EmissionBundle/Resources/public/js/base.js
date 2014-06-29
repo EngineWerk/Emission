@@ -90,16 +90,16 @@ $(document).ready( function(){
                 var app = new AppResponse(json);
                 
                 if(app.status.isSuccess()) {
-                    //callbackOnSuccess(imageId, context);                        
+                   
                     clickedObj.parent().parent().remove();
                 } else {
                     if(app.status.isError() && app.message) {
                         alert(app.message);
                     } else {
-                        log('Wystąpił nieobsługiwalny błąd.');
-                        clickedObj.parent().parent().fadeIn(200)
-                        //callBackOnError('unknown error', context);
+                        log('Unhandled exception');
                     }
+                    
+                    clickedObj.parent().parent().fadeIn(200);
                 }
                 
                 cursorNormal();
