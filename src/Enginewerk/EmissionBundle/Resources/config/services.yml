@@ -7,7 +7,8 @@ services:
     enginewerk_emission.file_block:
         class: Enginewerk\EmissionBundle\EventListener\FileBlockSubscriber
         tags:
-            - { name: doctrine.event_subscriber, connection: default }        
-         
-            
-          
+            - { name: doctrine.event_subscriber, connection: default }
+
+    emission_file_storage:
+        class:     Enginewerk\EmissionBundle\Storage\FileStorage
+        arguments: ["@doctrine", "@enginewerk_bbs"]       

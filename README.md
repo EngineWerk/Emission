@@ -1,13 +1,12 @@
 Emission
 ====
+Web browser file sharing application.
+
 [![Build Status](https://travis-ci.org/EngineWerk/Emission.svg?branch=master)](https://travis-ci.org/EngineWerk/Emission)
 [![SensioLabsInsight](https://insight.sensiolabs.com/projects/812ecaf4-0b31-4e3d-9941-787ab06a1149/mini.png)](https://insight.sensiolabs.com/projects/812ecaf4-0b31-4e3d-9941-787ab06a1149)
 
-Fast store and share files easily.
-Take advantage of LAN bandwidth for fast file sharing.  
-
 ###Features
-- Large files (~GB) upload via browser
+- Large files (~GB) upload
 - Resumable upload (using [Resumable.js](https://github.com/23/resumable.js))
 - Upload images via clipboard paste (Ctrl+v)
 

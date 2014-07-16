@@ -20,6 +20,13 @@ class BinaryBlock
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
+    
+    /**
+     * @var string Uniform Resource Name - Name / Key / Pathname / URL
+     *
+     * @ORM\Column(name="urn", type="string", length=255)
+     */
+    protected $urn;
 
     /**
      * @var string
@@ -43,6 +50,29 @@ class BinaryBlock
     public function getId()
     {
         return $this->id;
+    }
+    
+    /**
+     * Set urn
+     *
+     * @param string $urn
+     * @return BinryBlock
+     */
+    public function setUrn($urn)
+    {
+        $this->urn = $urn;
+
+        return $this;
+    }
+
+    /**
+     * Get urn
+     *
+     * @return string 
+     */
+    public function getUrn()
+    {
+        return $this->urn;
     }
 
     /**
