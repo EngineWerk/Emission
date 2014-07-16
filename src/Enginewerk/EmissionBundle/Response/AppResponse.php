@@ -18,7 +18,7 @@ class AppResponse
     /**
      * Sets status on Error and response message
      * 
-     * @param type $message
+     * @param string|null $message
      */
     public function error($message = null)
     {
@@ -29,7 +29,7 @@ class AppResponse
     /**
      * Sets status on Success and response message
      * 
-     * @param type $message
+     * @param string|null $message
      */
     public function success($message = null)
     {
@@ -40,7 +40,7 @@ class AppResponse
     /**
      * Sets response data
      * 
-     * @param type $data
+     * @param string|null $data
      */
     public function data($data)
     {
