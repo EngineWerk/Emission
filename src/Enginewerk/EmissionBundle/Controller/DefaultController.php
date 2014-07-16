@@ -60,8 +60,9 @@ class DefaultController extends Controller
      * @Method({"GET"})
      * @Template()
      *
-     * @param  \Symfony\Component\HttpFoundation\Request $request
-     * @throws type
+     * @param Request $request
+     * @return array
+     * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
      */
     public function showFileAction(Request $request)
     {
@@ -79,8 +80,9 @@ class DefaultController extends Controller
      * @Route("/fc/{file}", requirements={"file"}, name="show_file_content")
      * @Method({"GET"})
      *
-     * @param  \Symfony\Component\HttpFoundation\Request $request
-     * @throws type
+     * @param Request $request
+     * @return JsonResponse
+     * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
      */
     public function showFileContentAction(Request $request)
     {
@@ -103,7 +105,9 @@ class DefaultController extends Controller
      * @Route("/o/{file}", requirements={"file"}, name="open_file")
      * @Method({"GET"})
      *
-     * @param \Symfony\Component\HttpFoundation\Request $request
+     * @param Request $request
+     * @return StreamedResponse
+     * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
      */
     public function downloadFileAction(Request $request)
     {
@@ -138,6 +142,9 @@ class DefaultController extends Controller
     /**
      * @Route("/delete/{file}", requirements={"file"}, name="delete_file")
      * @Method({"GET"})
+     *
+     * @param Request $request
+     * @return JsonResponse
      */
     public function deleteAction(Request $request)
     {
@@ -168,7 +175,9 @@ class DefaultController extends Controller
     /**
      * @Route("/{file}/expiration/{date}", requirements={"file"}, defaults={"date" = "never"}, name="file_expiration_date")
      * @Method({"GET"})
+     *
      * @param \Symfony\Component\HttpFoundation\Request $request
+     * @return JsonResponse
      */
     public function fileExpirationDateAction(Request $request)
     {
