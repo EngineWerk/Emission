@@ -22,15 +22,6 @@ use Enginewerk\EmissionBundle\Form\Type\ResumableFileBlockType;
 class DefaultController extends Controller
 {
     /**
-     * @Route("/app")
-     * @Template()
-     */
-    public function appAction()
-    {
-        return array();
-    }
-
-    /**
      * @Route("/")
      * @Method({"GET"})
      * @Template()
