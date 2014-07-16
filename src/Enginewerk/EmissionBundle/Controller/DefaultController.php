@@ -22,6 +22,15 @@ use Enginewerk\EmissionBundle\Form\Type\ResumableFileBlockType;
 class DefaultController extends Controller
 {
     /**
+     * @Route("/app")
+     * @Template()
+     */
+    public function appAction()
+    {
+        return array();
+    }
+
+    /**
      * @Route("/")
      * @Method({"GET"})
      * @Template()
@@ -141,7 +150,7 @@ class DefaultController extends Controller
 
     /**
      * @Route("/delete/{file}", requirements={"file"}, name="delete_file")
-     * @Method({"GET"})
+     * @Method({"DELETE"})
      *
      * @param Request $request
      * @return JsonResponse

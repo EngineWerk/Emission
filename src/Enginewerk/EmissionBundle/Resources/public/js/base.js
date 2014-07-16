@@ -85,6 +85,7 @@ $(document).ready( function(){
 
         $.ajax({
             url: clickedObj.attr('href'),
+            type: 'DELETE'
             }).done(function ( json ) {
 
                 var app = new AppResponse(json);
