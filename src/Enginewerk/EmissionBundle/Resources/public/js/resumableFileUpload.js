@@ -1,5 +1,4 @@
-$(function () {
-    
+$(function(){
     var r = new Resumable({
         target: url, 
         targetChunkTestUrl: urlChunkTest,
@@ -17,12 +16,14 @@ $(function () {
     window.resumable = r;
 
     // Resumable.js isn't supported, fall back on a different method
-    if (!r.support) {
+    if(!r.support) {
         alert('File upload not supported');
     }
-    
-    function handleFileAdded (resumableFile, event) {
 
+    r.assignBrowse(document.getElementById('browse'));
+    r.assignDrop(document.getElementById('dropbox'));
+
+    r.on('fileAdded', function(resumableFile, event) {
         info('File added to queue' , resumableFile.file.name);
         cursorBusy();
 
@@ -100,10 +101,13 @@ $(function () {
 
         $('div.status:first', fileRow).html('Processing... &nbsp;');
         loadNext();
-   
-    };
-    
-    function handleFileUploadSuccess (Resumable, jsonTextResponse) {
+    });
+
+    r.on('uploadStart', function(){
+        cursorBusy();
+    });
+
+    r.on('fileSuccess', function(Resumable, jsonTextResponse) {
 
         info('Total files: ', r.files.length);
 
@@ -117,7 +121,29 @@ $(function () {
         if(app) {
             if(app.status.isSuccess()) {
                 if(app.data) {
-                    updateFileRowView(app.data, Resumable.uniqueIdentifier);
+                    var file = app.data;
+                    var link = $('<a>')
+                    .attr('target', '_blank')
+                    .prop('href', file.download_url);
+
+                    var fileNameHash = Resumable.uniqueIdentifier;
+                    info(file.name, fileNameHash);
+
+                    var tableRow = '<tr data-file-id="' + file.id + '" id="fhash-' + fileNameHash + '" data-search="' + file.name + '" > \n' + 
+                    '<td>' + 
+                        '<div class="fileName">' + file.name + '</div>' +
+                        '<div class="fileUploadedBy">' + file.uploaded_by + '</div>' +
+                        '<div class="fileSize">' + bytesToSize(file.size, 2) + '</div>' +
+                    '</td>' +
+                    '<td class="fileOptions">' + 
+                        '<a href="' + file.show_url + '" data-show-file-content-href="' + file.show_url.replace('/f/', '/fc/') + '" class="show_file">show</a> ' +
+                        '<a href="' + file.download_url + '" class="fileOptionsDownloadLink">save</a> ' + 
+                        '<a href="' + file.open_url + '" class="fileOptionsOpenLink">open</a> - ' +
+                        '<a href="' + file.delete_url + '" class="remove-file">remove</a>' + 
+                    '</td> \n' + 
+                '</tr>';
+
+                    $('#fhash-' + fileNameHash).replaceWith(tableRow);
                 }
 
             } else {
@@ -157,29 +183,11 @@ $(function () {
         }
 
         cursorNormal();
-    };
-    
-    function updateFileRowView (file, fileNameHash) {
-        info(file.name, fileNameHash);
-        var tableRow = 
-            '<tr data-file-id="' + file.id + '" id="fhash-' + fileNameHash + '" data-search="' + file.name + '" > \n' + 
-                '<td>' + 
-                    '<div class="fileName">' + file.name + '</div>' +
-                    '<div class="fileUploadedBy">' + file.uploaded_by + '</div>' +
-                    '<div class="fileSize">' + bytesToSize(file.size, 2) + '</div>' +
-                '</td>' +
-                '<td class="fileOptions">' + 
-                    '<a href="' + file.show_url + '" data-show-file-content-href="' + file.show_url.replace('/f/', '/fc/') + '" class="show_file">show</a> ' +
-                    '<a href="' + file.download_url + '" class="fileOptionsDownloadLink">save</a> ' + 
-                    '<a href="' + file.open_url + '" class="fileOptionsOpenLink">open</a> - ' +
-                    '<a href="' + file.delete_url + '" class="remove-file">remove</a>' + 
-                '</td> \n' + 
-            '</tr>';
+    });
 
-        $('#fhash-' + fileNameHash).replaceWith(tableRow);
-    }
+    r.on('fileError', function(Resumable, jsonTextResponse){
+        log('fileError');
 
-    function handleFileUploadError (Resumable, jsonTextResponse) {
         var app = new AppResponse(null, jsonTextResponse);
         var fileDOMObject = $('#fhash-' + Resumable.uniqueIdentifier);
 
@@ -188,34 +196,48 @@ $(function () {
         });
 
         cursorNormal();
-
+        //log(Resumable.file);
         alert('File: ' + Resumable.file.name + "\nMessage:\n\n" + app.message);
-    }
-    
-    function updateProgressBar () {
+    });
+
+    r.on('progress', function() {
         $('#dropbox_progress').find('.progress').width($('#dropbox_progress').find('.progressHolder').width() * r.progress());
-    }
-    
-    r.assignBrowse(document.getElementById('browse'));
-    r.assignDrop(document.getElementById('dropbox'));
-
-    r.on('fileAdded', function (resumableFile, event) {
-        handleFileAdded(resumableFile, event);
-    });
-    
-    r.on('uploadStart', function () {
-        cursorBusy();
     });
 
-    r.on('fileSuccess', function (Resumable, jsonTextResponse) {
-        handleFileUploadSuccess(Resumable, jsonTextResponse);
-    });
-    
-    r.on('fileError', function (Resumable, jsonTextResponse) {
-        handleFileUploadError(Resumable, jsonTextResponse);
-    });
+    var computeHashes = function (resumableFile, offset, fileReader) {
+        var round = resumableFile.resumableObj.getOpt('forceChunkSize') ? Math.ceil : Math.floor,
+          chunkSize = resumableFile.getOpt('chunkSize'),
+          numChunks = Math.max(round(resumableFile.file.size / chunkSize), 1),
+          forceChunkSize = resumableFile.getOpt('forceChunkSize'),
+          startByte,
+          endByte,
+          func = (resumableFile.file.slice ? 'slice' : (resumableFile.file.mozSlice ? 'mozSlice' : (resumableFile.file.webkitSlice ? 'webkitSlice' : 'slice'))),
+          bytes;
 
-    r.on('progress', function () {
-        updateProgressBar();
-    });
+        resumableFile.hashes = resumableFile.hashes || [];
+        fileReader = fileReader || new FileReader();
+        offset = offset || 0;
+
+        if (resumableFile.resumableObj.cancelled === false) {
+          startByte = offset * chunkSize;
+          endByte = Math.min(resumableFile.file.size, (offset + 1) * chunkSize);
+
+          if (resumableFile.file.size - endByte < chunkSize && !forceChunkSize) {
+            endByte = resumableFile.file.size;
+          }
+          bytes  = resumableFile.file[func](startByte, endByte);
+
+          fileReader.onloadend = function (e) {
+            var spark = SparkMD5.ArrayBuffer.hash(e.target.result);
+            log(spark);
+            resumableFile.hashes.push(spark);
+
+            if (numChunks > offset + 1) {
+              computeHashes(resumableFile, offset + 1, fileReader);
+            }
+          };
+
+          fileReader.readAsArrayBuffer(bytes);
+        }
+      };
 });
