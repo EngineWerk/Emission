@@ -202,7 +202,7 @@ class DefaultController extends Controller
 
             } catch (\Exception $ex) {
                 $appResponse->error('Can`t change expiration date');
-                $this->get('logger')->error(sprintf('Can`t change expiration date of File #%s. %s', $file->getId(), $ex->getMessage()));
+                $this->get('logger')->error(sprintf('Can`t change expiration date of File #%s. %s', $request->get('file'), $ex->getMessage()));
             }
         }
 
