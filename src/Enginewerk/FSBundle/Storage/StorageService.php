@@ -4,6 +4,7 @@ namespace Enginewerk\FSBundle\Storage;
 
 use Enginewerk\FSBundle\Entity\BinaryBlock;
 use Doctrine\Bundle\DoctrineBundle\Registry;
+use Symfony\Component\HttpFoundation\File\File;
 
 use \Exception;
 
@@ -33,7 +34,7 @@ class StorageService
      * @param  \Symfony\Component\HttpFoundation\File\File $uploadedFile
      * @return integer
      */
-    public function put($key, $uploadedFile)
+    public function put($key, File $uploadedFile)
     {
         $checksum = md5_file($uploadedFile->getPathname());
         $size = $uploadedFile->getSize();
