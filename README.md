@@ -35,7 +35,13 @@ Follow:
     
 Create database tables.
 
-    app/console dotrine:schema:update --force
+    php app/console dotrine:schema:update --force
+
+
+Create table for database session storage
+
+     php app/console sessionstorage:init
+
 
 Generate user invitation code.
 
