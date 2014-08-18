@@ -28,14 +28,14 @@ class FileStorage
 
     public function delete($key)
     {
-        /** @var $file \Enginewerk\EmissionBundle\Entity\File **/
-        $file = $this->find($key);
+        $file = $this->get($key);
 
         $fileBlockRepository = $this
                 ->getDoctrine()
                 ->getRepository('EnginewerkEmissionBundle:FileBlock');
 
         $binaryBlocksToRemove = array();
+
         foreach ($file->getFileBlocks() as $fileBlock) {
             $usedBlocks = $fileBlockRepository->getUsedBlocksNumber($fileBlock->getFileHash());
             if (null === $usedBlocks || 1 == $usedBlocks) {
@@ -66,6 +66,11 @@ class FileStorage
         
     }
 
+    /**
+     * @param $key
+     * @return \Enginewerk\EmissionBundle\Entity\File
+     * @throws \Enginewerk\EmissionBundle\Storage\FileNotFoundException
+     */
     public function get($key)
     {
         $file = $this->find($key);
