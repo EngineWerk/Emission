@@ -25,7 +25,6 @@
 {% import '::macro.html.twig' as marco %}
 
 {% block body %}
-<div id="emissionApplicationContainer">
 <!-- The fileinput-button span is used to style the file input field as button -->
     <div id="emissionSettingsContainer" class="hidden">
         <div><a href="" id="emissionSettingsContainerUpperSwitch" title="{% trans %}gui.close_settings{% endtrans %}"><img src="/bundles/enginewerkemission/img/1382042732_down4.png"/></a></div>
@@ -61,13 +60,13 @@
             <table cellspacing="0" cellpadding="10" id="filesTable" class="center">
                 <tbody>
             {% for File in Files %}
-                <tr{% if File.complete == 1 %} data-file-completed="yes"{% endif%} data-file-id="{{ File.id }}" data-search="{{ File.name }}" id="fhash-{% if File.checksum == null %}{{ File.name|md5 }}{% else %}{{ File.checksum }}{% endif %}">
+                <tr{% if File.isComplete == 1 %} data-file-completed="yes"{% endif%} data-file-id="{{ File.id }}" data-search="{{ File.name }}" id="fhash-{% if File.checksum == null %}{{ File.name|md5 }}{% else %}{{ File.checksum }}{% endif %}">
                     <td>
-                        <div class="fileName">{% if File.complete == 0 %}(incomplete){% endif %}{{ File.name }}</div>
+                        <div class="fileName">{% if File.isComplete == 0 %}(incomplete){% endif %}{{ File.name }}</div>
                         <div class="fileUploadedBy">{{ File.User.Username }}</div>
                         <div class="fileSize">{{ marco.bytesToSize(File.size) }}</div>
                     </td>
-                    {% if File.complete == 1 %}
+                    {% if File.isComplete == 1 %}
                         <td class="fileOptions">
                             <a href="{{ path('show_file', {'file': File.fileId}) }}" class="show_file" data-show-file-content-href="{{ path('show_file_content', {'file': File.fileId}) }}">{% trans %}gui.show_file{% endtrans %}</a> 
                             <a href="{{ path('download_file', {'file': File.fileId}) }}" class="fileOptionsDownloadLink">{% trans %}gui.download_file{% endtrans %}</a> 
@@ -85,106 +84,105 @@
             </table>
         </div>
     </div>
-</div>
-                
-<div id="filePreviewWindow" class="filePreview" style="display:none;">
-    <div class="background"></div>
-    <div class="window">
-        <div class="container panel">
-            <div class="toolbar">
-                <button class="close">close</button>
-            </div>
-            <div class="content">
-                <h2>Filename</h2>
-                <a href="">{% trans %}gui.download_file{% endtrans %}</a> 
-                <a href="">{% trans %}gui.open_file_in_browser{% endtrans %}</a> 
-                <a href="">{% trans %}preview{% endtrans %}</a> 
+
+    <div id="filePreviewWindow" class="filePreview" style="display:none;">
+        <div class="background"></div>
+        <div class="window">
+            <div class="container panel">
+                <div class="toolbar">
+                    <button class="close">close</button>
+                </div>
+                <div class="content">
+                    <h2>Filename</h2>
+                    <a href="">{% trans %}gui.download_file{% endtrans %}</a> 
+                    <a href="">{% trans %}gui.open_file_in_browser{% endtrans %}</a> 
+                    <a href="">{% trans %}preview{% endtrans %}</a> 
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<script type="text/javascript">        
-    // memory_limit: {{ Capabilities.memory_limit }}, upload_max_filesize: {{ Capabilities.upload_max_filesize }}, post_max_size: {{ Capabilities.post_max_size }}, browser_file_memory_limit: {{ Capabilities.browser_file_memory_limit }}
-    var url = '{{ path('upload_file') }}';
-    var urlChunkTest = '{{ path('upload_file_chunk_test') }}';
-    var maxChunkSize = ({{ MaxUploadFileSize }} * 1024 * 1024); // to MB
-
-    var appUserName = '{{ app.user.username }}';
-
-    var postdata = {'_tokenFile' : '{{FileForm._token.vars.value}}', '_tokenFileBlock' : '{{FileBlockForm._token.vars.value}}'};
-    var pendingFilesNumber = 0;
-
-    $('#emissionSettingsContainerSwitch, #emissionSettingsContainerUpperSwitch').click(function(event){
-
-        $('#emissionSettingsContainer').toggleClass('hidden');
-
-        event.preventDefault();
-    });
-
-    $(function(){
-
-        // Option - Ask before delete
-        if($.jStorage.get('app.settings.ask_before_delete', 'yes') === 'yes') {
-            $('#askBeforeDeleteCheckBox').attr('checked', 'checked');
-        }
-
-        $('#askBeforeDeleteCheckBox').change(function(){
-            var option = ($(this).attr('checked') === 'checked') ? 'yes' : 'no';
-            $.jStorage.set('app.settings.ask_before_delete', option);
-            log($.jStorage.get('app.settings.ask_before_delete', 'yes'));
+    <script type="text/javascript">        
+        // memory_limit: {{ Capabilities.memory_limit }}, upload_max_filesize: {{ Capabilities.upload_max_filesize }}, post_max_size: {{ Capabilities.post_max_size }}, browser_file_memory_limit: {{ Capabilities.browser_file_memory_limit }}
+        var url = '{{ path('upload_file') }}';
+        var urlChunkTest = '{{ path('upload_file_chunk_test') }}';
+        var maxChunkSize = ({{ MaxUploadFileSize }} * 1024 * 1024); // to MB
+        
+        var appUserName = '{{ app.user.username }}';
+        
+        var postdata = {'_tokenFile' : '{{FileForm._token.vars.value}}', '_tokenFileBlock' : '{{FileBlockForm._token.vars.value}}'};
+        var pendingFilesNumber = 0;
+               
+        $('#emissionSettingsContainerSwitch, #emissionSettingsContainerUpperSwitch').click(function(event){
+            
+            $('#emissionSettingsContainer').toggleClass('hidden');
+            
+            event.preventDefault();
         });
-
-        // Option - Fast and stable network - LAN
-        if($.jStorage.get('app.settings.fast_and_stable_network', 'yes') === 'yes') {
-            $('#fastAndStableNetworkCheckBox').attr('checked', 'checked');
-        }
-
-        $('#fastAndStableNetworkCheckBox').change(function(){
-            var option = ($(this).attr('checked') === 'checked') ? 'yes' : 'no';
-            $.jStorage.set('app.settings.fast_and_stable_network', option);
-            log($.jStorage.get('app.settings.fast_and_stable_network', 'yes'));
-        });
-
-        // Option - Prompt for screenshot file name
-        if($.jStorage.get('app.settings.prompt_for_screenshot_filename', 'yes') === 'yes') {
-            $('#promptForScreenshotFilename').attr('checked', 'checked');
-        }
-
-        $('#promptForScreenshotFilename').change(function(){
-            var option = ($(this).attr('checked') === 'checked') ? 'yes' : 'no';
-            $.jStorage.set('app.settings.prompt_for_screenshot_filename', option);
-            log($.jStorage.get('app.settings.prompt_for_screenshot_filename', 'yes'));
-        });
-
-        // Option - Simple search
-        if($.jStorage.get('app.settings.enable_simple_search', 'yes') === 'yes') {
-            $('#enableSimpleSearchCheckBox').attr('checked', 'checked');
-            simpleSearchEnable();
-        }
-
-        $('#enableSimpleSearchCheckBox').change(function(){
-            var option = ($(this).attr('checked') === 'checked') ? 'yes' : 'no';
-            $.jStorage.set('app.settings.enable_simple_search', option);
-            log($.jStorage.get('app.settings.enable_simple_search', 'yes'));
-            if(option === 'yes') {
-                simpleSearchEnable();
-            } else {
-                simpleSearchDisable();
+        
+        $(function(){
+            
+            // Option - Ask before delete
+            if($.jStorage.get('app.settings.ask_before_delete', 'yes') === 'yes') {
+                $('#askBeforeDeleteCheckBox').attr('checked', 'checked');
             }
+            
+            $('#askBeforeDeleteCheckBox').change(function(){
+                var option = ($(this).attr('checked') === 'checked') ? 'yes' : 'no';
+                $.jStorage.set('app.settings.ask_before_delete', option);
+                log($.jStorage.get('app.settings.ask_before_delete', 'yes'));
+            });
+            
+            // Option - Fast and stable network - LAN
+            if($.jStorage.get('app.settings.fast_and_stable_network', 'yes') === 'yes') {
+                $('#fastAndStableNetworkCheckBox').attr('checked', 'checked');
+            }
+            
+            $('#fastAndStableNetworkCheckBox').change(function(){
+                var option = ($(this).attr('checked') === 'checked') ? 'yes' : 'no';
+                $.jStorage.set('app.settings.fast_and_stable_network', option);
+                log($.jStorage.get('app.settings.fast_and_stable_network', 'yes'));
+            });
+            
+            // Option - Prompt for screenshot file name
+            if($.jStorage.get('app.settings.prompt_for_screenshot_filename', 'yes') === 'yes') {
+                $('#promptForScreenshotFilename').attr('checked', 'checked');
+            }
+            
+            $('#promptForScreenshotFilename').change(function(){
+                var option = ($(this).attr('checked') === 'checked') ? 'yes' : 'no';
+                $.jStorage.set('app.settings.prompt_for_screenshot_filename', option);
+                log($.jStorage.get('app.settings.prompt_for_screenshot_filename', 'yes'));
+            });
+            
+            // Option - Simple search
+            if($.jStorage.get('app.settings.enable_simple_search', 'yes') === 'yes') {
+                $('#enableSimpleSearchCheckBox').attr('checked', 'checked');
+                simpleSearchEnable();
+            }
+            
+            $('#enableSimpleSearchCheckBox').change(function(){
+                var option = ($(this).attr('checked') === 'checked') ? 'yes' : 'no';
+                $.jStorage.set('app.settings.enable_simple_search', option);
+                log($.jStorage.get('app.settings.enable_simple_search', 'yes'));
+                if(option === 'yes') {
+                    simpleSearchEnable();
+                } else {
+                    simpleSearchDisable();
+                }
+            });
+            
+            // Option - Enable auto file preview
+            if($.jStorage.get('app.settings.enable_auto_file_preview', 'yes') === 'yes') {
+                $('#enableAutoFilePreviewCheckBox').attr('checked', 'checked');
+            }
+            
+            $('#enableAutoFilePreviewCheckBox').change(function(){
+                var option = ($(this).attr('checked') === 'checked') ? 'yes' : 'no';
+                $.jStorage.set('app.settings.enable_auto_file_preview', option);
+                log($.jStorage.get('app.settings.enable_auto_file_preview', 'yes'));
+            });
         });
-
-        // Option - Enable auto file preview
-        if($.jStorage.get('app.settings.enable_auto_file_preview', 'yes') === 'yes') {
-            $('#enableAutoFilePreviewCheckBox').attr('checked', 'checked');
-        }
-
-        $('#enableAutoFilePreviewCheckBox').change(function(){
-            var option = ($(this).attr('checked') === 'checked') ? 'yes' : 'no';
-            $.jStorage.set('app.settings.enable_auto_file_preview', option);
-            log($.jStorage.get('app.settings.enable_auto_file_preview', 'yes'));
-        });
-    });
-
-</script>
+        
+    </script>
 {% endblock %}
