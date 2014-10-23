@@ -9,7 +9,7 @@ $(function(){
         forceChunkSize : true,
         testChunks : true,
         query: postdata,
-        fileParameterName : 'form[uploadedFile]',
+        fileParameterName : 'file[uploadedFile]'
     });
 
     // Expose to window scope
@@ -23,21 +23,22 @@ $(function(){
     r.assignBrowse(document.getElementById('browse'));
     r.assignDrop(document.getElementById('dropbox'));
 
-    r.on('fileAdded', function(resumableFile, event) {
+    r.on('fileAdded', function(resumableFile) {
         info('File added to queue' , resumableFile.file.name);
         cursorBusy();
 
         var file = resumableFile.file;
-        
-        var tableRow = '<tr id="fhash-' + Math.random() + '" data-search="' + file.name + '" > \n' + 
-                    '<td>' + 
+
+        var fhash = SparkMD5.hash(Math.random().toString());
+        var tableRow = '<tr id="fhash-' + fhash + '" data-search="' + file.name + '" > \n' +
+                    '<td>' +
                         '<div class="status"></div>' +
                         '<div class="fileName">' + file.name + '</div>' +
-                        '<div class="fileUploadedBy">' + appUserName + '</div>' +
+                        '<div class="fileUploadedBy">&nbsp;' + appUserName + '&nbsp;</div>' +
                         '<div class="fileSize">' + bytesToSize(file.size, 2) + '</div>' +
                     '</td>' +
-                    '<td class="fileOptions">' + 
-                    '</td> \n' + 
+                    '<td class="fileOptions">' +
+                    '</td> \n' +
                 '</tr>';
         
         var fileRow = $(tableRow);
@@ -51,12 +52,12 @@ $(function(){
         var currentChunk = 1;
         var spark = new SparkMD5.ArrayBuffer();
         
-        fileReaderOnload = function(e) {
+        var fileReaderOnload = function(e) {
             info('Loaded chunk for', file.name);
             
             spark.append(e.target.result);                 // append array buffer
             var md5 = SparkMD5.ArrayBuffer.hash(e.target.result);
-            $('div.status:first', fileRow).html('Processed: ' + Math.round((currentChunk * 100 / chunks), 0) + '% &nbsp;');
+            $('div.status:first', fileRow).html('Processed: ' + Math.round((currentChunk * 100 / chunks)) + '% &nbsp;');
             info('Chunk "' + currentChunk + '" MD5 hash for file ' + file.name + ':', md5);
 
             currentChunk++;
@@ -79,8 +80,9 @@ $(function(){
                     fileRow.remove();
                 }
             }
-        },
-        fileReaderOnerror = function (e) {
+        };
+
+        var fileReaderOnerror = function (e) {
             info('MD5 computation error', e);
             cursorNormal();
         };
