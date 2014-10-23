@@ -113,7 +113,7 @@ class File
      * @ORM\Column(name="complete", type="boolean", options={"default" = false})
      * @var integer
      */
-    protected $complete;
+    protected $complete = false;
 
     public function __construct()
     {

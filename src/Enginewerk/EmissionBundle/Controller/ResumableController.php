@@ -92,7 +92,6 @@ class ResumableController extends Controller
             if ($fileForm->isValid()) {
                 $file = $fileForm->getData();
                 $file->setType($fileForm->get('uploadedFile')->getData()->getMimeType());
-                $file->setComplete(false);
                 $file->setUser($this->getUser());
 
                 $em->persist($file);
