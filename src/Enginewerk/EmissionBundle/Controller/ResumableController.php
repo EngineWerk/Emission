@@ -135,11 +135,9 @@ class ResumableController extends Controller
 
         // Do we have whole file?
         // Lets make sum for all rangeEnd and check against declared File size
-        $query = $this->getDoctrine()->getManager()
-                ->createQuery('SELECT SUM(f.size) as totalSize FROM EnginewerkEmissionBundle:FileBlock f WHERE f.fileId = :fileId')
-                ->setParameter('fileId', $file->getId());
-
-        $totalSize = $query->getSingleScalarResult();
+        $totalSize = $this->getDoctrine()
+            ->getRepository('EnginewerkEmissionBundle:FileBlock')
+            ->getTotalSize($file->getId());
 
         if ($totalSize == $file->getSize()) {
 

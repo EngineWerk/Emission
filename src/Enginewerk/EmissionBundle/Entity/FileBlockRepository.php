@@ -19,4 +19,13 @@ class FileBlockRepository extends EntityRepository
 
          return $query->getSingleScalarResult();
     }
+
+    public function getTotalSize($fileId)
+    {
+        $query = $this->getEntityManager()
+            ->createQuery('SELECT SUM(f.size) as totalSize FROM EnginewerkEmissionBundle:FileBlock f WHERE f.fileId = :fileId')
+            ->setParameter('fileId', $fileId);
+
+        return $query->getSingleScalarResult();
+    }
 }
