@@ -24,7 +24,7 @@ class FileBlockSubscriber implements EventSubscriber
     public function prePersist(LifecycleEventArgs $args)
     {
         $fileBlock = $args->getEntity();
-        
+
         if ($fileBlock instanceof FileBlock) {
             $createdAt = new \DateTime('now');
             $fileBlock->setUpdatedAt($createdAt);

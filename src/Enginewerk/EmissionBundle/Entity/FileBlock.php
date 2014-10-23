@@ -7,7 +7,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * FileBlock
- * 
+ *
  * @ORM\Entity
  * @ORM\HasLifecycleCallbacks
  * @ORM\Table(name="file_block")
@@ -115,7 +115,7 @@ class FileBlock
     /**
      * Set size
      *
-     * @param  integer  $size
+     * @param  integer   $size
      * @return FileBlock
      */
     public function setSize($size)
@@ -184,7 +184,7 @@ class FileBlock
     /**
      * Set rangeStart
      *
-     * @param  integer  $rangeStart
+     * @param  integer   $rangeStart
      * @return FileBlock
      */
     public function setRangeStart($rangeStart)
@@ -207,7 +207,7 @@ class FileBlock
     /**
      * Set rangeEnd
      *
-     * @param  integer  $rangeEnd
+     * @param  integer   $rangeEnd
      * @return FileBlock
      */
     public function setRangeEnd($rangeEnd)
@@ -253,7 +253,7 @@ class FileBlock
     /**
      * Set fileId
      *
-     * @param  integer  $fileId
+     * @param  integer   $fileId
      * @return FileBlock
      */
     public function setFileId($fileId)

@@ -16,7 +16,7 @@ class FileBlockRepository extends EntityRepository
         $query = $this->getEntityManager()
                 ->createQuery('SELECT COUNT(f.id) as totalNumber FROM EnginewerkEmissionBundle:FileBlock f WHERE f.fileHash = :fileHash')
                 ->setParameter('fileHash', $fileHash);
-            
+
          return $query->getSingleScalarResult();
     }
 }

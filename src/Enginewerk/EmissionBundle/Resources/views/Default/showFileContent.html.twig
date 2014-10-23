@@ -7,7 +7,7 @@
     {% trans %}gui.file.type{% endtrans %}: {{ File.type }}<br />
     {% trans %}gui.file.size{% endtrans %}: {{ marco.bytesToSize(File.size) }}<br />
     {% trans %}gui.click_to{% endtrans %}
-    <a href="{{ path('download_file', {'file': File.fileId}) }}">{% trans %}gui.download_file{% endtrans %}</a> 
+    <a href="{{ path('download_file', {'file': File.fileId}) }}">{% trans %}gui.download_file{% endtrans %}</a>
     <a href="{{ path('open_file', {'file': File.fileId}) }}">{% trans %}gui.open_file_in_browser{% endtrans %}</a>
     {% if (File.type == 'application/pdf' or File.type == 'image/jpg' or File.type == 'image/png' or File.type == 'image/jpeg' or File.type == 'video/mp4') %}
     <a id="{{ File.fileId }}" class="preview_file" href="{{ path('open_file', {'file': File.fileId}) }}">{% trans %}gui.preview_file{% endtrans %}</a>

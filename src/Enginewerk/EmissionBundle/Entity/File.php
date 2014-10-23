@@ -44,14 +44,14 @@ class File
      * @var string
      */
     protected $fileHash;
-    
+
     /**
      * File owner
-     * 
+     *
      * @ORM\ManyToOne(targetEntity="\Enginewerk\UserBundle\Entity\User", inversedBy="files", cascade={"persist", "refresh"})
      * @ORM\JoinColumn(name="user_id", referencedColumnName="id", onDelete="cascade")
      */
-    protected $user;    
+    protected $user;
 
     /**
      * Checksum of file declared by user.
@@ -398,7 +398,7 @@ class File
     /**
      * Set user
      *
-     * @param \Enginewerk\EmissionBundle\Entity\User $user
+     * @param  \Enginewerk\EmissionBundle\Entity\User $user
      * @return File
      */
     public function setUser(\Enginewerk\UserBundle\Entity\User $user = null)
@@ -411,7 +411,7 @@ class File
     /**
      * Get user
      *
-     * @return \Enginewerk\EmissionBundle\Entity\User 
+     * @return \Enginewerk\EmissionBundle\Entity\User
      */
     public function getUser()
     {
@@ -421,7 +421,7 @@ class File
     /**
      * Set complete
      *
-     * @param boolean $complete
+     * @param  boolean $complete
      * @return File
      */
     public function setComplete($complete)
@@ -434,7 +434,7 @@ class File
     /**
      * Get complete
      *
-     * @return boolean 
+     * @return boolean
      */
     public function getComplete()
     {

@@ -27,13 +27,13 @@ class RemoveExpiredFilesCommand extends ContainerAwareCommand
         $output->writeln($date->format('Y-m-d H:i:s'));
 
         $efs = $this->getContainer()->get('emission_file_storage');
-        /* @var $efs \Enginewerk\EmissionBundle\Storage\FileStorage */  
-        
+        /* @var $efs \Enginewerk\EmissionBundle\Storage\FileStorage */
+
         $repository = $this
                 ->getContainer()
                 ->get('doctrine')
                 ->getRepository('EnginewerkEmissionBundle:File');
-        
+
         $files = $repository->getExpiredFiles();
 
         foreach ($files as $file) {

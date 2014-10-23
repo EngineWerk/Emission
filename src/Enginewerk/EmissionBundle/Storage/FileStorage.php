@@ -49,12 +49,12 @@ class FileStorage
 
         $em->getConnection()->beginTransaction();
         $em->remove($file);
-        
+
         try {
             foreach ($binaryBlocksToRemove as $blockKey) {
                 $this->binaryObjectStorage->delete($blockKey);
             }
-            
+
             $em->flush();
             $em->getConnection()->commit();
         } catch (RuntimeException $e) {
@@ -62,8 +62,7 @@ class FileStorage
             $em->close();
             throw $e;
         }
-        
-        
+
     }
 
     /**

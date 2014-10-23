@@ -11,12 +11,12 @@ services:
     session.handler.pdo:
         class:     Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler
         arguments: ["@pdo", "%pdo.db_options%"]
-        
+
     enginewerk.twig.enginewerk_extension:
         class: Enginewerk\EmissionBundle\Twig\EmissionExtension
         tags:
-            - { name: twig.extension }   
-            
+            - { name: twig.extension }
+
     enginewerk_emission.file_block:
         class: Enginewerk\EmissionBundle\EventListener\FileBlockSubscriber
         tags:
@@ -24,4 +24,4 @@ services:
 
     emission_file_storage:
         class:     Enginewerk\EmissionBundle\Storage\FileStorage
-        arguments: ["@doctrine", "@enginewerk_bbs"]       
+        arguments: ["@doctrine", "@enginewerk_bbs"]

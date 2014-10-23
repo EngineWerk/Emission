@@ -38,7 +38,7 @@ EOD
 
         $output->writeln('Creating datbase table for session storage "' . $dbengine . '"');
 
-        switch($dbengine) {
+        switch ($dbengine) {
             case 'mysql':
                 $sql = $this->getMysqlStatement();
                 break;
@@ -58,7 +58,6 @@ EOD
                 );
                 break;
         }
-
 
         $stmt = $this
             ->getContainer()
@@ -129,4 +128,4 @@ EOD;
 
         return $dbengine;
     }
-} 
+}

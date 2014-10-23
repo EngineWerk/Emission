@@ -34,21 +34,21 @@ class DefaultController extends Controller
 
         $fileBlockForm = $this->createForm(new ResumableFileBlockType());
         $fileForm = $this->createForm(new ResumableFileType());
-        
+
         $capabilities = array(
             'memory_limit' => ini_get('memory_limit'),
             'post_max_size' => ini_get('post_max_size'),
             'upload_max_filesize' => ini_get('upload_max_filesize'),
             'browser_file_memory_limit' => $this->container->getParameter('app.uploader_max_chunk_size')
             );
-        
+
         $uploaderCapabilities = $capabilities;
         sort($uploaderCapabilities, SORT_NUMERIC);
         $maxUploadFileSize = (int) $uploaderCapabilities[0];
 
         return array(
-            'Files' => $files, 
-            'FileBlockForm' => $fileBlockForm->createView(), 
+            'Files' => $files,
+            'FileBlockForm' => $fileBlockForm->createView(),
             'FileForm' => $fileForm->createView(),
             'Capabilities' => $capabilities,
             'MaxUploadFileSize' => $maxUploadFileSize
@@ -60,7 +60,7 @@ class DefaultController extends Controller
      * @Method({"GET"})
      * @Template()
      *
-     * @param Request $request
+     * @param  Request                                                       $request
      * @return array
      * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
      */
@@ -80,7 +80,7 @@ class DefaultController extends Controller
      * @Route("/fc/{file}", requirements={"file"}, name="show_file_content")
      * @Method({"GET"})
      *
-     * @param Request $request
+     * @param  Request                                                       $request
      * @return JsonResponse
      * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
      */
@@ -105,7 +105,7 @@ class DefaultController extends Controller
      * @Route("/o/{file}", requirements={"file"}, name="open_file")
      * @Method({"GET"})
      *
-     * @param Request $request
+     * @param  Request                                                       $request
      * @return StreamedResponse
      * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
      */
@@ -143,7 +143,7 @@ class DefaultController extends Controller
      * @Route("/delete/{file}", requirements={"file"}, name="delete_file")
      * @Method({"DELETE"})
      *
-     * @param Request $request
+     * @param  Request      $request
      * @return JsonResponse
      */
     public function deleteAction(Request $request)
@@ -169,7 +169,7 @@ class DefaultController extends Controller
      * @Route("/{file}/expiration/{date}", requirements={"file"}, defaults={"date" = "never"}, name="file_expiration_date")
      * @Method({"GET"})
      *
-     * @param \Symfony\Component\HttpFoundation\Request $request
+     * @param  \Symfony\Component\HttpFoundation\Request $request
      * @return JsonResponse
      */
     public function fileExpirationDateAction(Request $request)
