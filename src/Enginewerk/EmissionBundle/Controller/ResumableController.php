@@ -72,28 +72,20 @@ class ResumableController extends Controller
 
         $formRequest = $request->request->get('form');
 
-        $fileFormRequest = array();
-        $fileFormRequest['name'] = $formRequest['resumableFilename'];
-        $fileFormRequest['size'] = $formRequest['resumableTotalSize'];
-        $fileFormRequest['checksum'] = $formRequest['resumableIdentifier'];
-        $fileFormRequest['_token'] = $formRequest['_tokenFile'];
-
         // File
         $em = $this->getDoctrine()->getManager();
         // Find out if we have this File already
         $file = $this->getDoctrine()
                 ->getRepository('EnginewerkEmissionBundle:File')
                 ->findOneBy(array(
-                    'name' => $fileFormRequest['name'],
-                    'checksum' => $fileFormRequest['checksum'],
-                    'size' => $fileFormRequest['size'],
+                    'name' => $formRequest['resumableFilename'],
+                    'checksum' => $formRequest['resumableIdentifier'],
+                    'size' => $formRequest['resumableTotalSize'],
                     )
                 );
 
         // No? Lets create one
         if (null === $file) {
-            $request->files->set('file', $request->files->get('form'));
-            $request->request->set('file', $fileFormRequest);
             $fileForm = $this->createForm(new ResumableFileType());
             $fileForm->handleRequest($request);
 
@@ -110,28 +102,20 @@ class ResumableController extends Controller
                 $appResponse->error(var_export($fileForm->getErrorsAsString(), true));
 
                 return new JsonResponse($appResponse->response(), $responseCode);
-            }
+           }
         }
-
-        $fileBlockFormRequest = array();
-        $fileBlockFormRequest['rangeStart'] = $formRequest['resumableCurrentStartByte'];
-        $fileBlockFormRequest['size'] = $formRequest['resumableCurrentChunkSize'];
-        $fileBlockFormRequest['rangeEnd'] = $formRequest['resumableCurrentEndByte'];
-        $fileBlockFormRequest['_token'] = $formRequest['_tokenFileBlock'];
 
         // Find out if we have this FileBlock
         $FileBlockInStorage = $this->getDoctrine()
                 ->getRepository('EnginewerkEmissionBundle:FileBlock')
                 ->findOneBy(array(
                     'fileId' => $file->getId(),
-                    'rangeStart' => $fileBlockFormRequest['rangeStart'],
-                    'rangeEnd' => $fileBlockFormRequest['rangeEnd']));
+                    'rangeStart' => $formRequest['resumableCurrentStartByte'],
+                    'rangeEnd' => $formRequest['resumableCurrentEndByte']));
 
         // No ? Lets create one
         if (null === $FileBlockInStorage) {
 
-            $request->files->set('fileBlock', $request->files->get('form'));
-            $request->request->set('fileBlock', $fileBlockFormRequest);
             $fileBlockForm = $this->createForm(new ResumableFileBlockType());
             $fileBlockForm->handleRequest($request);
 
@@ -151,7 +135,7 @@ class ResumableController extends Controller
         }
 
         // Do we have whole file?
-        // Lets make sum for all renageEnd and check against declared File size
+        // Lets make sum for all rangeEnd and check against declared File size
         $query = $this->getDoctrine()->getManager()
                 ->createQuery('SELECT SUM(f.size) as totalSize FROM EnginewerkEmissionBundle:FileBlock f WHERE f.fileId = :fileId')
                 ->setParameter('fileId', $file->getId());

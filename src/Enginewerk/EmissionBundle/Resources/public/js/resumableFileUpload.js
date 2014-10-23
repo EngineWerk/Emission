@@ -9,7 +9,7 @@ $(function(){
         forceChunkSize : true,
         testChunks : true,
         query: postdata,
-        fileParameterName : 'file[uploadedFile]'
+        fileParameterName : 'form[uploadedFile]'
     });
 
     // Expose to window scope

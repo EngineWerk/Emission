@@ -32,11 +32,11 @@
         {% if app.environment == 'dev' %}
         {% endif %}
         <div><input type="checkbox" id="promptForScreenshotFilename"/><label for="promptForScreenshotFilename">{% trans %}gui.prompt_for_pasted_image_name{% endtrans %}</label></div>
-        <div><input type="checkbox" id="askBeforeDeleteCheckBox"/><label for="askBeforeDeleteCheckBox">{% trans %}gui.ask_before_delete_file{% endtrans %}</label></div>        
+        <div><input type="checkbox" id="askBeforeDeleteCheckBox"/><label for="askBeforeDeleteCheckBox">{% trans %}gui.ask_before_delete_file{% endtrans %}</label></div>
         <div><input type="checkbox" id="enableSimpleSearchCheckBox"/><label for="enableSimpleSearchCheckBox">{% trans %}gui.use_simple_search{% endtrans %}</label></div>
         <div><input type="checkbox" id="enableAutoFilePreviewCheckBox"/><label for="enableAutoFilePreviewCheckBox">{% trans %}gui.auto_file_preview{% endtrans %}</label></div>
     </div>
-    
+
     <div id="emissionMainMenuContainer">
         <div style="text-align: right; color:#323232;"><span style="float: left;">{{ company_name }}</span>{{ app.user.username }} <a href="{{ path('logout') }}" title="Logout Yourself ;)"><img src="/bundles/enginewerkemission/img/1382043670_519564-060_Off.png"/></a> <a href="" id="emissionSettingsContainerSwitch" title="{% trans %}gui.open_settings{% endtrans %}"><img src="/bundles/enginewerkemission/img/1382042110_45_Menu.png"/></a></div>
     </div>
@@ -48,14 +48,14 @@
     <div id="emissionSimpleSearchContainer">
         <input type="text" id="simpleSearchInput"/>
     </div>
-    
+
     <div id="emissionFileListUploadContainer">
         <div id="dropbox_progress">
             <div class="progressHolder">
                 <div class="progress"></div>
             </div>
         </div>
-        
+
         <!-- The container for the uploaded files -->
         <div id="files" class="files">
             <table cellspacing="0" cellpadding="10" id="filesTable" class="center">
@@ -69,9 +69,9 @@
                     </td>
                     {% if File.complete == 1 %}
                         <td class="fileOptions">
-                            <a href="{{ path('show_file', {'file': File.fileId}) }}" class="show_file" data-show-file-content-href="{{ path('show_file_content', {'file': File.fileId}) }}">{% trans %}gui.show_file{% endtrans %}</a> 
-                            <a href="{{ path('download_file', {'file': File.fileId}) }}" class="fileOptionsDownloadLink">{% trans %}gui.download_file{% endtrans %}</a> 
-                            <a href="{{ path('open_file', {'file': File.fileId}) }}" class="fileOptionsOpenLink">{% trans %}gui.open_file_in_browser{% endtrans %}</a> - 
+                            <a href="{{ path('show_file', {'file': File.fileId}) }}" class="show_file" data-show-file-content-href="{{ path('show_file_content', {'file': File.fileId}) }}">{% trans %}gui.show_file{% endtrans %}</a>
+                            <a href="{{ path('download_file', {'file': File.fileId}) }}" class="fileOptionsDownloadLink">{% trans %}gui.download_file{% endtrans %}</a>
+                            <a href="{{ path('open_file', {'file': File.fileId}) }}" class="fileOptionsOpenLink">{% trans %}gui.open_file_in_browser{% endtrans %}</a> -
                             <a href="{{ path('delete_file', {'file': File.fileId}) }}" class="remove-file" data-filename="{{ File.name }}">{% trans %}gui.remove_file{% endtrans %}</a>
                         </td>
                     {% else %}
@@ -86,7 +86,7 @@
         </div>
     </div>
 </div>
-                
+
 <div id="filePreviewWindow" class="filePreview" style="display:none;">
     <div class="background"></div>
     <div class="window">
@@ -96,15 +96,15 @@
             </div>
             <div class="content">
                 <h2>Filename</h2>
-                <a href="">{% trans %}gui.download_file{% endtrans %}</a> 
-                <a href="">{% trans %}gui.open_file_in_browser{% endtrans %}</a> 
-                <a href="">{% trans %}preview{% endtrans %}</a> 
+                <a href="">{% trans %}gui.download_file{% endtrans %}</a>
+                <a href="">{% trans %}gui.open_file_in_browser{% endtrans %}</a>
+                <a href="">{% trans %}preview{% endtrans %}</a>
             </div>
         </div>
     </div>
 </div>
 
-<script type="text/javascript">        
+<script type="text/javascript">
     // memory_limit: {{ Capabilities.memory_limit }}, upload_max_filesize: {{ Capabilities.upload_max_filesize }}, post_max_size: {{ Capabilities.post_max_size }}, browser_file_memory_limit: {{ Capabilities.browser_file_memory_limit }}
     var url = '{{ path('upload_file') }}';
     var urlChunkTest = '{{ path('upload_file_chunk_test') }}';
@@ -112,7 +112,7 @@
 
     var appUserName = '{{ app.user.username }}';
 
-    var postdata = {'_tokenFile' : '{{FileForm._token.vars.value}}', '_tokenFileBlock' : '{{FileBlockForm._token.vars.value}}'};
+    var postdata = {'_tokenFile' : '{{FileForm._tokenFile.vars.value}}', '_tokenFileBlock' : '{{FileBlockForm._tokenFileBlock.vars.value}}'};
     var pendingFilesNumber = 0;
 
     $('#emissionSettingsContainerSwitch, #emissionSettingsContainerUpperSwitch').click(function(event){
