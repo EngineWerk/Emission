@@ -134,7 +134,7 @@ $(function(){
                     var tableRow = '<tr data-file-id="' + file.id + '" id="fhash-' + fileNameHash + '" data-search="' + file.name + '" > \n' + 
                     '<td>' + 
                         '<div class="fileName">' + file.name + '</div>' +
-                        '<div class="fileUploadedBy">' + file.uploaded_by + '</div>' +
+                        '<div class="fileUploadedBy">&nbsp;' + file.uploaded_by + '&nbsp;</div>' +
                         '<div class="fileSize">' + bytesToSize(file.size, 2) + '</div>' +
                     '</td>' +
                     '<td class="fileOptions">' + 
