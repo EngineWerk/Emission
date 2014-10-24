@@ -74,10 +74,19 @@ $(function(){
                 resumableFile.pause(); // Resume upload of particular file
                 r.upload();
 
-                if($('#fhash-' + fileNameHash + '').length === 0 ) {
+                if($('#fhash-' + fileNameHash).length === 0 ) {
                     fileRow.attr('id', 'fhash-' + fileNameHash);
                 } else {
-                    fileRow.remove();
+                    // Highlighting file that already exists
+                    $('div.status:first', fileRow).html($('<div class="circle" title="File exists, click to scroll &nbsp;"></div>'));
+                    $('.circle', fileRow).css('background-color', getBackgroundColor(fileNameHash));
+                    $('.fileName', '#fhash-' + fileNameHash).css('background-color', getBackgroundColor(fileNameHash));
+
+                    $('div.status:first', fileRow).click(function() {
+                        $('html, body').animate({
+                            scrollTop: $('#fhash-' + fileNameHash).offset().top
+                        }, 1000);
+                    });
                 }
             }
         };
@@ -251,4 +260,23 @@ $(function(){
           fileReader.readAsArrayBuffer(bytes);
         }
       };
+
+    var COLORS = [
+        '#e21400', '#91580f', '#f8a700', '#f78b00',
+        '#58dc00', '#287b00', '#a8f07a', '#4ae8c4',
+        '#3b88eb', 'rgb(140, 120, 250)', '#a700ff', '#d300e7'
+    ];
+
+    // Gets the color of a username through our hash function
+    function getBackgroundColor (fileId) {
+
+        // Compute hash code
+        var hash = 7;
+        for (var i = 0; i < fileId.length; i++) {
+            hash = fileId.charCodeAt(i) + (hash << 5) - hash;
+        }
+        // Calculate color
+        var index = Math.abs(hash % COLORS.length);
+        return COLORS[index];
+    }
 });

@@ -141,3 +141,11 @@ footer {
 .windows_azure_ad{background: url('../img/oauth/1382051884_57-windows.png')  no-repeat center center;}
 .windows_live{background: url('../img/oauth/1382051943_72-windows8.png') no-repeat center center;}
 .google{background: url('../img/oauth/1382051948_80-google-plus.png') no-repeat center center;}
+
+.circle {
+    border-radius: 50%;
+    width: 12px;
+    height: 12px;
+    display:inline-block;
+    margin-right:2px;
+}
