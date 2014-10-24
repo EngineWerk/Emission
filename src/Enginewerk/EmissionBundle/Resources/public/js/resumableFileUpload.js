@@ -204,7 +204,16 @@ $(function(){
 
     r.on('progress', function() {
         $('#dropbox_progress').find('.progress').width($('#dropbox_progress').find('.progressHolder').width() * r.progress());
+
+        for (var file in r.files) {
+            console.info(r.files[file].fileName + ' : upload progress ', r.files[file].progress());
+            updateFileProgress(r.files[file].uniqueIdentifier, r.files[file].progress());
+        }
     });
+
+    function updateFileProgress(fileId, progress) {
+        $('div.status:first', $('#fhash-' + fileId)).html('Uploaded: ' + Math.round((progress * 100)) + '% &nbsp;');
+    }
 
     var computeHashes = function (resumableFile, offset, fileReader) {
         var round = resumableFile.resumableObj.getOpt('forceChunkSize') ? Math.ceil : Math.floor,
