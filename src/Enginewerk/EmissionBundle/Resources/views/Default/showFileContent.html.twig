@@ -3,9 +3,22 @@
 {% block body %}
 <div id="showFileContainer">
     <h2>{{ File.name }}</h2>
-    {% if File.checksum %}{% trans %}gui.file.checksum{% endtrans %}: {{ File.checksum }}<br />{% endif %}
-    {% trans %}gui.file.type{% endtrans %}: {{ File.type }}<br />
-    {% trans %}gui.file.size{% endtrans %}: {{ marco.bytesToSize(File.size) }}<br />
+    <div class="fileProperties">
+        <div class="property">
+            <span class="name">{% trans %}gui.file.type{% endtrans %}</span>:
+            <span class="value">{{ File.type }}</span>
+        </div>
+        <div class="property">
+            <span class="name">{% trans %}gui.file.size{% endtrans %}</span>:
+            <span class="value">{{ marco.bytesToSize(File.size) }}</span>
+        </div>
+        {% if File.checksum %}
+        <div class="property">
+            <span class="name">{% trans %}gui.file.checksum{% endtrans %}</span>:
+            <span class="value">{{ File.checksum }}</span>
+        </div>
+        {% endif %}
+    </div>
     {% trans %}gui.click_to{% endtrans %}
     <a href="{{ path('download_file', {'file': File.fileId}) }}">{% trans %}gui.download_file{% endtrans %}</a>
     <a href="{{ path('open_file', {'file': File.fileId}) }}">{% trans %}gui.open_file_in_browser{% endtrans %}</a>
@@ -14,6 +27,7 @@
     <script>
         $(function(){
             if ($.jStorage.get('app.settings.enable_auto_file_preview', 'yes') === 'yes') {
+                $('#{{ File.fileId }}').css('display', 'none');
                 showFilepreviewFile($('#{{ File.fileId }}'), $('#{{ File.fileId }}').parent());
             }
         });

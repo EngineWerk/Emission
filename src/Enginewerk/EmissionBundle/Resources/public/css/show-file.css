@@ -63,3 +63,7 @@ div.showFilePublic {
 div.showFilePublic a.preview_file {
     display: none;
 }
+
+#showFileContainer .fileProperties div.property {display: inline;}
+#showFileContainer .fileProperties div.property span.name {font-weight: bold; padding-left: 5px;}
+#showFileContainer .fileProperties div.property:first-child span.name {padding-left: 0;}
