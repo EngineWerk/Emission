@@ -38,7 +38,7 @@
     </div>
 
     <div id="emissionMainMenuContainer">
-        <div style="text-align: right; color:#323232;"><span style="float: left;">{{ company_name }}</span>{{ app.user.username }} <a href="{{ path('logout') }}" title="Logout Yourself ;)"><img src="/bundles/enginewerkemission/img/1382043670_519564-060_Off.png"/></a> <a href="" id="emissionSettingsContainerSwitch" title="{% trans %}gui.open_settings{% endtrans %}"><img src="/bundles/enginewerkemission/img/1382042110_45_Menu.png"/></a></div>
+        <div style="text-align: right; color:#323232;"><span style="float: left;">{{ company_name }}</span>{% if app.user %}{{ app.user.username }}{% else %}Unknown user{% endif %} <a href="{{ path('logout') }}" title="Logout Yourself ;)"><img src="/bundles/enginewerkemission/img/1382043670_519564-060_Off.png"/></a> <a href="" id="emissionSettingsContainerSwitch" title="{% trans %}gui.open_settings{% endtrans %}"><img src="/bundles/enginewerkemission/img/1382042110_45_Menu.png"/></a></div>
     </div>
     <div id="emissionFileDropContainer">
         <div id="dropbox">
@@ -110,7 +110,7 @@
     var urlChunkTest = '{{ path('upload_file_chunk_test') }}';
     var maxChunkSize = ({{ MaxUploadFileSize }} * 1024 * 1024); // to MB
 
-    var appUserName = '{{ app.user.username }}';
+    var appUserName = '{% if app.user %}{{ app.user.username }}{% else %}Unknown user{% endif %}';
 
     var postdata = {'_tokenFile' : '{{FileForm._tokenFile.vars.value}}', '_tokenFileBlock' : '{{FileBlockForm._tokenFileBlock.vars.value}}'};
     var pendingFilesNumber = 0;
