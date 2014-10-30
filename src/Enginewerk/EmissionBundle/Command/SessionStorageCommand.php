@@ -36,7 +36,7 @@ EOD
     {
         $dbengine = ($input->getArgument('dbengine')) ? $input->getArgument('dbengine') : $this->guessDatabseEngine();
 
-        $output->writeln('Creating datbase table for session storage "' . $dbengine . '"');
+        $output->writeln('Creating session storage using "' . $dbengine . '" ');
 
         switch ($dbengine) {
             case 'mysql':
