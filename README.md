@@ -35,7 +35,7 @@ Follow:
     
 Create database tables.
 
-    php app/console dotrine:schema:update --force
+    php app/console doctrine:schema:update --force
 
 
 Create table for database session storage
@@ -46,3 +46,16 @@ Create table for database session storage
 Generate user invitation code.
 
     app/console invitation:add user@acme.com
+
+###Virtual Machine for testing / development
+[VirtualBox - Vagrant](https://github.com/EngineWerk/EmissionVM)
+
+Create directory vm-emission, clone Vagrant setup into
+
+    git clone https://github.com/EngineWerk/EmissionVM.git
+
+than clone Emission code
+
+    git clone https://github.com/EngineWerk/Emission.git
+
+
