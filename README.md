@@ -54,7 +54,7 @@ Create directory vm-emission, clone Vagrant setup into
 
     git clone https://github.com/EngineWerk/EmissionVM.git
 
-than clone Emission code
+then clone Emission code
 
     git clone https://github.com/EngineWerk/Emission.git
 
