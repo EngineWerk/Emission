@@ -82,9 +82,9 @@ class FileStorage
     }
 
     /**
+     * @param  string $key
      *
-     * @param  type                                                $key
-     * @return \Enginewerk\EmissionBundle\FileResponse\ChunkedFile
+     * @return ChunkedFile
      */
     public function getFileForDownload($key)
     {

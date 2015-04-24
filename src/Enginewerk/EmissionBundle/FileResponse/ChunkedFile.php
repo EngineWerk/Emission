@@ -1,5 +1,4 @@
 <?php
-
 namespace Enginewerk\EmissionBundle\FileResponse;
 
 /**
