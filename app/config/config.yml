@@ -94,7 +94,7 @@ knp_gaufrette:
     adapters:
         data_local:
             local:
-                directory:  "%kernel.root_dir%/local_fs/binary/"         
+                directory:  %storage_root_directory%/local_fs/binary/
     filesystems:
         binary_storage:
             adapter:        data_local

@@ -9,7 +9,7 @@ namespace Enginewerk\FSBundle\Storage;
 interface StorageInterface
 {
     /**
-     * @param  type                                        $key
+     * @param  string                                        $key
      * @param  \Symfony\Component\HttpFoundation\File\File $uploadedFile
      * @return integer                                     File size
      */
@@ -21,5 +21,9 @@ interface StorageInterface
      */
     public function get($key);
 
+    /**
+     * @param string $key
+     * @return boolean
+     */
     public function delete($key);
 }

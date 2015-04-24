@@ -5,4 +5,4 @@ services:
         
     egw_fs_local_storage:
         class:     Enginewerk\FSBundle\Storage\LocalStorage
-        arguments: ["%kernel.root_dir%/local_fs/binary/"]
+        arguments: ["%storage_root_directory%/local_fs/binary/"]

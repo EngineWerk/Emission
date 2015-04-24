@@ -3,6 +3,7 @@
 namespace Enginewerk\FSBundle\Storage;
 
 use Enginewerk\FSBundle\Storage\GaufretteFile as File;
+use Gaufrette\Filesystem;
 
 /**
  * Description of GaufretteStorage
@@ -11,15 +12,19 @@ use Enginewerk\FSBundle\Storage\GaufretteFile as File;
  */
 class GaufretteStorage implements StorageInterface
 {
-    /**
-     *
-     * @var \Gaufrette\Filesystem
-     */
+    /** @var Filesystem  */
     protected $filesystem;
 
+    /**
+     * @var string
+     */
     protected $filesystemName;
 
-    public function __construct(\Gaufrette\Filesystem $filesystem, $filesystemName)
+    /**
+     * @param Filesystem $filesystem
+     * @param string $filesystemName
+     */
+    public function __construct(Filesystem $filesystem, $filesystemName)
     {
         $this->filesystem = $filesystem;
         $this->filesystemName = $filesystemName;
@@ -27,8 +32,9 @@ class GaufretteStorage implements StorageInterface
 
     /**
      *
-     * @param  type                                        $key
-     * @param  \Symfony\Component\HttpFoundation\File\File $uploadedFile
+     * @param  string                                        $key
+     * @param  File $uploadedFile
+     *
      * @return integer
      */
     public function put($key, $uploadedFile)
@@ -45,7 +51,7 @@ class GaufretteStorage implements StorageInterface
      *
      * @param string $key
      *
-     * @return \Enginewerk\FSBundle\Storage\File
+     * @return File
      */
     public function get($key)
     {
@@ -55,6 +61,10 @@ class GaufretteStorage implements StorageInterface
         return $file;
     }
 
+    /**
+     * @param string $key
+     * @return bool|void
+     */
     public function delete($key)
     {
         $pathname = $this->getPathName($key);
@@ -63,11 +73,19 @@ class GaufretteStorage implements StorageInterface
                 ->delete($pathname);
     }
 
+    /**
+     * @param string $key
+     * @return string
+     */
     private function getPathName($key)
     {
         return $this->getDeepDirFromFileName($key) . DIRECTORY_SEPARATOR . $key;
     }
 
+    /**
+     * @param string $name
+     * @return string
+     */
     private function getDeepDirFromFileName($name)
     {
         return $name[0] . $name[1] . DIRECTORY_SEPARATOR .

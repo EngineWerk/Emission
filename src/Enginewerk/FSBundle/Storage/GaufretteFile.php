@@ -1,5 +1,4 @@
 <?php
-
 namespace Enginewerk\FSBundle\Storage;
 
 /**
@@ -7,7 +6,7 @@ namespace Enginewerk\FSBundle\Storage;
  *
  * @author Paweł Czyżewski <pawel.czyzewski@enginewerk.com>
  */
-class GaufretteFile extends \Enginewerk\FSBundle\Storage\File
+class GaufretteFile extends File
 {
     public function __construct($path)
     {

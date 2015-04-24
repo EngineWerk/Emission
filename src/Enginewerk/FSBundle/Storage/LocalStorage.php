@@ -51,8 +51,9 @@ class LocalStorage implements StorageInterface
     /**
      * Deletes file with given key
      *
-     * @param  string           $key
-     * @throws RuntimeException
+     * @param string $key
+     * @return bool|void
+     * @throws \RuntimeException
      */
     public function delete($key)
     {
@@ -69,6 +70,7 @@ class LocalStorage implements StorageInterface
 
     /**
      * Return storage directory root path
+     *
      * @return string
      */
     private function getStorageRootDirectory()
@@ -80,6 +82,7 @@ class LocalStorage implements StorageInterface
      * Returns nested path based on given name
      *
      * @param  string $name
+     *
      * @return string
      */
     private function getDeepDirFromFileName($name)
@@ -93,6 +96,7 @@ class LocalStorage implements StorageInterface
      * Returns pathname for given key
      *
      * @param  string $key
+     *
      * @return string
      */
     private function pathname($key)
