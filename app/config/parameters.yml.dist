@@ -1,10 +1,10 @@
 parameters:
-    database_driver:   pdo_mysql
-    database_host:     127.0.0.1
-    database_port:     3306
-    database_name:     symfony
-    database_user:     root
-    database_password: ~
+    database_driver: pdo_mysql
+    database_host: 127.0.0.1
+    database_port: 3306
+    database_name: emission
+    database_user: root
+    database_password: vagrant
 
     mailer_transport:  smtp
     mailer_host:       127.0.0.1
@@ -19,6 +19,6 @@ parameters:
     google_openid_client_id: client_id
     google_openid_client_secret: client_secret
 
-    app.company_name: Awsome Company
+    app.company_name: Awesome Company
 
     storage_root_directory: /vagrant/data
