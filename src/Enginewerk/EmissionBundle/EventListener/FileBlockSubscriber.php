@@ -4,11 +4,10 @@ namespace Enginewerk\EmissionBundle\EventListener;
 
 use Doctrine\Common\EventSubscriber;
 use Doctrine\ORM\Event\LifecycleEventArgs;
-
 use Enginewerk\EmissionBundle\Entity\FileBlock;
 
 /**
- * FileBlockSubscriber
+ * FileBlockSubscriber.
  *
  * @author Paweł Czyżewski <pawel.czyzewski@enginewerk.com>
  */

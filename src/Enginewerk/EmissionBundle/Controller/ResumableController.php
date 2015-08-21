@@ -7,13 +7,12 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
-
 use Enginewerk\EmissionBundle\Response\AppResponse;
 use Enginewerk\EmissionBundle\Form\Type\ResumableFileType;
 use Enginewerk\EmissionBundle\Form\Type\ResumableFileBlockType;
 
 /**
- * ResumableController
+ * ResumableController.
  *
  * @author Paweł Czyżewski <pawel.czyzewski@enginewerk.com>
  */
@@ -36,7 +35,7 @@ class ResumableController extends Controller
                     'size' => $request->get('resumableTotalSize')));
 
         if (!$file) {
-            $appResponse->error('File "' . $request->get('resumableFilename') . '" not found');
+            $appResponse->error('File "'.$request->get('resumableFilename').'" not found');
 
             return new JsonResponse($appResponse->response(), 306);
         }
@@ -50,12 +49,10 @@ class ResumableController extends Controller
                     'rangeEnd' => $request->get('resumableCurrentEndByte')));
 
         if (!$fileBlock) {
-
             $appResponse->success('Block not found');
 
             return new JsonResponse($appResponse->response(), 306);
         } else {
-
             $appResponse->success('Block found');
 
             return new JsonResponse($appResponse->response(), 200);
@@ -95,13 +92,12 @@ class ResumableController extends Controller
                 $file->setUser($this->getUser());
 
                 $em->persist($file);
-           } else {
-
+            } else {
                 $responseCode = 415;
                 $appResponse->error(var_export($fileForm->getErrorsAsString(), true));
 
                 return new JsonResponse($appResponse->response(), $responseCode);
-           }
+            }
         }
 
         // Find out if we have this FileBlock
@@ -114,13 +110,12 @@ class ResumableController extends Controller
 
         // No ? Lets create one
         if (null === $FileBlockInStorage) {
-
             $fileBlockForm = $this->createForm(new ResumableFileBlockType());
             $fileBlockForm->handleRequest($request);
 
             $uploadedFile = $fileBlockForm->get('uploadedFile')->getData();
             /* @var $uploadedFile \Symfony\Component\HttpFoundation\File\UploadedFile  */
-            $key = sha1(microtime() . $uploadedFile->getPathname());
+            $key = sha1(microtime().$uploadedFile->getPathname());
 
             $size = $this->get('enginewerk_bbs')->put($key, $uploadedFile);
 
@@ -163,7 +158,6 @@ class ResumableController extends Controller
                       'delete_url' => $this->generateUrl('delete_file', array('file' => $file->getFileId()), true)
                 );
         } else {
-
             $responseData = array(
                       'id' => $file->getId(),
                       'file_id' => $file->getFileId(),

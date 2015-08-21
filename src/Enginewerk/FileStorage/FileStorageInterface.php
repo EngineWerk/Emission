@@ -1,4 +1,5 @@
 <?php
+
 namespace Enginewerk\FileStorage;
 
 use Enginewerk\FileStorage\File\FileRequestInterface;

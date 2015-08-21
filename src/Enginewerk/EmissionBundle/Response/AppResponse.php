@@ -3,7 +3,7 @@
 namespace Enginewerk\EmissionBundle\Response;
 
 /**
- * Description of AppResponse
+ * Description of AppResponse.
  *
  * @author Paweł Czyżewski <pawel.czyzewski@enginewerk.com>
  */
@@ -16,7 +16,7 @@ class AppResponse
     public $response = array();
 
     /**
-     * Sets status on Error and response message
+     * Sets status on Error and response message.
      *
      * @param string|null $message
      */
@@ -27,7 +27,7 @@ class AppResponse
     }
 
     /**
-     * Sets status on Success and response message
+     * Sets status on Success and response message.
      *
      * @param string|null $message
      */
@@ -38,7 +38,7 @@ class AppResponse
     }
 
     /**
-     * Sets response data
+     * Sets response data.
      *
      * @param string|null $data
      */
@@ -63,7 +63,7 @@ class AppResponse
     }
 
     /**
-     * Sets response data and returns $this
+     * Sets response data and returns $this.
      *
      * @return \Enginewerk\EmissionBundle\Response\AppResponse
      */

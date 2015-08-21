@@ -7,7 +7,7 @@ use \Enginewerk\EmissionBundle\FileResponse\ChunkedFile;
 use \RuntimeException;
 
 /**
- * Description of FileStorage
+ * Description of FileStorage.
  *
  * @author Paweł Czyżewski <pawel.czyzewski@enginewerk.com>
  */
@@ -62,7 +62,6 @@ class FileStorage
             $em->close();
             throw $e;
         }
-
     }
 
     /**
@@ -82,7 +81,7 @@ class FileStorage
     }
 
     /**
-     * @param  string $key
+     * @param string $key
      *
      * @return ChunkedFile
      */
@@ -127,7 +126,6 @@ class FileStorage
 
     public function findCreatedAfter($dateTime)
     {
-
     }
 
     public function replace($replace, $replacement)
@@ -139,7 +137,6 @@ class FileStorage
         /* @var $replacementFile \Enginewerk\EmissionBundle\Entity\File */
 
         if ($replaceFile->getUploadedBy() == $replacementFile->getUploadedBy()) {
-
             $em = $this
                     ->getDoctrine()
                     ->getManager();
@@ -149,7 +146,6 @@ class FileStorage
             $em->remove($replaceFile);
             $this->binaryObjectStorage->delete($replace);
             $em->flush();
-
         } else {
             throw new \Exception(sprintf('Only owner can replace file.'));
         }
@@ -167,7 +163,6 @@ class FileStorage
     }
 
     /**
-     *
      * @return \Doctrine\Bundle\DoctrineBundle\Registry
      */
     public function getDoctrine()

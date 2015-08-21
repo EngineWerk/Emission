@@ -7,7 +7,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
- * Description of ResumableFileType
+ * Description of ResumableFileType.
  *
  * @author Paweł Czyżewski <pawel.czyzewski@enginewerk.com>
  */
@@ -35,7 +35,6 @@ class ResumableFileType extends AbstractType
         $builder->add('resumableRelativePath', 'text', array('mapped' => false));
         $builder->add('resumableTotalChunks', 'text', array('mapped' => false));
         $builder->add('_tokenFileBlock', 'text', array('mapped' => false));
-
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)

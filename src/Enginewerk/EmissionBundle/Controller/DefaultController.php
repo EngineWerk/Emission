@@ -9,13 +9,12 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\StreamedResponse;
-
 use Enginewerk\EmissionBundle\Response\AppResponse;
 use Enginewerk\EmissionBundle\Form\Type\ResumableFileType;
 use Enginewerk\EmissionBundle\Form\Type\ResumableFileBlockType;
 
 /**
- * DefaultController
+ * DefaultController.
  *
  * @author Paweł Czyżewski <pawel.czyzewski@enginewerk.com>
  */
@@ -129,7 +128,7 @@ class DefaultController extends Controller
         $response->headers->set('Content-Transfer-Encoding', 'binary');
 
         if ($request->get('dl')) {
-            $response->headers->set('Content-Disposition', 'attachment; filename="' . $file->getName().'"');
+            $response->headers->set('Content-Disposition', 'attachment; filename="'.$file->getName().'"');
         }
 
         $response->setCallback(function () use ($responseFile) {
@@ -156,7 +155,6 @@ class DefaultController extends Controller
         try {
             $efs->delete($request->get('file'));
             $appResponse->success();
-
         } catch (\Exception $ex) {
             $appResponse->error('Can`t delete File');
             $this->get('logger')->error(sprintf('Can`t delete File #%s. %s', $request->get('file'), $ex->getMessage()));
@@ -192,7 +190,6 @@ class DefaultController extends Controller
                 $efs->alterExpirationDate($request->get('file'), $expirationDate);
 
                 $appResponse->success();
-
             } catch (\Exception $ex) {
                 $appResponse->error('Can`t change expiration date');
                 $this->get('logger')->error(sprintf('Can`t change expiration date of File #%s. %s', $request->get('file'), $ex->getMessage()));
@@ -216,7 +213,6 @@ class DefaultController extends Controller
         try {
             $efs->replace($replace, $replacement);
             $appResponse->success('File replaced.');
-
         } catch (\Exception $ex) {
             $this->get('logger')->error(sprintf('Can`t replace file. [%s] %s', get_class($ex), $ex->getMessage()));
             $appResponse->error(sprintf('Can`t replace file.'));

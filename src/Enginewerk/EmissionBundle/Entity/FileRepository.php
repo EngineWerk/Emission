@@ -5,7 +5,7 @@ namespace Enginewerk\EmissionBundle\Entity;
 use Doctrine\ORM\EntityRepository;
 
 /**
- * Description of FileRepository
+ * Description of FileRepository.
  *
  * @author Paweł Czyżewski <pawel.czyzewski@enginewerk.com>
  */

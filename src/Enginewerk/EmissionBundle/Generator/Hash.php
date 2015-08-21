@@ -3,7 +3,7 @@
 namespace Enginewerk\EmissionBundle\Generator;
 
 /**
- * Description of Hash Generator
+ * Description of Hash Generator.
  *
  * @author Paweł Czyżewski <pawel.czyzewski@enginewerk.com>
  */
@@ -17,7 +17,7 @@ class Hash
     }
 
     /**
-     * Generate random Hash at specified lenght based on "feed"
+     * Generate random Hash at specified lenght based on "feed".
      *
      * @param  int       $length
      * @param  string    $charFeed
@@ -35,7 +35,7 @@ class Hash
         $hash = '';
         $feedMaxIndex = strlen($charFeed) - 1;
 
-        for ($i=1; $i<=$length; $i++) {
+        for ($i = 1; $i <= $length; ++$i) {
             $hash .= $charFeed[rand(0, $feedMaxIndex)];
         }
 
@@ -44,7 +44,7 @@ class Hash
 
     /**
      * Returns "next" hash, based on $sequence
-     * B afer A, C afer B, ABC after ABB
+     * B afer A, C afer B, ABC after ABB.
      *
      * @param  string $sequence
      * @param  string $characters
@@ -71,8 +71,8 @@ class Hash
             if ($newValue === null) {
                 $sidChars[$position] = $characters[0];
 
-                if (!isset($sidChars[$position+1])) {
-                    $sidChars[$position+1] = $characters[0];
+                if (!isset($sidChars[$position + 1])) {
+                    $sidChars[$position + 1] = $characters[0];
                 }
             } else {
                 $sidChars[$position] = $newValue;
@@ -89,7 +89,6 @@ class Hash
     }
 
     /**
-     *
      * @param  string $currentValue
      * @param  string $characters
      * @return string
@@ -99,7 +98,7 @@ class Hash
         $currentPosition = strpos($characters, $currentValue);
 
         if ($currentPosition === (strlen($characters) - 1)) {
-            return null;
+            return;
         } else {
             return $characters[$currentPosition + 1];
         }

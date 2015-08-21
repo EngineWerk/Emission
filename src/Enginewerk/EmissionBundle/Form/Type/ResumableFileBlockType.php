@@ -7,7 +7,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
- * Description of ResumableFileBlockType
+ * Description of ResumableFileBlockType.
  *
  * @author Paweł Czyżewski <pawel.czyzewski@enginewerk.com>
  */

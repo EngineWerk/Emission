@@ -7,7 +7,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Description of RemoveExpiredFilesCommand
+ * Description of RemoveExpiredFilesCommand.
  *
  * @author Paweł Czyżewski <pawel.czyzewski@enginewerk.com>
  */

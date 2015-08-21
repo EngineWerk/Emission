@@ -1,4 +1,5 @@
 <?php
+
 namespace Enginewerk\FileStorage\File;
 
 interface FileRequestInterface

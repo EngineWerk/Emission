@@ -5,7 +5,7 @@ namespace Enginewerk\FSBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * BinaryBlock
+ * BinaryBlock.
  *
  * @ORM\Table(name="binary_block")
  * @ORM\Entity(repositoryClass="Enginewerk\FSBundle\Entity\BinaryBlockRepository")
@@ -43,7 +43,7 @@ class BinaryBlock
     private $size;
 
     /**
-     * Get id
+     * Get id.
      *
      * @return integer
      */
@@ -53,9 +53,9 @@ class BinaryBlock
     }
     
     /**
-     * Set urn
+     * Set urn.
      *
-     * @param string $urn
+     * @param  string     $urn
      * @return BinryBlock
      */
     public function setUrn($urn)
@@ -66,9 +66,9 @@ class BinaryBlock
     }
 
     /**
-     * Get urn
+     * Get urn.
      *
-     * @return string 
+     * @return string
      */
     public function getUrn()
     {
@@ -76,7 +76,7 @@ class BinaryBlock
     }
 
     /**
-     * Set checksum
+     * Set checksum.
      *
      * @param  string      $checksum
      * @return BinaryBlock
@@ -89,7 +89,7 @@ class BinaryBlock
     }
 
     /**
-     * Get checksum
+     * Get checksum.
      *
      * @return string
      */
@@ -99,7 +99,7 @@ class BinaryBlock
     }
 
     /**
-     * Set size
+     * Set size.
      *
      * @param  integer     $size
      * @return BinaryBlock
@@ -112,7 +112,7 @@ class BinaryBlock
     }
 
     /**
-     * Get size
+     * Get size.
      *
      * @return integer
      */

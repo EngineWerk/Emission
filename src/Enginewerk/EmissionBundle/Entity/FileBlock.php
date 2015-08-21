@@ -6,7 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * FileBlock
+ * FileBlock.
  *
  * @ORM\Entity
  * @ORM\HasLifecycleCallbacks
@@ -39,7 +39,7 @@ class FileBlock
     protected $size;
 
     /**
-     * First byte position
+     * First byte position.
      * @ORM\Column(name="rangeStart", type="bigint", options={"unsigned"=true})
      * @Assert\Type(type="numeric")
      */
@@ -47,7 +47,7 @@ class FileBlock
 
     /**
      * Last byte position
-     * Always greater than 0
+     * Always greater than 0.
      *
      * @ORM\Column(name="rangeEnd", type="bigint", options={"unsigned"=true})
      * @Assert\Type(type="numeric")
@@ -79,7 +79,7 @@ class FileBlock
     protected $fileId;
 
     /**
-     * Get id
+     * Get id.
      *
      * @return integer
      */
@@ -103,7 +103,7 @@ class FileBlock
     }
 
     /**
-     * Get fileHash
+     * Get fileHash.
      *
      * @return string
      */
@@ -113,7 +113,7 @@ class FileBlock
     }
 
     /**
-     * Set size
+     * Set size.
      *
      * @param  integer   $size
      * @return FileBlock
@@ -126,7 +126,7 @@ class FileBlock
     }
 
     /**
-     * Get size
+     * Get size.
      *
      * @return integer
      */
@@ -136,7 +136,7 @@ class FileBlock
     }
 
     /**
-     * Set createdAt
+     * Set createdAt.
      *
      * @param  \DateTime $createdAt
      * @return FileBlock
@@ -149,7 +149,7 @@ class FileBlock
     }
 
     /**
-     * Get createdAt
+     * Get createdAt.
      *
      * @return \DateTime
      */
@@ -159,7 +159,7 @@ class FileBlock
     }
 
     /**
-     * Set updatedAt
+     * Set updatedAt.
      *
      * @param  \DateTime $updatedAt
      * @return FileBlock
@@ -172,7 +172,7 @@ class FileBlock
     }
 
     /**
-     * Get updatedAt
+     * Get updatedAt.
      *
      * @return \DateTime
      */
@@ -182,7 +182,7 @@ class FileBlock
     }
 
     /**
-     * Set rangeStart
+     * Set rangeStart.
      *
      * @param  integer   $rangeStart
      * @return FileBlock
@@ -195,7 +195,7 @@ class FileBlock
     }
 
     /**
-     * Get rangeStart
+     * Get rangeStart.
      *
      * @return integer
      */
@@ -205,7 +205,7 @@ class FileBlock
     }
 
     /**
-     * Set rangeEnd
+     * Set rangeEnd.
      *
      * @param  integer   $rangeEnd
      * @return FileBlock
@@ -218,7 +218,7 @@ class FileBlock
     }
 
     /**
-     * Get rangeEnd
+     * Get rangeEnd.
      *
      * @return integer
      */
@@ -228,7 +228,7 @@ class FileBlock
     }
 
     /**
-     * Set file
+     * Set file.
      *
      * @param  \Enginewerk\EmissionBundle\Entity\File $file
      * @return \Enginewerk\EmissionBundle\Entity\File
@@ -241,7 +241,7 @@ class FileBlock
     }
 
     /**
-     * Get file
+     * Get file.
      *
      * @return \Enginewerk\EmissionBundle\Entity\File
      */
@@ -251,7 +251,7 @@ class FileBlock
     }
 
     /**
-     * Set fileId
+     * Set fileId.
      *
      * @param  integer   $fileId
      * @return FileBlock
@@ -264,7 +264,7 @@ class FileBlock
     }
 
     /**
-     * Get fileId
+     * Get fileId.
      *
      * @return integer
      */

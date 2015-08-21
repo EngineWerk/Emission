@@ -1,8 +1,9 @@
 <?php
+
 namespace Enginewerk\EmissionBundle\FileResponse;
 
 /**
- * Description of ChunkedFile
+ * Description of ChunkedFile.
  *
  * @author Paweł Czyżewski <pawel.czyzewski@enginewerk.com>
  */

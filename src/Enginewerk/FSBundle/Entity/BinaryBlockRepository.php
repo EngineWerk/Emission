@@ -5,7 +5,7 @@ namespace Enginewerk\FSBundle\Entity;
 use Doctrine\ORM\EntityRepository;
 
 /**
- * BinaryBlockRepository
+ * BinaryBlockRepository.
  *
  * @author Paweł Czyżewski <pawel.czyzewski@enginewerk.com>
  */

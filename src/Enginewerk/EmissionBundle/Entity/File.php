@@ -9,7 +9,7 @@ use Enginewerk\UserBundle\Entity\User;
 use Enginewerk\EmissionBundle\Generator\Hash;
 
 /**
- * File
+ * File.
  * @ORM\Entity
  * @ORM\HasLifecycleCallbacks
  * @ORM\Table(name="file")
@@ -28,7 +28,7 @@ class File
     /**
      * File Identification (public download name)
      * Shortest possible name, for public identicifation [a-zA-Z0-9]
-     * #BUG DB must be case sensitive
+     * #BUG DB must be case sensitive.
      *
      * @ORM\Column(type="string", length=16)
      * @var string
@@ -46,7 +46,7 @@ class File
     protected $fileHash;
 
     /**
-     * File owner
+     * File owner.
      *
      * @ORM\ManyToOne(targetEntity="\Enginewerk\UserBundle\Entity\User", inversedBy="files", cascade={"persist", "refresh"})
      * @ORM\JoinColumn(name="user_id", referencedColumnName="id", onDelete="cascade")
@@ -64,7 +64,7 @@ class File
     protected $checksum;
 
     /**
-     * Name for download name
+     * Name for download name.
      *
      * @ORM\Column(type="string", length=255)
      * @var string
@@ -72,7 +72,7 @@ class File
     protected $name;
 
     /**
-     * File MIME type
+     * File MIME type.
      *
      * @ORM\Column(type="string", length=128)
      * @var string
@@ -121,7 +121,7 @@ class File
     }
 
     /**
-     * Get id
+     * Get id.
      *
      * @return integer
      */
@@ -131,7 +131,7 @@ class File
     }
 
     /**
-     * Set fileId
+     * Set fileId.
      *
      * @param  string $fileId
      * @return File
@@ -167,7 +167,7 @@ class File
     }
 
     /**
-     * Get fileHash
+     * Get fileHash.
      *
      * @return string
      */
@@ -177,7 +177,7 @@ class File
     }
 
     /**
-     * Set name
+     * Set name.
      *
      * @param  string $name
      * @return File
@@ -190,7 +190,7 @@ class File
     }
 
     /**
-     * Get name
+     * Get name.
      *
      * @return string
      */
@@ -200,7 +200,7 @@ class File
     }
 
     /**
-     * Set size
+     * Set size.
      *
      * @param  integer $size
      * @return File
@@ -213,7 +213,7 @@ class File
     }
 
     /**
-     * Get size
+     * Get size.
      *
      * @return integer
      */
@@ -223,7 +223,7 @@ class File
     }
 
     /**
-     * Set expirationDate
+     * Set expirationDate.
      *
      * @param  \DateTime $expirationDate
      * @return File
@@ -236,7 +236,7 @@ class File
     }
 
     /**
-     * Get expirationDate
+     * Get expirationDate.
      *
      * @return \DateTime
      */
@@ -246,7 +246,7 @@ class File
     }
 
     /**
-     * Set createdAt
+     * Set createdAt.
      *
      * @param  \DateTime $createdAt
      * @return File
@@ -259,7 +259,7 @@ class File
     }
 
     /**
-     * Get createdAt
+     * Get createdAt.
      *
      * @return \DateTime
      */
@@ -269,7 +269,7 @@ class File
     }
 
     /**
-     * Set updatedAt
+     * Set updatedAt.
      *
      * @param  \DateTime $updatedAt
      * @return File
@@ -282,7 +282,7 @@ class File
     }
 
     /**
-     * Get updatedAt
+     * Get updatedAt.
      *
      * @return \DateTime
      */
@@ -292,7 +292,7 @@ class File
     }
 
     /**
-     * Set type
+     * Set type.
      *
      * @param  string $type
      * @return File
@@ -305,7 +305,7 @@ class File
     }
 
     /**
-     * Get type
+     * Get type.
      *
      * @return string
      */
@@ -324,7 +324,6 @@ class File
         $currentTime->setTimestamp(time());
 
         if (null === $this->getFileHash()) {
-
             $fileHash = sha1(uniqid(mt_rand(), true));
             $this->fileHash = $fileHash;
             $this->setCreatedAt($currentTime);
@@ -336,11 +335,10 @@ class File
         }
 
         $this->setUpdatedAt($currentTime);
-
     }
 
     /**
-     * Add fileBlocks
+     * Add fileBlocks.
      *
      * @param  \Enginewerk\EmissionBundle\Entity\FileBlock $fileBlocks
      * @return File
@@ -353,7 +351,7 @@ class File
     }
 
     /**
-     * Remove fileBlocks
+     * Remove fileBlocks.
      *
      * @param \Enginewerk\EmissionBundle\Entity\FileBlock $fileBlocks
      */
@@ -363,7 +361,7 @@ class File
     }
 
     /**
-     * Get fileBlocks
+     * Get fileBlocks.
      *
      * @return \Doctrine\Common\Collections\Collection
      */
@@ -373,7 +371,7 @@ class File
     }
 
     /**
-     * Set checksum
+     * Set checksum.
      *
      * @param  string $checksum
      * @return File
@@ -386,7 +384,7 @@ class File
     }
 
     /**
-     * Get checksum
+     * Get checksum.
      *
      * @return string
      */
@@ -396,7 +394,7 @@ class File
     }
 
     /**
-     * Set user
+     * Set user.
      *
      * @param  \Enginewerk\EmissionBundle\Entity\User $user
      * @return File
@@ -409,7 +407,7 @@ class File
     }
 
     /**
-     * Get user
+     * Get user.
      *
      * @return \Enginewerk\EmissionBundle\Entity\User
      */
@@ -419,7 +417,7 @@ class File
     }
 
     /**
-     * Set complete
+     * Set complete.
      *
      * @param  boolean $complete
      * @return File
@@ -432,7 +430,7 @@ class File
     }
 
     /**
-     * Get complete
+     * Get complete.
      *
      * @return boolean
      */

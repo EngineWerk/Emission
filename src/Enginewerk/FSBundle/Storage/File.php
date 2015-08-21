@@ -1,4 +1,5 @@
 <?php
+
 namespace Enginewerk\FSBundle\Storage;
 
 /**
@@ -6,5 +7,4 @@ namespace Enginewerk\FSBundle\Storage;
  */
 class File extends \Symfony\Component\HttpFoundation\File\File
 {
-
 }

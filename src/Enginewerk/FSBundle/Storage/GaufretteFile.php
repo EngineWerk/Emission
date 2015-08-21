@@ -1,8 +1,9 @@
 <?php
+
 namespace Enginewerk\FSBundle\Storage;
 
 /**
- * Description of GaufretteFile
+ * Description of GaufretteFile.
  *
  * @author Paweł Czyżewski <pawel.czyzewski@enginewerk.com>
  */

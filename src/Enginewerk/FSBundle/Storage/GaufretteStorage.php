@@ -6,7 +6,7 @@ use Enginewerk\FSBundle\Storage\GaufretteFile as File;
 use Gaufrette\Filesystem;
 
 /**
- * Description of GaufretteStorage
+ * Description of GaufretteStorage.
  *
  * @author Paweł Czyżewski <pawel.czyzewski@enginewerk.com>
  */
@@ -22,7 +22,7 @@ class GaufretteStorage implements StorageInterface
 
     /**
      * @param Filesystem $filesystem
-     * @param string $filesystemName
+     * @param string     $filesystemName
      */
     public function __construct(Filesystem $filesystem, $filesystemName)
     {
@@ -31,9 +31,8 @@ class GaufretteStorage implements StorageInterface
     }
 
     /**
-     *
-     * @param  string                                        $key
-     * @param  File $uploadedFile
+     * @param string $key
+     * @param File   $uploadedFile
      *
      * @return integer
      */
@@ -48,7 +47,6 @@ class GaufretteStorage implements StorageInterface
     }
 
     /**
-     *
      * @param string $key
      *
      * @return File
@@ -56,13 +54,13 @@ class GaufretteStorage implements StorageInterface
     public function get($key)
     {
         $pathname = $this->getPathName($key);
-        $file = new File('gaufrette://' . $this->filesystemName . DIRECTORY_SEPARATOR . $pathname);
+        $file = new File('gaufrette://'.$this->filesystemName.DIRECTORY_SEPARATOR.$pathname);
 
         return $file;
     }
 
     /**
-     * @param string $key
+     * @param  string    $key
      * @return bool|void
      */
     public function delete($key)
@@ -74,22 +72,22 @@ class GaufretteStorage implements StorageInterface
     }
 
     /**
-     * @param string $key
+     * @param  string $key
      * @return string
      */
     private function getPathName($key)
     {
-        return $this->getDeepDirFromFileName($key) . DIRECTORY_SEPARATOR . $key;
+        return $this->getDeepDirFromFileName($key).DIRECTORY_SEPARATOR.$key;
     }
 
     /**
-     * @param string $name
+     * @param  string $name
      * @return string
      */
     private function getDeepDirFromFileName($name)
     {
-        return $name[0] . $name[1] . DIRECTORY_SEPARATOR .
-                $name[2] . $name[3] . DIRECTORY_SEPARATOR .
-                $name[4] . $name[5] . DIRECTORY_SEPARATOR;
+        return $name[0].$name[1].DIRECTORY_SEPARATOR.
+                $name[2].$name[3].DIRECTORY_SEPARATOR.
+                $name[4].$name[5].DIRECTORY_SEPARATOR;
     }
 }
