@@ -34,4 +34,3 @@ interface FileStorageInterface
      */
     public function delete(FileRequestInterface $fileRequest);
 }
- 

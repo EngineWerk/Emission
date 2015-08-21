@@ -8,4 +8,3 @@ interface FileRequestInterface
      */
     public function getIdentifier();
 }
- 
