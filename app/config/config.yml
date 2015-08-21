@@ -27,10 +27,11 @@ framework:
     
 parameters:
     pdo.db_options:
-        db_table:    session
-        db_id_col:   session_id
-        db_data_col: session_value
-        db_time_col: session_time    
+        db_table:    sessions
+        db_id_col:   sess_id
+        db_data_col: sess_data
+        db_time_col: sess_time
+        db_lifetime_col: sess_lifetime
 
 # Twig Configuration
 twig:

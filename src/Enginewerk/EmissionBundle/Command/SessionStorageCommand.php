@@ -78,12 +78,12 @@ EOD
     private function getMysqlStatement()
     {
         return <<<'EOD'
-CREATE TABLE `session` (
-    `session_id` varchar(255) NOT NULL,
-    `session_value` text NOT NULL,
-    `session_time` int(11) NOT NULL,
-    PRIMARY KEY (`session_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+CREATE TABLE `sessions` (
+    `sess_id` VARBINARY(128) NOT NULL PRIMARY KEY,
+    `sess_data` BLOB NOT NULL,
+    `sess_time` INTEGER UNSIGNED NOT NULL,
+    `sess_lifetime` MEDIUMINT NOT NULL
+) COLLATE utf8_bin, ENGINE = InnoDB;
 EOD;
     }
 
