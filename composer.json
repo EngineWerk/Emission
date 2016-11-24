@@ -29,12 +29,6 @@
         "phpunit/phpunit": "3.7.*",
         "fabpot/php-cs-fixer": "^1.10"
     },
-    "repositories": [
-        {
-            "type": "pear",
-            "url": "http://pear.php.net"
-        }
-    ],
     "scripts": {
         "post-install-cmd": [
             "Incenteev\\ParameterHandler\\ScriptHandler::buildParameters",
