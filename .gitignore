@@ -7,7 +7,6 @@ vendor/*
 */cache/*
 web/uploads/*
 web/bundles/*
-nbproject*
 
 # Configuration files
 app/config/parameters.ini
