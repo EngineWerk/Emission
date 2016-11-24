@@ -3,7 +3,7 @@ Emission
 Web browser file sharing application.
 
 [![Build Status](https://travis-ci.org/EngineWerk/Emission.svg?branch=master)](https://travis-ci.org/EngineWerk/Emission)
-[![SensioLabsInsight](https://insight.sensiolabs.com/projects/812ecaf4-0b31-4e3d-9941-787ab06a1149/mini.png)](https://insight.sensiolabs.com/projects/812ecaf4-0b31-4e3d-9941-787ab06a1149)
+[![SensioLabsInsight](https://insight.sensiolabs.com/projects/798573d8-39d8-4133-8056-3c457a65f3e6/mini.png)](https://insight.sensiolabs.com/projects/798573d8-39d8-4133-8056-3c457a65f3e6)
 
 ###Features
 - Large files (~GB) upload
