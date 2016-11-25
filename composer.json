@@ -4,7 +4,7 @@
     "type": "project",
     "description": "Emission",
     "autoload": {
-        "psr-0": { "": "src/" }
+        "psr-4": { "": "src/" }
     },
     "require": {
         "php": ">=5.3.3",
