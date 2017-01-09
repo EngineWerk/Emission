@@ -1,5 +1,4 @@
 <?php
-
 namespace Enginewerk\UserBundle\Form\Type;
 
 use FOS\UserBundle\Form\Type\RegistrationFormType as BaseRegistrationFormType;

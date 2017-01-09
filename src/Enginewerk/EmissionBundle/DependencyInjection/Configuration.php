@@ -1,5 +1,4 @@
 <?php
-
 namespace Enginewerk\EmissionBundle\DependencyInjection;
 
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;

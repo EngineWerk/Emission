@@ -1,12 +1,10 @@
 <?php
-
 namespace Enginewerk\FSBundle\Storage;
 
-use Enginewerk\FSBundle\Entity\BinaryBlock;
 use Doctrine\Bundle\DoctrineBundle\Registry;
+use Enginewerk\FSBundle\Entity\BinaryBlock;
+use Exception;
 use Symfony\Component\HttpFoundation\File\File;
-
-use \Exception;
 
 /**
  * Description of StorageService
@@ -32,7 +30,8 @@ class StorageService
      *
      * @param  type                                        $key
      * @param  \Symfony\Component\HttpFoundation\File\File $uploadedFile
-     * @return integer
+     *
+     * @return int
      */
     public function put($key, File $uploadedFile)
     {
@@ -88,11 +87,11 @@ class StorageService
 
         $em->getConnection()->beginTransaction();
         $em->remove($block);
-        
+
         try {
-            $this->storage->delete($block->getUrn());  
+            $this->storage->delete($block->getUrn());
             $em->flush();
-            
+
             $em->getConnection()->commit();
         } catch (Exception $e) {
             $em->getConnection()->rollback();

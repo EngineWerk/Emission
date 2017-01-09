@@ -1,5 +1,4 @@
 <?php
-
 namespace Enginewerk\UserBundle;
 
 use Symfony\Component\HttpKernel\Bundle\Bundle;

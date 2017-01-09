@@ -1,5 +1,4 @@
 <?php
-
 namespace Enginewerk\EmissionBundle\Entity;
 
 use Doctrine\ORM\EntityRepository;

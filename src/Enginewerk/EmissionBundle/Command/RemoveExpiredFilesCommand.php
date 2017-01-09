@@ -1,5 +1,4 @@
 <?php
-
 namespace Enginewerk\EmissionBundle\Command;
 
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
@@ -17,8 +16,7 @@ class RemoveExpiredFilesCommand extends ContainerAwareCommand
     {
         $this
             ->setName('emission:remove:expired-files')
-            ->setDescription('Removes expired files')
-        ;
+            ->setDescription('Removes expired files');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)

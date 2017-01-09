@@ -1,5 +1,4 @@
 <?php
-
 namespace Enginewerk\EmissionBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -19,7 +18,8 @@ class FileBlock
      * @ORM\Id
      * @ORM\Column(name="id", type="integer", options={"unsigned"=true})
      * @ORM\GeneratedValue(strategy="AUTO")
-     * @var integer
+     *
+     * @var int
      */
     protected $id;
 
@@ -28,6 +28,7 @@ class FileBlock
      * Lower characters, and numbers [a-z0-9].
      *
      * @ORM\Column(type="string", length=41)
+     *
      * @var string
      */
     protected $fileHash;
@@ -40,6 +41,7 @@ class FileBlock
 
     /**
      * First byte position.
+     *
      * @ORM\Column(name="rangeStart", type="bigint", options={"unsigned"=true})
      * @Assert\Type(type="numeric")
      */
@@ -56,12 +58,14 @@ class FileBlock
 
     /**
      * @ORM\Column(type="datetime")
+     *
      * @var \DateTime
      */
     protected $createdAt;
 
     /**
      * @ORM\Column(type="datetime")
+     *
      * @var \DateTime
      */
     protected $updatedAt;
@@ -74,14 +78,15 @@ class FileBlock
 
     /**
      * @ORM\Column(name="fileId", type="integer", options={"unsigned"=true})
-     * @var integer
+     *
+     * @var int
      */
     protected $fileId;
 
     /**
      * Get id.
      *
-     * @return integer
+     * @return int
      */
     public function getId()
     {
@@ -93,6 +98,7 @@ class FileBlock
      *
      *
      * @param  string $fileHash
+     *
      * @return File
      */
     public function setFileHash($fileHash)
@@ -115,7 +121,8 @@ class FileBlock
     /**
      * Set size.
      *
-     * @param  integer   $size
+     * @param  int   $size
+     *
      * @return FileBlock
      */
     public function setSize($size)
@@ -128,7 +135,7 @@ class FileBlock
     /**
      * Get size.
      *
-     * @return integer
+     * @return int
      */
     public function getSize()
     {
@@ -139,6 +146,7 @@ class FileBlock
      * Set createdAt.
      *
      * @param  \DateTime $createdAt
+     *
      * @return FileBlock
      */
     public function setCreatedAt(\DateTime $createdAt)
@@ -162,6 +170,7 @@ class FileBlock
      * Set updatedAt.
      *
      * @param  \DateTime $updatedAt
+     *
      * @return FileBlock
      */
     public function setUpdatedAt(\DateTime $updatedAt)
@@ -184,7 +193,8 @@ class FileBlock
     /**
      * Set rangeStart.
      *
-     * @param  integer   $rangeStart
+     * @param  int   $rangeStart
+     *
      * @return FileBlock
      */
     public function setRangeStart($rangeStart)
@@ -197,7 +207,7 @@ class FileBlock
     /**
      * Get rangeStart.
      *
-     * @return integer
+     * @return int
      */
     public function getRangeStart()
     {
@@ -207,7 +217,8 @@ class FileBlock
     /**
      * Set rangeEnd.
      *
-     * @param  integer   $rangeEnd
+     * @param  int   $rangeEnd
+     *
      * @return FileBlock
      */
     public function setRangeEnd($rangeEnd)
@@ -220,7 +231,7 @@ class FileBlock
     /**
      * Get rangeEnd.
      *
-     * @return integer
+     * @return int
      */
     public function getRangeEnd()
     {
@@ -231,6 +242,7 @@ class FileBlock
      * Set file.
      *
      * @param  \Enginewerk\EmissionBundle\Entity\File $file
+     *
      * @return \Enginewerk\EmissionBundle\Entity\File
      */
     public function setFile(\Enginewerk\EmissionBundle\Entity\File $file = null)
@@ -253,7 +265,8 @@ class FileBlock
     /**
      * Set fileId.
      *
-     * @param  integer   $fileId
+     * @param  int   $fileId
+     *
      * @return FileBlock
      */
     public function setFileId($fileId)
@@ -266,7 +279,7 @@ class FileBlock
     /**
      * Get fileId.
      *
-     * @return integer
+     * @return int
      */
     public function getFileId()
     {

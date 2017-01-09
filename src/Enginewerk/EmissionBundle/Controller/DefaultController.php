@@ -1,17 +1,16 @@
 <?php
-
 namespace Enginewerk\EmissionBundle\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\StreamedResponse;
-use Enginewerk\EmissionBundle\Response\AppResponse;
-use Enginewerk\EmissionBundle\Form\Type\ResumableFileType;
 use Enginewerk\EmissionBundle\Form\Type\ResumableFileBlockType;
+use Enginewerk\EmissionBundle\Form\Type\ResumableFileType;
+use Enginewerk\EmissionBundle\Response\AppResponse;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 /**
  * DefaultController.
@@ -34,24 +33,24 @@ class DefaultController extends Controller
         $fileBlockForm = $this->createForm(new ResumableFileBlockType());
         $fileForm = $this->createForm(new ResumableFileType());
 
-        $capabilities = array(
+        $capabilities = [
             'memory_limit' => ini_get('memory_limit'),
             'post_max_size' => ini_get('post_max_size'),
             'upload_max_filesize' => ini_get('upload_max_filesize'),
-            'browser_file_memory_limit' => $this->container->getParameter('app.uploader_max_chunk_size')
-            );
+            'browser_file_memory_limit' => $this->container->getParameter('app.uploader_max_chunk_size'),
+            ];
 
         $uploaderCapabilities = $capabilities;
         sort($uploaderCapabilities, SORT_NUMERIC);
         $maxUploadFileSize = (int) $uploaderCapabilities[0];
 
-        return array(
+        return [
             'Files' => $files,
             'FileBlockForm' => $fileBlockForm->createView(),
             'FileForm' => $fileForm->createView(),
             'Capabilities' => $capabilities,
-            'MaxUploadFileSize' => $maxUploadFileSize
-                );
+            'MaxUploadFileSize' => $maxUploadFileSize,
+                ];
     }
 
     /**
@@ -60,8 +59,10 @@ class DefaultController extends Controller
      * @Template()
      *
      * @param  Request                                                       $request
-     * @return array
+     *
      * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+     *
+     * @return array
      */
     public function showFileAction(Request $request)
     {
@@ -72,7 +73,7 @@ class DefaultController extends Controller
             throw $this->createNotFoundException(sprintf('File #%s not found.', $request->get('file')));
         }
 
-        return array('File' => $file);
+        return ['File' => $file];
     }
 
     /**
@@ -80,8 +81,10 @@ class DefaultController extends Controller
      * @Method({"GET"})
      *
      * @param  Request                                                       $request
-     * @return JsonResponse
+     *
      * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+     *
+     * @return JsonResponse
      */
     public function showFileContentAction(Request $request)
     {
@@ -94,7 +97,7 @@ class DefaultController extends Controller
 
         $appResponse = new AppResponse();
         $appResponse->success();
-        $appResponse->data($this->renderView('EnginewerkEmissionBundle:Default:showFileContent.html.twig', array('File' => $file)));
+        $appResponse->data($this->renderView('EnginewerkEmissionBundle:Default:showFileContent.html.twig', ['File' => $file]));
 
         return new JsonResponse($appResponse->response(), 200);
     }
@@ -105,8 +108,10 @@ class DefaultController extends Controller
      * @Method({"GET"})
      *
      * @param  Request                                                       $request
-     * @return StreamedResponse
+     *
      * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+     *
+     * @return StreamedResponse
      */
     public function downloadFileAction(Request $request)
     {
@@ -128,7 +133,7 @@ class DefaultController extends Controller
         $response->headers->set('Content-Transfer-Encoding', 'binary');
 
         if ($request->get('dl')) {
-            $response->headers->set('Content-Disposition', 'attachment; filename="'.$file->getName().'"');
+            $response->headers->set('Content-Disposition', 'attachment; filename="' . $file->getName() . '"');
         }
 
         $response->setCallback(function () use ($responseFile) {
@@ -143,6 +148,7 @@ class DefaultController extends Controller
      * @Method({"DELETE"})
      *
      * @param  Request      $request
+     *
      * @return JsonResponse
      */
     public function deleteAction(Request $request)
@@ -168,6 +174,7 @@ class DefaultController extends Controller
      * @Method({"GET"})
      *
      * @param  \Symfony\Component\HttpFoundation\Request $request
+     *
      * @return JsonResponse
      */
     public function fileExpirationDateAction(Request $request)

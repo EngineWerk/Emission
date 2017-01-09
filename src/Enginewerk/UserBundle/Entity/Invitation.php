@@ -1,5 +1,4 @@
 <?php
-
 namespace Enginewerk\UserBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -53,6 +52,7 @@ class Invitation
      * Set code
      *
      * @param  string     $code
+     *
      * @return Invitation
      */
     public function setCode($code)
@@ -76,6 +76,7 @@ class Invitation
      * Set email
      *
      * @param  string     $email
+     *
      * @return Invitation
      */
     public function setEmail($email)
@@ -98,7 +99,8 @@ class Invitation
     /**
      * Set sent
      *
-     * @param  boolean    $sent
+     * @param  bool    $sent
+     *
      * @return Invitation
      */
     public function setSent($sent)
@@ -111,7 +113,7 @@ class Invitation
     /**
      * Get sent
      *
-     * @return boolean
+     * @return bool
      */
     public function getSent()
     {
@@ -122,6 +124,7 @@ class Invitation
      * Set user
      *
      * @param  \Enginewerk\UserBundle\Entity\User $user
+     *
      * @return Invitation
      */
     public function setUser(\Enginewerk\UserBundle\Entity\User $user = null)

@@ -1,5 +1,4 @@
 <?php
-
 namespace Enginewerk\EmissionBundle\Generator;
 
 /**
@@ -21,12 +20,14 @@ class Hash
      *
      * @param  int       $length
      * @param  string    $charFeed
-     * @return string
+     *
      * @throws Exception
+     *
+     * @return string
      */
     public static function genereateRandomHash($length = 4, $charFeed = null)
     {
-        $charFeed  = ($charFeed) ? $charFeed : self::$feed;
+        $charFeed = ($charFeed) ? $charFeed : self::$feed;
 
         if ($length <= 0) {
             throw new \Exception('Length lower than, or equal 0');
@@ -48,6 +49,7 @@ class Hash
      *
      * @param  string $sequence
      * @param  string $characters
+     *
      * @return string
      */
     public static function generateSequencedHash($sequence = null, $characters = null)
@@ -91,6 +93,7 @@ class Hash
     /**
      * @param  string $currentValue
      * @param  string $characters
+     *
      * @return string
      */
     private static function getNextFeedValue($currentValue, $characters)

@@ -1,11 +1,10 @@
 <?php
-
 namespace Enginewerk\UserBundle\Form\Type;
 
+use Enginewerk\UserBundle\Form\DataTransformer\InvitationToCodeTransformer;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use Enginewerk\UserBundle\Form\DataTransformer\InvitationToCodeTransformer;
 
 /**
  * Description of InvitationFormType
@@ -28,10 +27,10 @@ class InvitationFormType extends AbstractType
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults(array(
+        $resolver->setDefaults([
             'class' => 'Enginewerk\UserBundle\Entity\Invitation',
             'required' => true,
-        ));
+        ]);
     }
 
     public function getParent()

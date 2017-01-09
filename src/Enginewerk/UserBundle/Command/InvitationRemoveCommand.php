@@ -1,15 +1,13 @@
 <?php
-
 namespace Enginewerk\UserBundle\Command;
-
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
 
 use Enginewerk\UserBundle\Entity\Invitation;
 use Exception;
+use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Removes User invitation
@@ -27,8 +25,7 @@ class InvitationRemoveCommand extends ContainerAwareCommand
             ->setDescription('Removes not sent User invitation from database')
             ->addArgument('email', InputArgument::REQUIRED, 'User email')
             ->addOption('code', null, InputOption::VALUE_OPTIONAL, 'User invitation code')
-            ->addOption('force', null, InputOption::VALUE_NONE, 'Force remove')
-        ;
+            ->addOption('force', null, InputOption::VALUE_NONE, 'Force remove');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -39,8 +36,7 @@ class InvitationRemoveCommand extends ContainerAwareCommand
 
         $repository = $this
                 ->getEntityManager()
-                ->getRepository('UserBundle:Invitation')
-                ;
+                ->getRepository('UserBundle:Invitation');
 
         if ($input->getOption('code')) {
             $invitations = $repository->findByEmailAndCode($input->getArgument('email'), $input->getOption('code'));
@@ -63,18 +59,15 @@ class InvitationRemoveCommand extends ContainerAwareCommand
 
         $this
                 ->getEntityManager()
-                ->remove($invitation)
-                ;
+                ->remove($invitation);
         $this
                 ->getEntityManager()
-                ->flush()
-                ;
+                ->flush();
     }
 
     protected function removeInvitations($invitations, OutputInterface $output)
     {
         foreach ($invitations as $invitation) {
-
             $output->write(' Trying: ' . $invitation->getCode());
 
             try {
@@ -96,7 +89,6 @@ class InvitationRemoveCommand extends ContainerAwareCommand
         return $this
                 ->getContainer()
                 ->get('doctrine')
-                ->getManager()
-                ;
+                ->getManager();
     }
 }

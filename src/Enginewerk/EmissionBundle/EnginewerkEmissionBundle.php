@@ -1,5 +1,4 @@
 <?php
-
 namespace Enginewerk\EmissionBundle;
 
 use Symfony\Component\HttpKernel\Bundle\Bundle;

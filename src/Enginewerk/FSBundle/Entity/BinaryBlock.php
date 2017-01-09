@@ -1,5 +1,4 @@
 <?php
-
 namespace Enginewerk\FSBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -13,14 +12,14 @@ use Doctrine\ORM\Mapping as ORM;
 class BinaryBlock
 {
     /**
-     * @var integer
+     * @var int
      *
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
-    
+
     /**
      * @var string Uniform Resource Name - Name / Key / Pathname / URL
      *
@@ -36,7 +35,7 @@ class BinaryBlock
     private $checksum;
 
     /**
-     * @var integer
+     * @var int
      *
      * @ORM\Column(name="size", type="integer")
      */
@@ -45,17 +44,18 @@ class BinaryBlock
     /**
      * Get id.
      *
-     * @return integer
+     * @return int
      */
     public function getId()
     {
         return $this->id;
     }
-    
+
     /**
      * Set urn.
      *
      * @param  string     $urn
+     *
      * @return BinryBlock
      */
     public function setUrn($urn)
@@ -79,6 +79,7 @@ class BinaryBlock
      * Set checksum.
      *
      * @param  string      $checksum
+     *
      * @return BinaryBlock
      */
     public function setChecksum($checksum)
@@ -101,7 +102,8 @@ class BinaryBlock
     /**
      * Set size.
      *
-     * @param  integer     $size
+     * @param  int     $size
+     *
      * @return BinaryBlock
      */
     public function setSize($size)
@@ -114,7 +116,7 @@ class BinaryBlock
     /**
      * Get size.
      *
-     * @return integer
+     * @return int
      */
     public function getSize()
     {

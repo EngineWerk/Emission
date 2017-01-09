@@ -1,5 +1,4 @@
 <?php
-
 namespace Enginewerk\EmissionBundle\Command;
 
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
@@ -9,14 +8,14 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Creates database table for session storage.
+ *
  * @link http://symfony.com/doc/current/cookbook/configuration/pdo_session_storage.html#example-sql-statements
- * @package Enginewerk\EmissionBundle\Command
  *
  * @author Paweł Czyżewski <pawel.czyzewski@enginewerk.com>
  */
 class SessionStorageCommand extends ContainerAwareCommand
 {
-    protected static $supportedDatabases = array('mysql', 'mssql', 'postgresql');
+    protected static $supportedDatabases = ['mysql', 'mssql', 'postgresql'];
 
     protected function configure()
     {
@@ -28,15 +27,14 @@ class SessionStorageCommand extends ContainerAwareCommand
 Try using sessionstorage:init [mysql|mssql|postgresql]
 <info>If there is no argument script will try to guess database based on database_driver</info>
 EOD
-            )
-        ;
+            );
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $dbengine = ($input->getArgument('dbengine')) ? $input->getArgument('dbengine') : $this->guessDatabaseEngine();
 
-        $output->writeln('Creating session storage using "'.$dbengine.'" ');
+        $output->writeln('Creating session storage using "' . $dbengine . '" ');
 
         switch ($dbengine) {
             case 'mysql':
@@ -71,7 +69,7 @@ EOD
             $this
                 ->getContainer()
                 ->get('logger')
-                ->error('Can`t create table. '.$e->getMessage());
+                ->error('Can`t create table. ' . $e->getMessage());
         }
     }
 

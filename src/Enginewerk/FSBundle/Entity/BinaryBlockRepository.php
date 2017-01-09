@@ -1,5 +1,4 @@
 <?php
-
 namespace Enginewerk\FSBundle\Entity;
 
 use Doctrine\ORM\EntityRepository;

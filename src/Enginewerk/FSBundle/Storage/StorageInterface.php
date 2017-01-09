@@ -1,5 +1,4 @@
 <?php
-
 namespace Enginewerk\FSBundle\Storage;
 
 /**
@@ -11,19 +10,22 @@ interface StorageInterface
     /**
      * @param  string                                        $key
      * @param  \Symfony\Component\HttpFoundation\File\File $uploadedFile
-     * @return integer                                     File size
+     *
+     * @return int                                     File size
      */
     public function put($key, $uploadedFile);
 
     /**
      * @param  string                                      $key
+     *
      * @return \Symfony\Component\HttpFoundation\File\File
      */
     public function get($key);
 
     /**
      * @param string $key
-     * @return boolean
+     *
+     * @return bool
      */
     public function delete($key);
 }

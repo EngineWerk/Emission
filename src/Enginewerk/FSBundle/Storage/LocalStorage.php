@@ -1,8 +1,7 @@
 <?php
-
 namespace Enginewerk\FSBundle\Storage;
 
-use \RuntimeException;
+use RuntimeException;
 
 /**
  * Description of LocalStorage
@@ -21,7 +20,8 @@ class LocalStorage implements StorageInterface
      *
      * @param  type                                        $key
      * @param  \Symfony\Component\HttpFoundation\File\File $uploadedFile
-     * @return integer
+     *
+     * @return int
      */
     public function put($key, $uploadedFile)
     {
@@ -52,8 +52,10 @@ class LocalStorage implements StorageInterface
      * Deletes file with given key
      *
      * @param string $key
-     * @return bool|void
+     *
      * @throws \RuntimeException
+     *
+     * @return bool|void
      */
     public function delete($key)
     {
@@ -101,10 +103,10 @@ class LocalStorage implements StorageInterface
      */
     private function pathname($key)
     {
-        return implode(DIRECTORY_SEPARATOR, array(
+        return implode(DIRECTORY_SEPARATOR, [
             $this->getStorageRootDirectory(),
             $this->getDeepDirFromFileName($key),
-            $key)
+            $key, ]
                 );
     }
 }

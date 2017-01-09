@@ -1,10 +1,9 @@
 <?php
-
 namespace Enginewerk\EmissionBundle\Storage;
 
-use \Doctrine\Bundle\DoctrineBundle\Registry;
-use \Enginewerk\EmissionBundle\FileResponse\ChunkedFile;
-use \RuntimeException;
+use Doctrine\Bundle\DoctrineBundle\Registry;
+use Enginewerk\EmissionBundle\FileResponse\ChunkedFile;
+use RuntimeException;
 
 /**
  * Description of FileStorage.
@@ -34,7 +33,7 @@ class FileStorage
                 ->getDoctrine()
                 ->getRepository('EnginewerkEmissionBundle:FileBlock');
 
-        $binaryBlocksToRemove = array();
+        $binaryBlocksToRemove = [];
 
         foreach ($file->getFileBlocks() as $fileBlock) {
             $usedBlocks = $fileBlockRepository->getUsedBlocksNumber($fileBlock->getFileHash());
@@ -66,8 +65,10 @@ class FileStorage
 
     /**
      * @param $key
-     * @return \Enginewerk\EmissionBundle\Entity\File
+     *
      * @throws \Enginewerk\EmissionBundle\Storage\FileNotFoundException
+     *
+     * @return \Enginewerk\EmissionBundle\Entity\File
      */
     public function get($key)
     {
@@ -92,9 +93,9 @@ class FileStorage
         $fileBlocks = $this
                 ->getDoctrine()
                 ->getRepository('EnginewerkEmissionBundle:FileBlock')
-                ->findBy(array('fileId' => $file->getId()), array('rangeStart' => 'ASC'));
+                ->findBy(['fileId' => $file->getId()], ['rangeStart' => 'ASC']);
 
-        $blocks = array();
+        $blocks = [];
         foreach ($fileBlocks as $fileBlock) {
             $block = $this
                     ->binaryObjectStorage
@@ -113,7 +114,7 @@ class FileStorage
         return $this
                 ->getDoctrine()
                 ->getRepository('EnginewerkEmissionBundle:File')
-                ->findOneBy(array('fileId' => $key));
+                ->findOneBy(['fileId' => $key]);
     }
 
     public function findAll()

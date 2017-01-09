@@ -1,10 +1,9 @@
 <?php
-
 namespace Enginewerk\UserBundle\Command;
 
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
@@ -19,8 +18,7 @@ class InvitationListCommand extends ContainerAwareCommand
         $this
             ->setName('invitation:list')
             ->setDescription('Lists user invitations')
-            ->addOption('sent', null, InputOption::VALUE_NONE, 'User invitation code')
-        ;
+            ->addOption('sent', null, InputOption::VALUE_NONE, 'User invitation code');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)

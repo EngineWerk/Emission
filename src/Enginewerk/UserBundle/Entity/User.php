@@ -1,11 +1,10 @@
 <?php
-
 namespace Enginewerk\UserBundle\Entity;
 
-use FOS\UserBundle\Model\User as BaseUser;
-use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\Mapping as ORM;
+use FOS\UserBundle\Model\User as BaseUser;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Description of User
@@ -35,23 +34,23 @@ class User extends BaseUser
      * @Assert\NotNull(message="Your invitation is wrong")
      */
     protected $invitation;
-    
+
     /**
      * @ORM\OneToMany(targetEntity="Enginewerk\EmissionBundle\Entity\File", mappedBy="user", cascade={"remove"})
      */
     protected $files;
-    
+
     public function __construct()
     {
         parent::__construct();
-        
+
         $this->files = new ArrayCollection();
     }
 
     /**
      * Get id
      *
-     * @return integer
+     * @return int
      */
     public function getId()
     {
@@ -62,6 +61,7 @@ class User extends BaseUser
      * Set google
      *
      * @param  string $google
+     *
      * @return User
      */
     public function setGoogle($google)
@@ -85,6 +85,7 @@ class User extends BaseUser
      * Set invitation
      *
      * @param  \Enginewerk\UserBundle\Entity\Invitation $invitation
+     *
      * @return User
      */
     public function setInvitation(\Enginewerk\UserBundle\Entity\Invitation $invitation = null)
@@ -108,6 +109,7 @@ class User extends BaseUser
      * Add files
      *
      * @param \Enginewerk\EmissionBundle\Entity\File $files
+     *
      * @return User
      */
     public function addFile(\Enginewerk\EmissionBundle\Entity\File $files)
@@ -130,7 +132,7 @@ class User extends BaseUser
     /**
      * Get files
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getFiles()
     {

@@ -1,5 +1,4 @@
 <?php
-
 namespace Enginewerk\EmissionBundle\Response;
 
 /**
@@ -13,7 +12,7 @@ class AppResponse
     private $status = null;
     private $data = null;
 
-    public $response = array();
+    public $response = [];
 
     /**
      * Sets status on Error and response message.

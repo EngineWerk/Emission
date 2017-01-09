@@ -1,5 +1,4 @@
 <?php
-
 namespace Enginewerk\EmissionBundle\Tests\Generator;
 
 use Enginewerk\EmissionBundle\Generator\Hash;

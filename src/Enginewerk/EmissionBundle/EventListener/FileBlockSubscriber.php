@@ -1,5 +1,4 @@
 <?php
-
 namespace Enginewerk\EmissionBundle\EventListener;
 
 use Doctrine\Common\EventSubscriber;
@@ -15,9 +14,9 @@ class FileBlockSubscriber implements EventSubscriber
 {
     public function getSubscribedEvents()
     {
-        return array(
-            'prePersist'
-        );
+        return [
+            'prePersist',
+        ];
     }
 
     public function prePersist(LifecycleEventArgs $args)

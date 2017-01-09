@@ -1,9 +1,8 @@
 <?php
-
 namespace Enginewerk\UserBundle\Form\DataTransformer;
 
-use Enginewerk\UserBundle\Entity\Invitation;
 use Doctrine\ORM\EntityManager;
+use Enginewerk\UserBundle\Entity\Invitation;
 use Symfony\Component\Form\DataTransformerInterface;
 use Symfony\Component\Form\Exception\UnexpectedTypeException;
 
@@ -46,9 +45,9 @@ class InvitationToCodeTransformer implements DataTransformerInterface
 
         return $this->entityManager
             ->getRepository('Enginewerk\UserBundle\Entity\Invitation')
-            ->findOneBy(array(
+            ->findOneBy([
                 'code' => $value,
                 'user' => null,
-            ));
+            ]);
     }
 }

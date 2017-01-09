@@ -1,13 +1,11 @@
 <?php
-
 namespace Enginewerk\UserBundle\Command;
 
+use Enginewerk\UserBundle\Entity\Invitation;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-
-use Enginewerk\UserBundle\Entity\Invitation;
 
 /**
  * Adds User invitation code to database
@@ -21,8 +19,7 @@ class InvitationAddCommand extends ContainerAwareCommand
         $this
             ->setName('invitation:add')
             ->setDescription('Adds User invitation code to database')
-            ->addArgument('email', InputArgument::REQUIRED, 'User email')
-        ;
+            ->addArgument('email', InputArgument::REQUIRED, 'User email');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)

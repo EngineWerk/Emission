@@ -1,5 +1,4 @@
 <?php
-
 namespace Enginewerk\FileStorage;
 
 use Enginewerk\FileStorage\File\FileRequestInterface;
@@ -10,14 +9,14 @@ interface FileStorageInterface
     /**
      * @param FileRequestInterface $fileRequest
      *
-     * @return boolean
+     * @return bool
      */
     public function has(FileRequestInterface $fileRequest);
 
     /**
      * @param FileRequestInterface $fileRequest
      *
-     * @return boolean
+     * @return bool
      */
     public function put(FileRequestInterface $fileRequest);
 
@@ -31,7 +30,7 @@ interface FileStorageInterface
     /**
      * @param FileRequestInterface $fileRequest
      *
-     * @return boolean
+     * @return bool
      */
     public function delete(FileRequestInterface $fileRequest);
 }

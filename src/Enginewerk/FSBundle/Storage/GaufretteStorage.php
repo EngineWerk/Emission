@@ -1,5 +1,4 @@
 <?php
-
 namespace Enginewerk\FSBundle\Storage;
 
 use Enginewerk\FSBundle\Storage\GaufretteFile as File;
@@ -34,7 +33,7 @@ class GaufretteStorage implements StorageInterface
      * @param string $key
      * @param File   $uploadedFile
      *
-     * @return integer
+     * @return int
      */
     public function put($key, $uploadedFile)
     {
@@ -54,13 +53,14 @@ class GaufretteStorage implements StorageInterface
     public function get($key)
     {
         $pathname = $this->getPathName($key);
-        $file = new File('gaufrette://'.$this->filesystemName.DIRECTORY_SEPARATOR.$pathname);
+        $file = new File('gaufrette://' . $this->filesystemName . DIRECTORY_SEPARATOR . $pathname);
 
         return $file;
     }
 
     /**
      * @param  string    $key
+     *
      * @return bool|void
      */
     public function delete($key)
@@ -73,21 +73,23 @@ class GaufretteStorage implements StorageInterface
 
     /**
      * @param  string $key
+     *
      * @return string
      */
     private function getPathName($key)
     {
-        return $this->getDeepDirFromFileName($key).DIRECTORY_SEPARATOR.$key;
+        return $this->getDeepDirFromFileName($key) . DIRECTORY_SEPARATOR . $key;
     }
 
     /**
      * @param  string $name
+     *
      * @return string
      */
     private function getDeepDirFromFileName($name)
     {
-        return $name[0].$name[1].DIRECTORY_SEPARATOR.
-                $name[2].$name[3].DIRECTORY_SEPARATOR.
-                $name[4].$name[5].DIRECTORY_SEPARATOR;
+        return $name[0] . $name[1] . DIRECTORY_SEPARATOR .
+                $name[2] . $name[3] . DIRECTORY_SEPARATOR .
+                $name[4] . $name[5] . DIRECTORY_SEPARATOR;
     }
 }
