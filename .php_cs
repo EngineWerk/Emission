@@ -26,9 +26,8 @@ return Symfony\CS\Config\Config::create()
  */
 function isFileAllowedToChange(\SplFileInfo $file, array $allowedFiles)
 {
-    return true;
     return !in_array(
-        str_replace(__DIR__ . '/', '/', $file->getRealPath()),
+        str_replace(__DIR__ . '/', '', $file->getRealPath()),
         $allowedFiles
     );
 }
