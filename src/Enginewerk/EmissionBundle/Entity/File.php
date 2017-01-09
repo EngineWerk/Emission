@@ -1,15 +1,13 @@
 <?php
-
 namespace Enginewerk\EmissionBundle\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\Common\Collections\ArrayCollection;
-use Enginewerk\UserBundle\Entity\User;
+use Doctrine\ORM\Mapping as ORM;
 use Enginewerk\EmissionBundle\Generator\Hash;
+use Enginewerk\UserBundle\Entity\User;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * File.
  * @ORM\Entity
  * @ORM\HasLifecycleCallbacks
  * @ORM\Table(name="file")
@@ -21,7 +19,8 @@ class File
      * @ORM\Id
      * @ORM\Column(name="id", type="integer", options={"unsigned"=true})
      * @ORM\GeneratedValue(strategy="AUTO")
-     * @var integer
+     *
+     * @var int
      */
     protected $id;
 
@@ -31,6 +30,7 @@ class File
      * #BUG DB must be case sensitive.
      *
      * @ORM\Column(type="string", length=16)
+     *
      * @var string
      */
     protected $fileId;
@@ -41,6 +41,7 @@ class File
      *
      * @ORM\Column(type="string", length=41)
      * @Assert\Length(min="41", max="41")
+     *
      * @var string
      */
     protected $fileHash;
@@ -59,6 +60,7 @@ class File
      *
      * @ORM\Column(type="string", length=32)
      * @Assert\Length(max="32")
+     *
      * @var string
      */
     protected $checksum;
@@ -67,6 +69,7 @@ class File
      * Name for download name.
      *
      * @ORM\Column(type="string", length=255)
+     *
      * @var string
      */
     protected $name;
@@ -75,6 +78,7 @@ class File
      * File MIME type.
      *
      * @ORM\Column(type="string", length=128)
+     *
      * @var string
      */
     protected $type;
@@ -88,18 +92,21 @@ class File
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
+     *
      * @var \DateTime
      */
     protected $expirationDate;
 
     /**
      * @ORM\Column(type="datetime")
+     *
      * @var \DateTime
      */
     protected $createdAt;
 
     /**
      * @ORM\Column(type="datetime")
+     *
      * @var \DateTime
      */
     protected $updatedAt;
@@ -111,7 +118,8 @@ class File
 
     /**
      * @ORM\Column(name="complete", type="boolean", options={"default" = false})
-     * @var integer
+     *
+     * @var int
      */
     protected $complete = false;
 
@@ -122,8 +130,9 @@ class File
 
     /**
      * Get id.
+     * test.
      *
-     * @return integer
+     * @return int
      */
     public function getId()
     {
@@ -133,7 +142,8 @@ class File
     /**
      * Set fileId.
      *
-     * @param  string $fileId
+     * @param string $fileId
+     *
      * @return File
      */
     public function setFileId($fileId)
@@ -156,7 +166,8 @@ class File
     /**
      * Set fileHash.
      *
-     * @param  string $fileHash
+     * @param string $fileHash
+     *
      * @return File
      */
     public function setFileHash($fileHash)
@@ -179,7 +190,8 @@ class File
     /**
      * Set name.
      *
-     * @param  string $name
+     * @param string $name
+     *
      * @return File
      */
     public function setName($name)
@@ -202,7 +214,8 @@ class File
     /**
      * Set size.
      *
-     * @param  integer $size
+     * @param int $size
+     *
      * @return File
      */
     public function setSize($size)
@@ -215,7 +228,7 @@ class File
     /**
      * Get size.
      *
-     * @return integer
+     * @return int
      */
     public function getSize()
     {
@@ -225,7 +238,8 @@ class File
     /**
      * Set expirationDate.
      *
-     * @param  \DateTime $expirationDate
+     * @param \DateTime $expirationDate
+     *
      * @return File
      */
     public function setExpirationDate(\DateTime $expirationDate = null)
@@ -248,7 +262,8 @@ class File
     /**
      * Set createdAt.
      *
-     * @param  \DateTime $createdAt
+     * @param \DateTime $createdAt
+     *
      * @return File
      */
     public function setCreatedAt(\DateTime $createdAt)
@@ -271,7 +286,8 @@ class File
     /**
      * Set updatedAt.
      *
-     * @param  \DateTime $updatedAt
+     * @param \DateTime $updatedAt
+     *
      * @return File
      */
     public function setUpdatedAt(\DateTime $updatedAt)
@@ -294,7 +310,8 @@ class File
     /**
      * Set type.
      *
-     * @param  string $type
+     * @param string $type
+     *
      * @return File
      */
     public function setType($type)
@@ -340,7 +357,8 @@ class File
     /**
      * Add fileBlocks.
      *
-     * @param  \Enginewerk\EmissionBundle\Entity\FileBlock $fileBlocks
+     * @param \Enginewerk\EmissionBundle\Entity\FileBlock $fileBlocks
+     *
      * @return File
      */
     public function addFileBlock(\Enginewerk\EmissionBundle\Entity\FileBlock $fileBlocks)
@@ -373,7 +391,8 @@ class File
     /**
      * Set checksum.
      *
-     * @param  string $checksum
+     * @param string $checksum
+     *
      * @return File
      */
     public function setChecksum($checksum)
@@ -396,7 +415,8 @@ class File
     /**
      * Set user.
      *
-     * @param  \Enginewerk\EmissionBundle\Entity\User $user
+     * @param \Enginewerk\EmissionBundle\Entity\User $user
+     *
      * @return File
      */
     public function setUser(\Enginewerk\UserBundle\Entity\User $user = null)
@@ -419,7 +439,8 @@ class File
     /**
      * Set complete.
      *
-     * @param  boolean $complete
+     * @param bool $complete
+     *
      * @return File
      */
     public function setComplete($complete)
@@ -432,7 +453,7 @@ class File
     /**
      * Get complete.
      *
-     * @return boolean
+     * @return bool
      */
     public function getComplete()
     {

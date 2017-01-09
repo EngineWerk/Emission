@@ -8,23 +8,24 @@ class AppKernel extends Kernel
     public function registerBundles()
     {
         $bundles = array(
+            new Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
+            new Doctrine\Bundle\MigrationsBundle\DoctrineMigrationsBundle(),
+            new Enginewerk\EmissionBundle\EnginewerkEmissionBundle(),
+            new Enginewerk\FSBundle\EnginewerkFSBundle(),
+            new Enginewerk\MigrationBundle\EmissionMigrationBundle(),
+            new Enginewerk\OAuthBundle\OAuthBundle(),
+            new Enginewerk\UserBundle\UserBundle(),
+            new FOS\UserBundle\FOSUserBundle(),
+            new HWI\Bundle\OAuthBundle\HWIOAuthBundle(),
+            new JMS\TranslationBundle\JMSTranslationBundle(),
+            new Knp\Bundle\GaufretteBundle\KnpGaufretteBundle(),
+            new Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
             new Symfony\Bundle\FrameworkBundle\FrameworkBundle(),
             new Symfony\Bundle\SecurityBundle\SecurityBundle(),
             new Symfony\Bundle\TwigBundle\TwigBundle(),
             new Symfony\Bundle\MonologBundle\MonologBundle(),
             new Symfony\Bundle\SwiftmailerBundle\SwiftmailerBundle(),
             new Symfony\Bundle\AsseticBundle\AsseticBundle(),
-            new Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
-            new Doctrine\Bundle\MigrationsBundle\DoctrineMigrationsBundle(),
-            new Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
-            new Enginewerk\EmissionBundle\EnginewerkEmissionBundle(),
-            new HWI\Bundle\OAuthBundle\HWIOAuthBundle(),
-            new JMS\TranslationBundle\JMSTranslationBundle(),
-            new Enginewerk\OAuthBundle\OAuthBundle(),
-            new FOS\UserBundle\FOSUserBundle(),
-            new Enginewerk\UserBundle\UserBundle(),
-            new Enginewerk\FSBundle\EnginewerkFSBundle(),
-            new Knp\Bundle\GaufretteBundle\KnpGaufretteBundle(),  
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {
