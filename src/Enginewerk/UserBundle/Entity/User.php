@@ -7,12 +7,8 @@ use FOS\UserBundle\Model\User as BaseUser;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * Description of User
- *
  * @ORM\Entity
  * @ORM\Table(name="fos_user")
- *
- * @author Paweł Czyżewski <pawel.czyzewski@enginewerk.com>
  */
 class User extends BaseUser
 {
