@@ -3,11 +3,6 @@ namespace Enginewerk\EmissionBundle\Entity;
 
 use Doctrine\ORM\EntityRepository;
 
-/**
- * Description of FileRepository.
- *
- * @author Paweł Czyżewski <pawel.czyzewski@enginewerk.com>
- */
 class FileRepository extends EntityRepository
 {
     public function getFiles()

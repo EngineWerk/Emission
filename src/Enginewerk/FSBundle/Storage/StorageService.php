@@ -1,26 +1,19 @@
 <?php
 namespace Enginewerk\FSBundle\Storage;
 
-use Doctrine\Bundle\DoctrineBundle\Registry;
 use Enginewerk\FSBundle\Entity\BinaryBlock;
 use Exception;
+use Symfony\Bridge\Doctrine\RegistryInterface;
 use Symfony\Component\HttpFoundation\File\File;
 
-/**
- * Description of StorageService
- *
- * @author Paweł Czyżewski <pawel.czyzewski@enginewerk.com>
- */
 class StorageService
 {
-    /**
-     * @var \Doctrine\Bundle\DoctrineBundle\Registry
-     */
+    /** @var RegistryInterface */
     protected $doctrine;
 
     protected $storage;
 
-    public function __construct(Registry $doctrine, $storage)
+    public function __construct(RegistryInterface $doctrine, $storage)
     {
         $this->doctrine = $doctrine;
         $this->storage = $storage;
@@ -28,7 +21,7 @@ class StorageService
 
     /**
      *
-     * @param  type                                        $key
+     * @param  string $key
      * @param  \Symfony\Component\HttpFoundation\File\File $uploadedFile
      *
      * @return int

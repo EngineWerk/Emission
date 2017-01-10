@@ -12,11 +12,6 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
-/**
- * DefaultController.
- *
- * @author Paweł Czyżewski <pawel.czyzewski@enginewerk.com>
- */
 class DefaultController extends Controller
 {
     /**
@@ -231,10 +226,12 @@ class DefaultController extends Controller
     /**
      * @Route("/files/{created_after}", defaults={"created_after" = null})
      * @Method({"GET"})
+     *
+     * @param string $created_after
      */
     public function filesAction($created_after)
     {
-        $createdAfter = ($created_after) ? new \DateTime($created_after) : null;
+        $createdAfter = $created_after ? new \DateTime($created_after) : null;
 
         $files = $this
                 ->getDoctrine()

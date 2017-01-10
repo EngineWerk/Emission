@@ -3,13 +3,11 @@ namespace Enginewerk\FSBundle\Entity;
 
 use Doctrine\ORM\EntityRepository;
 
-/**
- * BinaryBlockRepository.
- *
- * @author Paweł Czyżewski <pawel.czyzewski@enginewerk.com>
- */
 class BinaryBlockRepository extends EntityRepository
 {
+    /**
+     * @param string $checksum
+     */
     public function removeBlockByChecksum($checksum)
     {
         $block = $this->findOneByChecksum($checksum);
