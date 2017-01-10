@@ -33,16 +33,18 @@ Follow:
 - Symfony`s [permissions setup](http://symfony.com/doc/current/book/installation.html#configuration-and-setup)
 - webserver [configuration](http://symfony.com/doc/current/cookbook/configuration/web_server_configuration.html)
     
-Create database tables.
+Run database migrations.
 
-    php app/console doctrine:schema:update --force
+    php app/console doctrine:migrations:migrate
 
+Create new user.
 
-Create table for database session storage
+    php app/console fos:user:create
+    
+Change user password
 
-     php app/console sessionstorage:init
-
-
+    php app/console fos:user:change-password
+    
 Generate user invitation code.
 
     app/console invitation:add user@acme.com
