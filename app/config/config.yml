@@ -1,16 +1,16 @@
 imports:
     - { resource: parameters.yml }
     - { resource: security.yml }
-    - { resource: "@EnginewerkFSBundle/Resources/config/services.yml" }
-    - { resource: "@UserBundle/Resources/config/services.yml" }
-    - { resource: "@OAuthBundle/Resources/config/services.yml" }
+    - { resource: '@EnginewerkFSBundle/Resources/config/services.yml' }
+    - { resource: '@UserBundle/Resources/config/services.yml' }
+    - { resource: '@OAuthBundle/Resources/config/services.yml' }
 
 framework:
     #esi:             ~
-    translator:      { fallback: %locale% }
-    secret:          %secret%
+    translator:      { fallback: '%locale%' }
+    secret:          '%secret%'
     router:
-        resource: "%kernel.root_dir%/config/routing.yml"
+        resource: '%kernel.root_dir%/config/routing.yml'
         strict_requirements: ~
     form:            ~
     csrf_protection: ~
@@ -18,7 +18,7 @@ framework:
     templating:
         engines: ['twig']
         #assets_version: SomeVersionScheme
-    default_locale:  "%locale%"
+    default_locale:  '%locale%'
     trusted_proxies: ~
     session:
         handler_id: ~
@@ -29,15 +29,15 @@ parameters:
 
 # Twig Configuration
 twig:
-    debug:            %kernel.debug%
-    strict_variables: %kernel.debug%
+    debug:            '%kernel.debug%'
+    strict_variables: '%kernel.debug%'
     globals:
-        max_chunk_size: %app.uploader_max_chunk_size%    
-        company_name: %app.company_name%
+        max_chunk_size: '%app.uploader_max_chunk_size%'
+        company_name: '%app.company_name%'
           
 # Assetic Configuration
 assetic:
-    debug:          %kernel.debug%
+    debug:          '%kernel.debug%'
     use_controller: false
     bundles:        
         - EnginewerkEmissionBundle
@@ -52,25 +52,25 @@ assetic:
 # Doctrine Configuration
 doctrine:
     dbal:
-        driver:   %database_driver%
-        host:     %database_host%
-        port:     %database_port%
-        dbname:   %database_name%
-        user:     %database_user%
-        password: %database_password%
+        driver:   '%database_driver%'
+        host:     '%database_host%'
+        port:     '%database_port%'
+        dbname:   '%database_name%'
+        user:     '%database_user%'
+        password: '%database_password%'
         charset:  UTF8
         server_version: 5.6
 
     orm:
-        auto_generate_proxy_classes: %kernel.debug%
+        auto_generate_proxy_classes: '%kernel.debug%'
         auto_mapping: true
 
 # Swiftmailer Configuration
 swiftmailer:
-    transport: %mailer_transport%
-    host:      %mailer_host%
-    username:  %mailer_user%
-    password:  %mailer_password%
+    transport: '%mailer_transport%'
+    host:      '%mailer_host%'
+    username:  '%mailer_user%'
+    password:  '%mailer_password%'
     spool:     { type: memory }
 
 
@@ -94,7 +94,7 @@ knp_gaufrette:
     adapters:
         data_local:
             local:
-                directory:  %storage_root_directory%/local_fs/binary/
+                directory:  '%storage_root_directory%/local_fs/binary/'
     filesystems:
         binary_storage:
             adapter:        data_local

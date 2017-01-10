@@ -1,8 +1,8 @@
 services:
     enginewerk_bbs:
         class:     Enginewerk\FSBundle\Storage\StorageService
-        arguments: ["@doctrine", "@egw_fs_local_storage"]
+        arguments: ['@doctrine', '@egw_fs_local_storage']
         
     egw_fs_local_storage:
         class:     Enginewerk\FSBundle\Storage\LocalStorage
-        arguments: ["%storage_root_directory%/local_fs/binary/"]
+        arguments: ['%storage_root_directory%/local_fs/binary/']

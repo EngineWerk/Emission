@@ -68,9 +68,9 @@ class AppResponse
      */
     public function response()
     {
-        ($this->message) ? $this->prepareResponseMessage() : '';
-        ($this->data) ? $this->prepareResponseData() : '';
-        ($this->status) ? $this->prepareResponseStatus() : '';
+        $this->message ? $this->prepareResponseMessage() : '';
+        $this->data ? $this->prepareResponseData() : '';
+        $this->status ? $this->prepareResponseStatus() : '';
 
         return $this;
     }

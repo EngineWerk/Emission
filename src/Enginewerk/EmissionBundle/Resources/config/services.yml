@@ -11,4 +11,4 @@ services:
 
     emission_file_storage:
         class:     Enginewerk\EmissionBundle\Storage\FileStorage
-        arguments: ["@doctrine", "@enginewerk_bbs"]
+        arguments: ['@doctrine', '@enginewerk_bbs']

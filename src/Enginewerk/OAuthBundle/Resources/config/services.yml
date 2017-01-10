@@ -4,7 +4,7 @@ services:
 
     hwi_oauth.user.provider.fosub_bridge:
         class: HWI\Bundle\OAuthBundle\Security\Core\User\FOSUBUserProvider
-        arguments: [@fos_user.user_manager, {google: google}]
+        arguments: ['@fos_user.user_manager', {google: google}]
 
 hwi_oauth:
    firewall_name: secured_area
@@ -16,8 +16,8 @@ hwi_oauth:
    resource_owners:
        google:
            type:                google
-           client_id:           %google_openid_client_id%
-           client_secret:       %google_openid_client_secret%
-           scope:               "https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile"
+           client_id:           '%google_openid_client_id%'
+           client_secret:       '%google_openid_client_secret%'
+           scope:               'https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile'
    connect:
        account_connector: hwi_oauth.user.provider.fosub_bridge
