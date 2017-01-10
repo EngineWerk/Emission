@@ -5,8 +5,6 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * FileBlock.
- *
  * @ORM\Entity
  * @ORM\HasLifecycleCallbacks
  * @ORM\Table(name="file_block")

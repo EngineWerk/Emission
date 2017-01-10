@@ -21,17 +21,11 @@ framework:
     default_locale:  "%locale%"
     trusted_proxies: ~
     session:
-        handler_id:     session.handler.pdo
+        handler_id: ~
         name: EMSNSID
     fragments:       ~
     
 parameters:
-    pdo.db_options:
-        db_table:    sessions
-        db_id_col:   sess_id
-        db_data_col: sess_data
-        db_time_col: sess_time
-        db_lifetime_col: sess_lifetime
 
 # Twig Configuration
 twig:
