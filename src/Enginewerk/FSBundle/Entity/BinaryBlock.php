@@ -1,48 +1,30 @@
 <?php
 namespace Enginewerk\FSBundle\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
-
-/**
- * BinaryBlock.
- *
- * @ORM\Table(name="binary_block")
- * @ORM\Entity(repositoryClass="Enginewerk\FSBundle\Entity\BinaryBlockRepository")
- */
 class BinaryBlock
 {
     /**
      * @var int
-     *
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
 
     /**
-     * @var string Uniform Resource Name - Name / Key / Pathname / URL
-     *
-     * @ORM\Column(name="urn", type="string", length=255)
+     * @var string
      */
-    protected $urn;
+    private $urn;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="checksum", type="string", length=40)
      */
     private $checksum;
 
     /**
      * @var int
-     *
-     * @ORM\Column(name="size", type="integer")
      */
     private $size;
 
     /**
-     * Get id.
+     * Get id
      *
      * @return int
      */
@@ -52,11 +34,11 @@ class BinaryBlock
     }
 
     /**
-     * Set urn.
+     * Set urn
      *
-     * @param  string     $urn
+     * @param string $urn
      *
-     * @return BinryBlock
+     * @return BinaryBlock
      */
     public function setUrn($urn)
     {
@@ -66,7 +48,7 @@ class BinaryBlock
     }
 
     /**
-     * Get urn.
+     * Get urn
      *
      * @return string
      */
@@ -76,9 +58,9 @@ class BinaryBlock
     }
 
     /**
-     * Set checksum.
+     * Set checksum
      *
-     * @param  string      $checksum
+     * @param string $checksum
      *
      * @return BinaryBlock
      */
@@ -90,7 +72,7 @@ class BinaryBlock
     }
 
     /**
-     * Get checksum.
+     * Get checksum
      *
      * @return string
      */
@@ -100,9 +82,9 @@ class BinaryBlock
     }
 
     /**
-     * Set size.
+     * Set size
      *
-     * @param  int     $size
+     * @param int $size
      *
      * @return BinaryBlock
      */
@@ -114,7 +96,7 @@ class BinaryBlock
     }
 
     /**
-     * Get size.
+     * Get size
      *
      * @return int
      */

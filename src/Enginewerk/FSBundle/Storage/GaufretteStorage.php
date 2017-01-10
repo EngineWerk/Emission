@@ -1,14 +1,9 @@
 <?php
 namespace Enginewerk\FSBundle\Storage;
 
-use Enginewerk\FSBundle\Storage\GaufretteFile as File;
 use Gaufrette\Filesystem;
+use Symfony\Component\HttpFoundation\File\File;
 
-/**
- * Description of GaufretteStorage.
- *
- * @author Paweł Czyżewski <pawel.czyzewski@enginewerk.com>
- */
 class GaufretteStorage implements StorageInterface
 {
     /** @var Filesystem  */
@@ -30,25 +25,22 @@ class GaufretteStorage implements StorageInterface
     }
 
     /**
-     * @param string $key
-     * @param File   $uploadedFile
-     *
-     * @return int
+     * @inheritdoc
      */
-    public function put($key, $uploadedFile)
+    public function put($key, File $uploadedFile)
     {
         $pathname = $this->getPathName($key);
-        $size = $this
-                ->filesystem
-                ->write($pathname, file_get_contents($uploadedFile->getPathname()));
+        $size = $this->filesystem
+            ->write(
+                $pathname,
+                file_get_contents($uploadedFile->getPathname())
+            );
 
         return $size;
     }
 
     /**
-     * @param string $key
-     *
-     * @return File
+     * @inheritdoc
      */
     public function get($key)
     {
@@ -59,16 +51,13 @@ class GaufretteStorage implements StorageInterface
     }
 
     /**
-     * @param  string    $key
-     *
-     * @return bool|void
+     * @inheritdoc
      */
     public function delete($key)
     {
         $pathname = $this->getPathName($key);
-        $this
-                ->filesystem
-                ->delete($pathname);
+        $this->filesystem
+            ->delete($pathname);
     }
 
     /**

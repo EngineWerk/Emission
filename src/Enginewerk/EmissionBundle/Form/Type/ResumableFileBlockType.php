@@ -5,13 +5,12 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
-/**
- * Description of ResumableFileBlockType.
- *
- * @author Paweł Czyżewski <pawel.czyzewski@enginewerk.com>
- */
 class ResumableFileBlockType extends AbstractType
 {
+    /**
+     * @param FormBuilderInterface $builder
+     * @param array $options
+     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add('resumableCurrentStartByte', 'text', [
@@ -36,6 +35,9 @@ class ResumableFileBlockType extends AbstractType
         $builder->add('_tokenFile', 'text', ['mapped' => false]);
     }
 
+    /**
+     * @param OptionsResolverInterface $resolver
+     */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults([

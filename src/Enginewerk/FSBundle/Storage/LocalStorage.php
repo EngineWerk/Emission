@@ -1,72 +1,65 @@
 <?php
 namespace Enginewerk\FSBundle\Storage;
 
-use RuntimeException;
+use Enginewerk\FSBundle\Storage\Exception\FileNotFoundException;
+use Enginewerk\FSBundle\Storage\Exception\SystemStorageException;
+use Symfony\Component\HttpFoundation\File\File;
 
-/**
- * Description of LocalStorage
- *
- * @author Paweł Czyżewski <pawel.czyzewski@enginewerk.com>
- */
 class LocalStorage implements StorageInterface
 {
+    /** @var  string */
+    private $storageRootDirectory;
+
+    /**
+     * @param string $storageRootDirectory
+     */
     public function __construct($storageRootDirectory)
     {
         $this->storageRootDirectory = $storageRootDirectory;
     }
 
     /**
-     * Stores File under given key
-     *
-     * @param  type                                        $key
-     * @param  \Symfony\Component\HttpFoundation\File\File $uploadedFile
-     *
-     * @return int
+     * @inheritdoc
      */
-    public function put($key, $uploadedFile)
+    public function put($key, File $uploadedFile)
     {
         $size = $uploadedFile->getSize();
         $path = $this->getStorageRootDirectory() . DIRECTORY_SEPARATOR . $this->getDeepDirFromFileName($key);
+
         $uploadedFile->move($path, $key);
 
         return $size;
     }
 
     /**
-     * Returns File object for given key
-     *
-     * @param string $key
-     *
-     * @return \Enginewerk\FSBundle\Storage\File
+     * @inheritdoc
      */
     public function get($key)
     {
         $pathname = $this->pathname($key);
 
-        $file = new File($pathname);
-
-        return $file;
+        return new File($pathname);
     }
 
     /**
-     * Deletes file with given key
-     *
-     * @param string $key
-     *
-     * @throws \RuntimeException
-     *
-     * @return bool|void
+     * @inheritdoc
      */
     public function delete($key)
     {
         $pathname = $this->pathname($key);
 
         if (file_exists($pathname) === false) {
-            throw new RuntimeException(sprintf('File with key "%s" not found under path "%s".', $key, $pathname));
+            throw new FileNotFoundException(sprintf('File with key "%s" not found under path "%s".', $key, $pathname));
         }
 
         if (unlink($pathname) === false) {
-            throw new RuntimeException(sprintf('Can`t delete file with key "%s" from path "%s"', $key, $pathname));
+            throw new SystemStorageException(
+                sprintf(
+                    'Can`t delete file with key "%s" from path "%s" using "unlink" method.',
+                    $key,
+                    $pathname
+                )
+            );
         }
     }
 

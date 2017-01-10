@@ -1,173 +1,155 @@
 <?php
 namespace Enginewerk\EmissionBundle\Storage;
 
-use Doctrine\Bundle\DoctrineBundle\Registry;
+use Enginewerk\EmissionBundle\Entity\File;
+use Enginewerk\EmissionBundle\Entity\FileBlock;
 use Enginewerk\EmissionBundle\FileResponse\ChunkedFile;
-use RuntimeException;
+use Enginewerk\EmissionBundle\Repository\FileBlockRepositoryInterface;
+use Enginewerk\EmissionBundle\Repository\FileRepositoryInterface;
+use Enginewerk\FSBundle\Service\StorageService;
 
-/**
- * Description of FileStorage.
- *
- * @author Paweł Czyżewski <pawel.czyzewski@enginewerk.com>
- */
-class FileStorage
+final class FileStorage
 {
+    /** @var  FileRepositoryInterface */
+    private $fileRepository;
+
+    /** @var  FileBlockRepositoryInterface */
+    private $fileBlockRepository;
+
+    /** @var  StorageService */
+    private $binaryBlockStorage;
+
     /**
-     * @var \Doctrine\Bundle\DoctrineBundle\Registry
+     * @param FileRepositoryInterface $fileRepository
+     * @param FileBlockRepositoryInterface $fileBlockRepository
+     * @param StorageService $binaryBlockStorage
      */
-    protected $doctrine;
-
-    protected $binaryObjectStorage;
-
-    public function __construct(Registry $doctrine, $binaryObjectStorage)
-    {
-        $this->doctrine = $doctrine;
-        $this->binaryObjectStorage = $binaryObjectStorage;
+    public function __construct(
+        FileRepositoryInterface $fileRepository,
+        FileBlockRepositoryInterface $fileBlockRepository,
+        StorageService $binaryBlockStorage
+    ) {
+        $this->fileRepository = $fileRepository;
+        $this->fileBlockRepository = $fileBlockRepository;
+        $this->binaryBlockStorage = $binaryBlockStorage;
     }
 
-    public function delete($key)
+    /**
+     * @param string $shortFileIdentifier
+     */
+    public function delete($shortFileIdentifier)
     {
-        $file = $this->get($key);
+        $file = $this->getByShortFileIdentifier($shortFileIdentifier);
 
-        $fileBlockRepository = $this
-                ->getDoctrine()
-                ->getRepository('EnginewerkEmissionBundle:FileBlock');
-
-        $binaryBlocksToRemove = [];
-
+        /** @var FileBlock $fileBlock */
         foreach ($file->getFileBlocks() as $fileBlock) {
-            $usedBlocks = $fileBlockRepository->getUsedBlocksNumber($fileBlock->getFileHash());
-            if (null === $usedBlocks || 1 == $usedBlocks) {
-                $binaryBlocksToRemove[] = $fileBlock->getFileHash();
+            $usedBlocks = $this->fileBlockRepository->getUsedBlocksNumber($fileBlock->getFileHash());
+
+            $binaryBlockKey = $fileBlock->getFileHash();
+            $this->fileBlockRepository->remove($fileBlock);
+
+            if (null === $usedBlocks || 1 === $usedBlocks) {
+                $this->binaryBlockStorage->delete($binaryBlockKey);
             }
         }
 
-        $em = $this
-                ->getDoctrine()
-                ->getManager();
-
-        $em->getConnection()->beginTransaction();
-        $em->remove($file);
-
-        try {
-            foreach ($binaryBlocksToRemove as $blockKey) {
-                $this->binaryObjectStorage->delete($blockKey);
-            }
-
-            $em->flush();
-            $em->getConnection()->commit();
-        } catch (RuntimeException $e) {
-            $em->getConnection()->rollback();
-            $em->close();
-            throw $e;
-        }
+        $this->fileRepository->remove($file);
     }
 
     /**
-     * @param $key
+     * @param string $shortFileIdentifier
      *
-     * @throws \Enginewerk\EmissionBundle\Storage\FileNotFoundException
+     * @throws FileNotFoundException
      *
-     * @return \Enginewerk\EmissionBundle\Entity\File
+     * @return File
+     *
      */
-    public function get($key)
+    public function getByShortFileIdentifier($shortFileIdentifier)
     {
-        $file = $this->find($key);
+        $file = $this->findByShortIdentifier($shortFileIdentifier);
 
-        if ($file) {
+        if (null !== $file) {
             return $file;
         } else {
-            throw new FileNotFoundException(sprintf('File with key "%s" not found.', $key));
+            throw new FileNotFoundException(sprintf('File with key "%s" not found.', $shortFileIdentifier));
         }
     }
 
     /**
-     * @param string $key
+     * @param string $fileShortIdentifier
      *
      * @return ChunkedFile
      */
-    public function getFileForDownload($key)
+    public function getFileForDownload($fileShortIdentifier)
     {
-        $file = $this->get($key);
+        $file = $this->findByShortIdentifier($fileShortIdentifier);
 
-        $fileBlocks = $this
-                ->getDoctrine()
-                ->getRepository('EnginewerkEmissionBundle:FileBlock')
-                ->findBy(['fileId' => $file->getId()], ['rangeStart' => 'ASC']);
+        $fileBlocks = $this->fileBlockRepository->findByFileId($file->getId());
 
-        $blocks = [];
+        $binaryBlocks = [];
         foreach ($fileBlocks as $fileBlock) {
-            $block = $this
-                    ->binaryObjectStorage
-                    ->get($fileBlock->getFileHash());
-            $blocks[] = $block;
+            $binaryBlocks[] = $this->binaryBlockStorage->get($fileBlock->getFileHash());
         }
 
-        $responseFile = new ChunkedFile();
-        $responseFile->setChunks($blocks);
-
-        return $responseFile;
-    }
-
-    public function find($key)
-    {
-        return $this
-                ->getDoctrine()
-                ->getRepository('EnginewerkEmissionBundle:File')
-                ->findOneBy(['fileId' => $key]);
-    }
-
-    public function findAll()
-    {
-        return $this
-                ->getDoctrine()
-                ->getRepository('EnginewerkEmissionBundle:File')
-                ->getFiles();
-    }
-
-    public function findCreatedAfter($dateTime)
-    {
-    }
-
-    public function replace($replace, $replacement)
-    {
-        $replaceFile = $this->get($replace);
-        /* @var $replaceFile \Enginewerk\EmissionBundle\Entity\File */
-
-        $replacementFile = $this->get($replacement);
-        /* @var $replacementFile \Enginewerk\EmissionBundle\Entity\File */
-
-        if ($replaceFile->getUploadedBy() == $replacementFile->getUploadedBy()) {
-            $em = $this
-                    ->getDoctrine()
-                    ->getManager();
-
-            $replacementFile->setFileId($replaceFile->getFileId());
-
-            $em->remove($replaceFile);
-            $this->binaryObjectStorage->delete($replace);
-            $em->flush();
-        } else {
-            throw new \Exception(sprintf('Only owner can replace file.'));
-        }
-    }
-
-    public function alterExpirationDate($key, $expirationDate)
-    {
-        $file = $this->get($key);
-        $file->setExpirationDate($expirationDate);
-
-        $this
-            ->getDoctrine()
-            ->getManager()
-            ->flush();
+        return new ChunkedFile($binaryBlocks);
     }
 
     /**
-     * @return \Doctrine\Bundle\DoctrineBundle\Registry
+     * @param string $identifier
+     *
+     * @throws \RuntimeException
+     *
+     * @return File|null
+     *
      */
-    public function getDoctrine()
+    public function findByShortIdentifier($identifier)
     {
-        return $this->doctrine;
+        if (mb_strlen($identifier) === 0) {
+            throw new \RuntimeException('File short identifier cannot be empty');
+        }
+
+        return $this->fileRepository->findOneByShortIdentifier($identifier);
+    }
+
+    /**
+     * @param string $replace
+     * @param string $replacement
+     *
+     * @throws \Exception
+     */
+    public function replace($replace, $replacement)
+    {
+        $replaceFile = $this->getByShortFileIdentifier($replace);
+        /* @var $replaceFile \Enginewerk\EmissionBundle\Entity\File */
+
+        $replacementFile = $this->getByShortFileIdentifier($replacement);
+        /* @var $replacementFile \Enginewerk\EmissionBundle\Entity\File */
+
+        if ($replaceFile->getUser()->getId() === $replacementFile->getUser()->getId()) {
+            $replacementFile->setFileId($replaceFile->getFileId());
+            $this->fileRepository->update($replacementFile);
+
+            $replaceFileKey = $replaceFile->getFileHash();
+            $this->binaryBlockStorage->delete($replaceFileKey);
+            $this->fileRepository->remove($replaceFile);
+        } else {
+            throw new UserPermissionException(sprintf(
+                'Only owner "%s" can replace file.',
+                $replaceFile->getUser()->getUsername()
+            ));
+        }
+    }
+
+    /**
+     * @param string $shortFileIdentifier
+     * @param \DateTimeInterface $expirationDate
+     */
+    public function alterExpirationDate($shortFileIdentifier, \DateTimeInterface $expirationDate)
+    {
+        $file = $this->getByShortFileIdentifier($shortFileIdentifier);
+
+        $file->setExpirationDate(new \DateTime($expirationDate->getTimestamp()));
+
+        $this->fileRepository->update($file);
     }
 }

@@ -1,5 +1,5 @@
 <?php
-namespace Application\Migrations;
+namespace Enginewerk\MigrationBundle\Migrations;
 
 use Doctrine\DBAL\Migrations\AbstractMigration;
 use Doctrine\DBAL\Schema\Schema;

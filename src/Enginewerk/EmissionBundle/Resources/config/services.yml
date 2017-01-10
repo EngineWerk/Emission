@@ -1,14 +1,40 @@
 services:
+    enginewerk_emission.service.file_read_service:
+        public: true
+        class: Enginewerk\EmissionBundle\Service\FileReadService
+        arguments: ['@enginewerk_emission.repository.file_repository']
+
+    enginewerk_emission.repository.file_block_repository:
+        class: Enginewerk\EmissionBundle\Repository\Doctrine\FileBlockRepository
+        public: true # change to false
+        factory:   ['@doctrine.orm.default_entity_manager', getRepository]
+        arguments: [Enginewerk\EmissionBundle\Entity\FileBlock]
+
+    enginewerk_emission.repository.file_repository:
+        class: Enginewerk\EmissionBundle\Repository\Doctrine\FileRepository
+        public: false
+        factory:   ['@doctrine.orm.default_entity_manager', getRepository]
+        arguments: [Enginewerk\EmissionBundle\Entity\File]
+
     enginewerk.twig.enginewerk_extension:
         class: Enginewerk\EmissionBundle\Twig\EmissionExtension
         tags:
             - { name: twig.extension }
 
-    enginewerk_emission.file_block:
+    enginewerk_emission.event_listener.file_block_subscriber:
         class: Enginewerk\EmissionBundle\EventListener\FileBlockSubscriber
         tags:
             - { name: doctrine.event_subscriber, connection: default }
 
-    emission_file_storage:
-        class:     Enginewerk\EmissionBundle\Storage\FileStorage
-        arguments: ['@doctrine', '@enginewerk_bbs']
+    enginewerk_emission.event_listener.file_subscriber:
+        class: Enginewerk\EmissionBundle\EventListener\FileSubscriber
+        tags:
+            - { name: doctrine.event_subscriber, connection: default }
+
+    enginewerk_emission.storage.file_storage:
+        public: true
+        class: Enginewerk\EmissionBundle\Storage\FileStorage
+        arguments:
+            - '@enginewerk_emission.repository.file_repository'
+            - '@enginewerk_emission.repository.file_block_repository'
+            - '@enginewerk_fs.service.storage_service'

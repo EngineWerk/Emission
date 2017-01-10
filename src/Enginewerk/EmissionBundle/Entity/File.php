@@ -1,136 +1,88 @@
 <?php
 namespace Enginewerk\EmissionBundle\Entity;
 
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\ORM\Mapping as ORM;
 use Enginewerk\EmissionBundle\Generator\Hash;
-use Enginewerk\UserBundle\Entity\User;
-use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ORM\Entity
- * @ORM\HasLifecycleCallbacks
- * @ORM\Table(name="file")
- * @ORM\Entity(repositoryClass="Enginewerk\EmissionBundle\Entity\FileRepository")
+ * File
  */
 class File
 {
     /**
-     * @ORM\Id
-     * @ORM\Column(name="id", type="integer", options={"unsigned"=true})
-     * @ORM\GeneratedValue(strategy="AUTO")
-     *
      * @var int
      */
-    protected $id;
+    private $id;
 
     /**
-     * File Identification (public download name)
-     * Shortest possible name, for public identicifation [a-zA-Z0-9]
-     * #BUG DB must be case sensitive.
-     *
-     * @ORM\Column(type="string", length=16)
-     *
      * @var string
      */
-    protected $fileId;
+    private $fileId;
 
     /**
-     * Name for storage file name.
-     * Lower characters, and numbers [a-z0-9].
-     *
-     * @ORM\Column(type="string", length=41)
-     * @Assert\Length(min="41", max="41")
-     *
      * @var string
      */
-    protected $fileHash;
+    private $fileHash;
 
     /**
-     * File owner.
-     *
-     * @ORM\ManyToOne(targetEntity="\Enginewerk\UserBundle\Entity\User", inversedBy="files", cascade={"persist", "refresh"})
-     * @ORM\JoinColumn(name="user_id", referencedColumnName="id", onDelete="cascade")
-     */
-    protected $user;
-
-    /**
-     * Checksum of file declared by user.
-     * Lower characters, and numbers [a-z0-9].
-     *
-     * @ORM\Column(type="string", length=32)
-     * @Assert\Length(max="32")
-     *
      * @var string
      */
-    protected $checksum;
+    private $checksum;
 
     /**
-     * Name for download name.
-     *
-     * @ORM\Column(type="string", length=255)
-     *
      * @var string
      */
-    protected $name;
+    private $name;
 
     /**
-     * File MIME type.
-     *
-     * @ORM\Column(type="string", length=128)
-     *
      * @var string
      */
-    protected $type;
+    private $type;
 
     /**
-     * @ORM\Column(name="size", type="bigint", options={"unsigned"=true})
-     * @Assert\GreaterThan(value="1")
-     * @Assert\Type(type="numeric")
-     */
-    protected $size;
-
-    /**
-     * @ORM\Column(type="datetime", nullable=true)
-     *
-     * @var \DateTime
-     */
-    protected $expirationDate;
-
-    /**
-     * @ORM\Column(type="datetime")
-     *
-     * @var \DateTime
-     */
-    protected $createdAt;
-
-    /**
-     * @ORM\Column(type="datetime")
-     *
-     * @var \DateTime
-     */
-    protected $updatedAt;
-
-    /**
-     * @ORM\OneToMany(targetEntity="FileBlock", mappedBy="file", cascade={"remove"})
-     */
-    protected $fileBlocks;
-
-    /**
-     * @ORM\Column(name="complete", type="boolean", options={"default" = false})
-     *
      * @var int
      */
-    protected $complete = false;
+    private $size;
 
+    /**
+     * @var \DateTime
+     */
+    private $expirationDate;
+
+    /**
+     * @var \DateTime
+     */
+    private $createdAt;
+
+    /**
+     * @var \DateTime
+     */
+    private $updatedAt;
+
+    /**
+     * @var bool
+     */
+    private $complete;
+
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $fileBlocks;
+
+    /**
+     * @var \Enginewerk\UserBundle\Entity\User
+     */
+    private $user;
+
+    /**
+     * Constructor
+     */
     public function __construct()
     {
-        $this->fileBlocks = new ArrayCollection();
+        $this->fileBlocks = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**
-     * Get id.
-     * test.
+     * Get id
      *
      * @return int
      */
@@ -140,7 +92,7 @@ class File
     }
 
     /**
-     * Set fileId.
+     * Set fileId
      *
      * @param string $fileId
      *
@@ -154,7 +106,7 @@ class File
     }
 
     /**
-     * Get fileId.
+     * Get fileId
      *
      * @return string
      */
@@ -164,7 +116,7 @@ class File
     }
 
     /**
-     * Set fileHash.
+     * Set fileHash
      *
      * @param string $fileHash
      *
@@ -178,7 +130,7 @@ class File
     }
 
     /**
-     * Get fileHash.
+     * Get fileHash
      *
      * @return string
      */
@@ -188,7 +140,31 @@ class File
     }
 
     /**
-     * Set name.
+     * Set checksum
+     *
+     * @param string $checksum
+     *
+     * @return File
+     */
+    public function setChecksum($checksum)
+    {
+        $this->checksum = $checksum;
+
+        return $this;
+    }
+
+    /**
+     * Get checksum
+     *
+     * @return string
+     */
+    public function getChecksum()
+    {
+        return $this->checksum;
+    }
+
+    /**
+     * Set name
      *
      * @param string $name
      *
@@ -202,7 +178,7 @@ class File
     }
 
     /**
-     * Get name.
+     * Get name
      *
      * @return string
      */
@@ -212,103 +188,7 @@ class File
     }
 
     /**
-     * Set size.
-     *
-     * @param int $size
-     *
-     * @return File
-     */
-    public function setSize($size)
-    {
-        $this->size = $size;
-
-        return $this;
-    }
-
-    /**
-     * Get size.
-     *
-     * @return int
-     */
-    public function getSize()
-    {
-        return $this->size;
-    }
-
-    /**
-     * Set expirationDate.
-     *
-     * @param \DateTime $expirationDate
-     *
-     * @return File
-     */
-    public function setExpirationDate(\DateTime $expirationDate = null)
-    {
-        $this->expirationDate = $expirationDate;
-
-        return $this;
-    }
-
-    /**
-     * Get expirationDate.
-     *
-     * @return \DateTime
-     */
-    public function getExpirationDate()
-    {
-        return $this->expirationDate;
-    }
-
-    /**
-     * Set createdAt.
-     *
-     * @param \DateTime $createdAt
-     *
-     * @return File
-     */
-    public function setCreatedAt(\DateTime $createdAt)
-    {
-        $this->createdAt = $createdAt;
-
-        return $this;
-    }
-
-    /**
-     * Get createdAt.
-     *
-     * @return \DateTime
-     */
-    public function getCreatedAt()
-    {
-        return $this->createdAt;
-    }
-
-    /**
-     * Set updatedAt.
-     *
-     * @param \DateTime $updatedAt
-     *
-     * @return File
-     */
-    public function setUpdatedAt(\DateTime $updatedAt)
-    {
-        $this->updatedAt = $updatedAt;
-
-        return $this;
-    }
-
-    /**
-     * Get updatedAt.
-     *
-     * @return \DateTime
-     */
-    public function getUpdatedAt()
-    {
-        return $this->updatedAt;
-    }
-
-    /**
-     * Set type.
+     * Set type
      *
      * @param string $type
      *
@@ -322,7 +202,7 @@ class File
     }
 
     /**
-     * Get type.
+     * Get type
      *
      * @return string
      */
@@ -332,9 +212,183 @@ class File
     }
 
     /**
-     * @ORM\PrePersist()
-     * @ORM\PreUpdate()
+     * Set size
+     *
+     * @param int $size
+     *
+     * @return File
      */
+    public function setSize($size)
+    {
+        $this->size = $size;
+
+        return $this;
+    }
+
+    /**
+     * Get size
+     *
+     * @return int
+     */
+    public function getSize()
+    {
+        return $this->size;
+    }
+
+    /**
+     * Set expirationDate
+     *
+     * @param \DateTime $expirationDate
+     *
+     * @return File
+     */
+    public function setExpirationDate($expirationDate)
+    {
+        $this->expirationDate = $expirationDate;
+
+        return $this;
+    }
+
+    /**
+     * Get expirationDate
+     *
+     * @return \DateTime
+     */
+    public function getExpirationDate()
+    {
+        return $this->expirationDate;
+    }
+
+    /**
+     * Set createdAt
+     *
+     * @param \DateTime $createdAt
+     *
+     * @return File
+     */
+    public function setCreatedAt($createdAt)
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    /**
+     * Get createdAt
+     *
+     * @return \DateTime
+     */
+    public function getCreatedAt()
+    {
+        return $this->createdAt;
+    }
+
+    /**
+     * Set updatedAt
+     *
+     * @param \DateTime $updatedAt
+     *
+     * @return File
+     */
+    public function setUpdatedAt($updatedAt)
+    {
+        $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    /**
+     * Get updatedAt
+     *
+     * @return \DateTime
+     */
+    public function getUpdatedAt()
+    {
+        return $this->updatedAt;
+    }
+
+    /**
+     * Set complete
+     *
+     * @param bool $complete
+     *
+     * @return File
+     */
+    public function setComplete($complete)
+    {
+        $this->complete = $complete;
+
+        return $this;
+    }
+
+    /**
+     * Get complete
+     *
+     * @return bool
+     */
+    public function getComplete()
+    {
+        return $this->complete;
+    }
+
+    /**
+     * Add fileBlock
+     *
+     * @param \Enginewerk\EmissionBundle\Entity\FileBlock $fileBlock
+     *
+     * @return File
+     */
+    public function addFileBlock(\Enginewerk\EmissionBundle\Entity\FileBlock $fileBlock)
+    {
+        $this->fileBlocks[] = $fileBlock;
+
+        return $this;
+    }
+
+    /**
+     * Remove fileBlock
+     *
+     * @param \Enginewerk\EmissionBundle\Entity\FileBlock $fileBlock
+     */
+    public function removeFileBlock(\Enginewerk\EmissionBundle\Entity\FileBlock $fileBlock)
+    {
+        $this->fileBlocks->removeElement($fileBlock);
+    }
+
+    /**
+     * Get fileBlocks
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getFileBlocks()
+    {
+        return $this->fileBlocks;
+    }
+
+    /**
+     * Set user
+     *
+     * @param \Enginewerk\UserBundle\Entity\User $user
+     *
+     * @return File
+     */
+    public function setUser(\Enginewerk\UserBundle\Entity\User $user = null)
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * Get user
+     *
+     * @return \Enginewerk\UserBundle\Entity\User
+     */
+    public function getUser()
+    {
+        return $this->user;
+    }
+
     public function preChange()
     {
         $currentTime = new \DateTime();
@@ -352,111 +406,5 @@ class File
         }
 
         $this->setUpdatedAt($currentTime);
-    }
-
-    /**
-     * Add fileBlocks.
-     *
-     * @param \Enginewerk\EmissionBundle\Entity\FileBlock $fileBlocks
-     *
-     * @return File
-     */
-    public function addFileBlock(\Enginewerk\EmissionBundle\Entity\FileBlock $fileBlocks)
-    {
-        $this->fileBlocks[] = $fileBlocks;
-
-        return $this;
-    }
-
-    /**
-     * Remove fileBlocks.
-     *
-     * @param \Enginewerk\EmissionBundle\Entity\FileBlock $fileBlocks
-     */
-    public function removeFileBlock(\Enginewerk\EmissionBundle\Entity\FileBlock $fileBlocks)
-    {
-        $this->fileBlocks->removeElement($fileBlocks);
-    }
-
-    /**
-     * Get fileBlocks.
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getFileBlocks()
-    {
-        return $this->fileBlocks;
-    }
-
-    /**
-     * Set checksum.
-     *
-     * @param string $checksum
-     *
-     * @return File
-     */
-    public function setChecksum($checksum)
-    {
-        $this->checksum = $checksum;
-
-        return $this;
-    }
-
-    /**
-     * Get checksum.
-     *
-     * @return string
-     */
-    public function getChecksum()
-    {
-        return $this->checksum;
-    }
-
-    /**
-     * Set user.
-     *
-     * @param \Enginewerk\EmissionBundle\Entity\User $user
-     *
-     * @return File
-     */
-    public function setUser(\Enginewerk\UserBundle\Entity\User $user = null)
-    {
-        $this->user = $user;
-
-        return $this;
-    }
-
-    /**
-     * Get user.
-     *
-     * @return \Enginewerk\EmissionBundle\Entity\User
-     */
-    public function getUser()
-    {
-        return $this->user;
-    }
-
-    /**
-     * Set complete.
-     *
-     * @param bool $complete
-     *
-     * @return File
-     */
-    public function setComplete($complete)
-    {
-        $this->complete = $complete;
-
-        return $this;
-    }
-
-    /**
-     * Get complete.
-     *
-     * @return bool
-     */
-    public function getComplete()
-    {
-        return $this->complete;
     }
 }

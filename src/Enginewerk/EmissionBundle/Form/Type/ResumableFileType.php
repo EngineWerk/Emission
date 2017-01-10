@@ -5,11 +5,6 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
-/**
- * Description of ResumableFileType.
- *
- * @author Paweł Czyżewski <pawel.czyzewski@enginewerk.com>
- */
 class ResumableFileType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
