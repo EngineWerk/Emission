@@ -99,7 +99,7 @@ class DefaultController extends Controller
         $appResponse->success();
         $appResponse->data($this->renderView('EnginewerkEmissionBundle:Default:showFileContent.html.twig', ['File' => $file]));
 
-        return new JsonResponse($appResponse->response(), 200);
+        return new JsonResponse($appResponse->toArray(), 200);
     }
 
     /**
@@ -166,7 +166,7 @@ class DefaultController extends Controller
             $this->get('logger')->error(sprintf('Can`t delete File #%s. %s', $request->get('file'), $ex->getMessage()));
         }
 
-        return new JsonResponse($appResponse->response(), 200);
+        return new JsonResponse($appResponse->toArray(), 200);
     }
 
     /**
@@ -203,7 +203,7 @@ class DefaultController extends Controller
             }
         }
 
-        return new JsonResponse($appResponse->response(), 200);
+        return new JsonResponse($appResponse->toArray(), 200);
     }
 
     /**
@@ -225,7 +225,7 @@ class DefaultController extends Controller
             $appResponse->error(sprintf('Can`t replace file.'));
         }
 
-        return new JsonResponse($appResponse->response());
+        return new JsonResponse($appResponse->toArray());
     }
 
     /**
@@ -245,6 +245,6 @@ class DefaultController extends Controller
         $appResponse->success();
         $appResponse->data($files);
 
-        return new JsonResponse($appResponse->response(), 200);
+        return new JsonResponse($appResponse->toArray(), 200);
     }
 }
