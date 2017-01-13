@@ -1,11 +1,6 @@
 <?php
 namespace Enginewerk\EmissionBundle\Generator;
 
-/**
- * Description of Hash Generator.
- *
- * @author Paweł Czyżewski <pawel.czyzewski@enginewerk.com>
- */
 class Hash
 {
     private static $feed = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
@@ -21,7 +16,7 @@ class Hash
      * @param  int       $length
      * @param  string    $charFeed
      *
-     * @throws Exception
+     * @throws \Exception
      *
      * @return string
      */

@@ -36,7 +36,7 @@ class ResumableController extends Controller
         if (!$file) {
             $appResponse->error('File "' . $request->get('resumableFilename') . '" not found');
 
-            return new JsonResponse($appResponse->response(), 306);
+            return new JsonResponse($appResponse->toArray(), 306);
         }
 
         // Find out if we have this FileBlock already
@@ -50,11 +50,11 @@ class ResumableController extends Controller
         if (!$fileBlock) {
             $appResponse->success('Block not found');
 
-            return new JsonResponse($appResponse->response(), 306);
+            return new JsonResponse($appResponse->toArray(), 306);
         } else {
             $appResponse->success('Block found');
 
-            return new JsonResponse($appResponse->response(), 200);
+            return new JsonResponse($appResponse->toArray(), 200);
         }
     }
 
@@ -95,7 +95,7 @@ class ResumableController extends Controller
                 $responseCode = 415;
                 $appResponse->error(var_export($fileForm->getErrorsAsString(), true));
 
-                return new JsonResponse($appResponse->response(), $responseCode);
+                return new JsonResponse($appResponse->toArray(), $responseCode);
             }
         }
 
@@ -170,6 +170,6 @@ class ResumableController extends Controller
         $appResponse->success();
         $appResponse->data($responseData);
 
-        return new JsonResponse($appResponse->response(), $responseCode);
+        return new JsonResponse($appResponse->toArray(), $responseCode);
     }
 }
