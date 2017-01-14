@@ -10,11 +10,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
-/**
- * ResumableController.
- *
- * @author Paweł Czyżewski <pawel.czyzewski@enginewerk.com>
- */
 class ResumableController extends Controller
 {
     /**

@@ -1,36 +1,39 @@
 <?php
 namespace Enginewerk\EmissionBundle\Storage;
 
-use Doctrine\Bundle\DoctrineBundle\Registry;
+use Enginewerk\EmissionBundle\Entity\File;
 use Enginewerk\EmissionBundle\FileResponse\ChunkedFile;
+use Enginewerk\FSBundle\Storage\StorageService;
 use RuntimeException;
+use Symfony\Bridge\Doctrine\RegistryInterface;
 
-/**
- * Description of FileStorage.
- *
- * @author Paweł Czyżewski <pawel.czyzewski@enginewerk.com>
- */
 class FileStorage
 {
-    /**
-     * @var \Doctrine\Bundle\DoctrineBundle\Registry
-     */
+    /** @var RegistryInterface */
     protected $doctrine;
 
+    /** @var  StorageService */
     protected $binaryObjectStorage;
 
-    public function __construct(Registry $doctrine, $binaryObjectStorage)
+    /**
+     * @param RegistryInterface $doctrine
+     * @param StorageService $binaryObjectStorage
+     */
+    public function __construct(RegistryInterface $doctrine, StorageService $binaryObjectStorage)
     {
         $this->doctrine = $doctrine;
         $this->binaryObjectStorage = $binaryObjectStorage;
     }
 
+    /**
+     * @param string $key
+     */
     public function delete($key)
     {
         $file = $this->get($key);
 
         $fileBlockRepository = $this
-                ->getDoctrine()
+                ->doctrine
                 ->getRepository('EnginewerkEmissionBundle:FileBlock');
 
         $binaryBlocksToRemove = [];
@@ -43,7 +46,7 @@ class FileStorage
         }
 
         $em = $this
-                ->getDoctrine()
+                ->doctrine
                 ->getManager();
 
         $em->getConnection()->beginTransaction();
@@ -64,13 +67,14 @@ class FileStorage
     }
 
     /**
-     * @param $key
+     * @param string $key
      *
-     * @throws \Enginewerk\EmissionBundle\Storage\FileNotFoundException
+     * @throws FileNotFoundException
      *
-     * @return \Enginewerk\EmissionBundle\Entity\File
+     * @return File|null
+     *
      */
-    public function get($key)
+    protected function get($key)
     {
         $file = $this->find($key);
 
@@ -91,7 +95,7 @@ class FileStorage
         $file = $this->get($key);
 
         $fileBlocks = $this
-                ->getDoctrine()
+                ->doctrine
                 ->getRepository('EnginewerkEmissionBundle:FileBlock')
                 ->findBy(['fileId' => $file->getId()], ['rangeStart' => 'ASC']);
 
@@ -109,18 +113,26 @@ class FileStorage
         return $responseFile;
     }
 
+    /**
+     * @param string $key
+     *
+     * @return \Enginewerk\EmissionBundle\Entity\File|null|object
+     */
     public function find($key)
     {
         return $this
-                ->getDoctrine()
+                ->doctrine
                 ->getRepository('EnginewerkEmissionBundle:File')
                 ->findOneBy(['fileId' => $key]);
     }
 
+    /**
+     * @return File[]
+     */
     public function findAll()
     {
         return $this
-                ->getDoctrine()
+                ->doctrine
                 ->getRepository('EnginewerkEmissionBundle:File')
                 ->getFiles();
     }
@@ -139,7 +151,7 @@ class FileStorage
 
         if ($replaceFile->getUploadedBy() == $replacementFile->getUploadedBy()) {
             $em = $this
-                    ->getDoctrine()
+                    ->doctrine
                     ->getManager();
 
             $replacementFile->setFileId($replaceFile->getFileId());
@@ -158,16 +170,8 @@ class FileStorage
         $file->setExpirationDate($expirationDate);
 
         $this
-            ->getDoctrine()
+            ->doctrine
             ->getManager()
             ->flush();
-    }
-
-    /**
-     * @return \Doctrine\Bundle\DoctrineBundle\Registry
-     */
-    public function getDoctrine()
-    {
-        return $this->doctrine;
     }
 }

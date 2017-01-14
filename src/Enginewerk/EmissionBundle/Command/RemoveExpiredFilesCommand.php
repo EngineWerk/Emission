@@ -5,11 +5,6 @@ use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-/**
- * Description of RemoveExpiredFilesCommand.
- *
- * @author Paweł Czyżewski <pawel.czyzewski@enginewerk.com>
- */
 class RemoveExpiredFilesCommand extends ContainerAwareCommand
 {
     protected function configure()

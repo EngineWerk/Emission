@@ -1,15 +1,16 @@
 <?php
 namespace Enginewerk\EmissionBundle\FileResponse;
 
-/**
- * Description of ChunkedFile.
- *
- * @author Paweł Czyżewski <pawel.czyzewski@enginewerk.com>
- */
 class ChunkedFile implements FileInterface
 {
+    /**
+     * @var array
+     */
     protected $fileChunks;
 
+    /**
+     * @inheritdoc
+     */
     public function read()
     {
         $this->checkIfFileIsReadable();
@@ -29,7 +30,7 @@ class ChunkedFile implements FileInterface
         }
     }
 
-    public function setChunks($chunks)
+    public function setChunks(array $chunks)
     {
         $this->fileChunks = $chunks;
     }
