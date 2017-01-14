@@ -11,12 +11,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\StreamedResponse;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-/**
- * DefaultController.
- *
- * @author Paweł Czyżewski <pawel.czyzewski@enginewerk.com>
- */
 class DefaultController extends Controller
 {
     /**
@@ -27,8 +23,8 @@ class DefaultController extends Controller
     public function indexAction()
     {
         $files = $this
-                ->get('emission_file_storage')
-                ->findAll();
+                ->get('enginewerk_emission.service.file_read_service')
+                ->findAllFiles();
 
         $fileBlockForm = $this->createForm(new ResumableFileBlockType());
         $fileForm = $this->createForm(new ResumableFileType());
@@ -50,7 +46,7 @@ class DefaultController extends Controller
             'FileForm' => $fileForm->createView(),
             'Capabilities' => $capabilities,
             'MaxUploadFileSize' => $maxUploadFileSize,
-                ];
+        ];
     }
 
     /**
@@ -58,18 +54,17 @@ class DefaultController extends Controller
      * @Method({"GET"})
      * @Template()
      *
-     * @param  Request                                                       $request
+     * @param  Request $request
      *
-     * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+     * @throws NotFoundHttpException
      *
      * @return array
      */
     public function showFileAction(Request $request)
     {
-        $efs = $this->get('emission_file_storage');
-        /* @var $efs \Enginewerk\EmissionBundle\Storage\FileStorage */
+        $efs = $this->get('enginewerk_emission.storage.file_storage');
 
-        if (null === ($file = $efs->find($request->get('file')))) {
+        if (null === ($file = $efs->findByShortIdentifier($request->get('file')))) {
             throw $this->createNotFoundException(sprintf('File #%s not found.', $request->get('file')));
         }
 
@@ -77,52 +72,61 @@ class DefaultController extends Controller
     }
 
     /**
-     * @Route("/fc/{file}", requirements={"file"}, name="show_file_content")
+     * @Route("/fc/{fileShortIdentifier}", requirements={"fileShortIdentifier"}, name="show_file_content")
      * @Method({"GET"})
      *
      * @param  Request                                                       $request
      *
-     * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+     * @throws NotFoundHttpException
      *
      * @return JsonResponse
      */
     public function showFileContentAction(Request $request)
     {
-        $efs = $this->get('emission_file_storage');
-        /* @var $efs \Enginewerk\EmissionBundle\Storage\FileStorage */
+        $efs = $this->get('enginewerk_emission.storage.file_storage');
 
-        if (null === ($file = $efs->find($request->get('file')))) {
-            throw $this->createNotFoundException(sprintf('File #%s not found.', $request->get('file')));
+        if (null === ($file = $efs->findByShortIdentifier($request->get('fileShortIdentifier')))) {
+            throw $this->createNotFoundException(sprintf('File #%s not found.', $request->get('fileShortIdentifier')));
         }
 
         $appResponse = new AppResponse();
         $appResponse->success();
-        $appResponse->data($this->renderView('EnginewerkEmissionBundle:Default:showFileContent.html.twig', ['File' => $file]));
+        $appResponse->data(
+            $this->renderView(
+                'EnginewerkEmissionBundle:Default:showFileContent.html.twig',
+                ['File' => $file]
+            )
+        );
 
         return new JsonResponse($appResponse->toArray(), 200);
     }
 
     /**
-     * @Route("/d/{file}", requirements={"file"}, name="download_file", defaults={"dl" = 1})
-     * @Route("/o/{file}", requirements={"file"}, name="open_file")
+     * @Route("/d/{fileShortIdentifier}", requirements={"fileShortIdentifier"}, name="download_file", defaults={"dl" = 1})
+     * @Route("/o/{fileShortIdentifier}", requirements={"fileShortIdentifier"}, name="open_file")
      * @Method({"GET"})
      *
-     * @param  Request                                                       $request
+     * @param  Request $request
      *
-     * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+     * @throws NotFoundHttpException
      *
      * @return StreamedResponse
      */
     public function downloadFileAction(Request $request)
     {
-        $efs = $this->get('emission_file_storage');
-        /* @var $efs \Enginewerk\EmissionBundle\Storage\FileStorage */
+        $fileStorage = $this->get('enginewerk_emission.storage.file_storage');
+        $fileShortIdentifier = $request->get('fileShortIdentifier');
 
-        if (null === ($file = $efs->find($request->get('file')))) {
-            throw $this->createNotFoundException(sprintf('File #%s not found.', $request->get('file')));
+        if (null === ($file = $fileStorage->findByShortIdentifier($fileShortIdentifier))) {
+            throw $this->createNotFoundException(
+                sprintf(
+                    'File identified by "%s" not found.',
+                    $request->get('fileShortIdentifier')
+                )
+            );
         }
 
-        $responseFile = $efs->getFileForDownload($request->get('file'));
+        $responseFile = $fileStorage->getFileForDownload($fileShortIdentifier);
 
         set_time_limit(0);
 
@@ -155,15 +159,22 @@ class DefaultController extends Controller
     {
         $appResponse = new AppResponse();
 
-        $efs = $this->get('emission_file_storage');
-        /* @var $efs \Enginewerk\EmissionBundle\Storage\FileStorage */
+        $fileStorage = $this->get('enginewerk_emission.storage.file_storage');
 
         try {
-            $efs->delete($request->get('file'));
+            $fileStorage->delete($request->get('file'));
             $appResponse->success();
         } catch (\Exception $ex) {
-            $appResponse->error('Can`t delete File');
-            $this->get('logger')->error(sprintf('Can`t delete File #%s. %s', $request->get('file'), $ex->getMessage()));
+            $appResponse->error(sprintf(
+                'Can`t delete File identified by shortFileIdentifier "%s"',
+                $request->get('file')
+            ));
+            $this->get('logger')->error(
+                sprintf(
+                    'Can`t delete File identified by shortFileIdentifier "%s". %s',
+                    $request->get('file'),
+                    $ex->getMessage())
+            );
         }
 
         return new JsonResponse($appResponse->toArray(), 200);
@@ -173,7 +184,7 @@ class DefaultController extends Controller
      * @Route("/{file}/expiration/{date}", requirements={"file"}, defaults={"date" = "never"}, name="file_expiration_date")
      * @Method({"GET"})
      *
-     * @param  \Symfony\Component\HttpFoundation\Request $request
+     * @param Request $request
      *
      * @return JsonResponse
      */
@@ -181,16 +192,15 @@ class DefaultController extends Controller
     {
         $appResponse = new AppResponse();
 
-        $efs = $this->get('emission_file_storage');
-        /* @var $efs \Enginewerk\EmissionBundle\Storage\FileStorage */
+        $efs = $this->get('enginewerk_emission.storage.file_storage');
 
-        if (null === $efs->find($request->get('file'))) {
+        if (null === $efs->findByShortIdentifier($request->get('file'))) {
             $appResponse->error(sprintf('File #%s not found.', $request->get('file')));
         } else {
-            if ('never' == $request->get('date')) {
+            if ('never' === $request->get('date')) {
                 $expirationDate = null;
             } else {
-                $expirationDate = new \DateTime($request->get('date'));
+                $expirationDate = new \DateTimeImmutable($request->get('date'));
             }
 
             try {
@@ -209,13 +219,17 @@ class DefaultController extends Controller
     /**
      * @Route("/replace/{replace}/with/{replacement}", name="replace_file")
      * @Method({"GET"})
+     *
+     * @param string $replace
+     * @param string $replacement
+     *
+     * @return JsonResponse
      */
     public function replaceFileAction($replace, $replacement)
     {
         $appResponse = new AppResponse();
 
-        $efs = $this->get('emission_file_storage');
-        /* @var $efs \Enginewerk\EmissionBundle\Storage\FileStorage */
+        $efs = $this->get('enginewerk_emission.storage.file_storage');
 
         try {
             $efs->replace($replace, $replacement);
@@ -231,19 +245,20 @@ class DefaultController extends Controller
     /**
      * @Route("/files/{created_after}", defaults={"created_after" = null})
      * @Method({"GET"})
+     *
+     * @param string $created_after
+     *
+     * @return JsonResponse
      */
-    public function filesAction($created_after)
+    public function filesAction($created_after = null)
     {
-        $createdAfter = ($created_after) ? new \DateTime($created_after) : null;
-
-        $files = $this
-                ->getDoctrine()
-                ->getRepository('EnginewerkEmissionBundle:File')
-                ->getFilesForJsonApi($createdAfter);
-
         $appResponse = new AppResponse();
+
         $appResponse->success();
-        $appResponse->data($files);
+        $appResponse->data(
+            $this->get('enginewerk_emission.service.file_read_service')
+                ->getFilesForJsonApi(new \DateTime($created_after ?: 'now'))
+        );
 
         return new JsonResponse($appResponse->toArray(), 200);
     }

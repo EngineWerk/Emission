@@ -1,88 +1,53 @@
 <?php
 namespace Enginewerk\EmissionBundle\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints as Assert;
-
 /**
- * @ORM\Entity
- * @ORM\HasLifecycleCallbacks
- * @ORM\Table(name="file_block")
- * @ORM\Entity(repositoryClass="Enginewerk\EmissionBundle\Entity\FileBlockRepository")
+ * FileBlock
  */
 class FileBlock
 {
     /**
-     * @ORM\Id
-     * @ORM\Column(name="id", type="integer", options={"unsigned"=true})
-     * @ORM\GeneratedValue(strategy="AUTO")
-     *
      * @var int
      */
-    protected $id;
+    private $id;
 
     /**
-     * Name for storage file name.
-     * Lower characters, and numbers [a-z0-9].
-     *
-     * @ORM\Column(type="string", length=41)
-     *
      * @var string
      */
-    protected $fileHash;
+    private $fileHash;
 
     /**
-     * @ORM\Column(name="size", type="integer", options={"unsigned"=true})
-     * @Assert\Type(type="numeric")
-     */
-    protected $size;
-
-    /**
-     * First byte position.
-     *
-     * @ORM\Column(name="rangeStart", type="bigint", options={"unsigned"=true})
-     * @Assert\Type(type="numeric")
-     */
-    protected $rangeStart;
-
-    /**
-     * Last byte position
-     * Always greater than 0.
-     *
-     * @ORM\Column(name="rangeEnd", type="bigint", options={"unsigned"=true})
-     * @Assert\Type(type="numeric")
-     */
-    protected $rangeEnd;
-
-    /**
-     * @ORM\Column(type="datetime")
-     *
-     * @var \DateTime
-     */
-    protected $createdAt;
-
-    /**
-     * @ORM\Column(type="datetime")
-     *
-     * @var \DateTime
-     */
-    protected $updatedAt;
-
-    /**
-     * @ORM\ManyToOne(targetEntity="File", inversedBy="fileBlocks", cascade={"persist", "refresh"})
-     * @ORM\JoinColumn(name="fileId", referencedColumnName="id", onDelete="cascade")
-     */
-    protected $file;
-
-    /**
-     * @ORM\Column(name="fileId", type="integer", options={"unsigned"=true})
-     *
      * @var int
      */
-    protected $fileId;
+    private $size;
 
     /**
-     * Get id.
+     * @var int
+     */
+    private $rangeStart;
+
+    /**
+     * @var int
+     */
+    private $rangeEnd;
+
+    /**
+     * @var \DateTime
+     */
+    private $createdAt;
+
+    /**
+     * @var \DateTime
+     */
+    private $updatedAt;
+
+    /**
+     * @var \Enginewerk\EmissionBundle\Entity\File
+     */
+    private $file;
+
+    /**
+     * Get id
      *
      * @return int
      */
@@ -92,12 +57,11 @@ class FileBlock
     }
 
     /**
-     * Set fileHash.
+     * Set fileHash
      *
+     * @param string $fileHash
      *
-     * @param  string $fileHash
-     *
-     * @return File
+     * @return FileBlock
      */
     public function setFileHash($fileHash)
     {
@@ -107,7 +71,7 @@ class FileBlock
     }
 
     /**
-     * Get fileHash.
+     * Get fileHash
      *
      * @return string
      */
@@ -117,9 +81,9 @@ class FileBlock
     }
 
     /**
-     * Set size.
+     * Set size
      *
-     * @param  int   $size
+     * @param int $size
      *
      * @return FileBlock
      */
@@ -131,7 +95,7 @@ class FileBlock
     }
 
     /**
-     * Get size.
+     * Get size
      *
      * @return int
      */
@@ -141,57 +105,9 @@ class FileBlock
     }
 
     /**
-     * Set createdAt.
+     * Set rangeStart
      *
-     * @param  \DateTime $createdAt
-     *
-     * @return FileBlock
-     */
-    public function setCreatedAt(\DateTime $createdAt)
-    {
-        $this->createdAt = $createdAt;
-
-        return $this;
-    }
-
-    /**
-     * Get createdAt.
-     *
-     * @return \DateTime
-     */
-    public function getCreatedAt()
-    {
-        return $this->createdAt;
-    }
-
-    /**
-     * Set updatedAt.
-     *
-     * @param  \DateTime $updatedAt
-     *
-     * @return FileBlock
-     */
-    public function setUpdatedAt(\DateTime $updatedAt)
-    {
-        $this->updatedAt = $updatedAt;
-
-        return $this;
-    }
-
-    /**
-     * Get updatedAt.
-     *
-     * @return \DateTime
-     */
-    public function getUpdatedAt()
-    {
-        return $this->updatedAt;
-    }
-
-    /**
-     * Set rangeStart.
-     *
-     * @param  int   $rangeStart
+     * @param int $rangeStart
      *
      * @return FileBlock
      */
@@ -203,7 +119,7 @@ class FileBlock
     }
 
     /**
-     * Get rangeStart.
+     * Get rangeStart
      *
      * @return int
      */
@@ -213,9 +129,9 @@ class FileBlock
     }
 
     /**
-     * Set rangeEnd.
+     * Set rangeEnd
      *
-     * @param  int   $rangeEnd
+     * @param int $rangeEnd
      *
      * @return FileBlock
      */
@@ -227,7 +143,7 @@ class FileBlock
     }
 
     /**
-     * Get rangeEnd.
+     * Get rangeEnd
      *
      * @return int
      */
@@ -237,11 +153,59 @@ class FileBlock
     }
 
     /**
-     * Set file.
+     * Set createdAt
      *
-     * @param  \Enginewerk\EmissionBundle\Entity\File $file
+     * @param \DateTime $createdAt
      *
-     * @return \Enginewerk\EmissionBundle\Entity\File
+     * @return FileBlock
+     */
+    public function setCreatedAt($createdAt)
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    /**
+     * Get createdAt
+     *
+     * @return \DateTime
+     */
+    public function getCreatedAt()
+    {
+        return $this->createdAt;
+    }
+
+    /**
+     * Set updatedAt
+     *
+     * @param \DateTime $updatedAt
+     *
+     * @return FileBlock
+     */
+    public function setUpdatedAt($updatedAt)
+    {
+        $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    /**
+     * Get updatedAt
+     *
+     * @return \DateTime
+     */
+    public function getUpdatedAt()
+    {
+        return $this->updatedAt;
+    }
+
+    /**
+     * Set file
+     *
+     * @param \Enginewerk\EmissionBundle\Entity\File $file
+     *
+     * @return FileBlock
      */
     public function setFile(\Enginewerk\EmissionBundle\Entity\File $file = null)
     {
@@ -251,36 +215,12 @@ class FileBlock
     }
 
     /**
-     * Get file.
+     * Get file
      *
      * @return \Enginewerk\EmissionBundle\Entity\File
      */
     public function getFile()
     {
         return $this->file;
-    }
-
-    /**
-     * Set fileId.
-     *
-     * @param  int   $fileId
-     *
-     * @return FileBlock
-     */
-    public function setFileId($fileId)
-    {
-        $this->fileId = $fileId;
-
-        return $this;
-    }
-
-    /**
-     * Get fileId.
-     *
-     * @return int
-     */
-    public function getFileId()
-    {
-        return $this->fileId;
     }
 }

@@ -37,7 +37,7 @@ twig:
           
 # Assetic Configuration
 assetic:
-    debug:          '%kernel.debug%'
+    debug: '%kernel.debug%'
     use_controller: false
     bundles:        
         - EnginewerkEmissionBundle
@@ -75,10 +75,10 @@ swiftmailer:
 
 
 doctrine_migrations:
-    dir_name: '%kernel.root_dir%/migrations'
-    namespace: Application\Migrations
+    dir_name: '%kernel.root_dir%/../src/Enginewerk/MigrationBundle/Migrations'
+    namespace: Enginewerk\MigrationBundle\Migrations
     table_name: _doctrine_migration_versions
-    name: Application Migrations
+    name: Emission Migrations
 
 fos_user:
     db_driver: orm
@@ -86,7 +86,7 @@ fos_user:
     user_class: Enginewerk\UserBundle\Entity\User
     registration:
         confirmation:
-            enabled:    false # change to true for required email confirmation
+            enabled: false # change to true for required email confirmation
         form:
             type: enginewerk_user_registration            
 

@@ -1,0 +1,24 @@
+Enginewerk\FSBundle\Entity\BinaryBlock:
+    repositoryClass: Enginewerk\FSBundle\Repository\Doctrine\BinaryBlockRepository
+    type: entity
+    table: binary_block
+    id:
+        id:
+            type: integer
+            generator:
+                strategy: AUTO
+    fields:
+        urn:
+            type: string
+            column: urn
+            length: 255
+            nullable: false
+        checksum:
+            type: string
+            column: checksum
+            length: 40
+            nullable: false
+        size:
+            type: integer
+            column: size
+            nullable: false

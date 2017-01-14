@@ -1,11 +1,6 @@
 <?php
 namespace Enginewerk\FSBundle\Storage;
 
-/**
- * Description of GaufretteFile.
- *
- * @author Paweł Czyżewski <pawel.czyzewski@enginewerk.com>
- */
 class GaufretteFile extends File
 {
     public function __construct($path)

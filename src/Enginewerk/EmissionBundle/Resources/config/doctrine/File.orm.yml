@@ -1,0 +1,80 @@
+Enginewerk\EmissionBundle\Entity\File:
+    repositoryClass: Enginewerk\EmissionBundle\Repository\Doctrine\FileRepository
+    type: entity
+    table: file
+    id:
+        id:
+            type: integer
+            options:
+                unsigned: true
+            generator:
+                strategy: AUTO
+    fields:
+        fileId:
+            type: string
+            length: 16
+            column: file_id
+            nullable: false
+
+        fileHash:
+            type: string
+            length: 41
+            column: file_hash
+            nullable: false
+
+        checksum:
+            type: string
+            length: 32
+            column: checksum
+            nullable: false
+
+        name:
+            type: string
+            lenght: 255
+            column: name
+            nullable: false
+
+        type:
+            type: string
+            length: 128
+            column: type
+            nullable: false
+
+        size:
+            type: bigint
+            options:
+                unsigned: true
+            column: size
+            nullable: false
+
+        expirationDate:
+            type: datetime
+            column: expiration_date
+            nullable: true
+
+        createdAt:
+            type: datetime
+            column: created_at
+
+        updatedAt:
+            type: datetime
+            column: updated_at
+
+        complete:
+            type: boolean
+            nullable: false
+
+    manyToOne:
+        user:
+            targetEntity: Enginewerk\UserBundle\Entity\User
+            inversedBy: files
+            mappedBy: user_id
+            joinColumn:
+                referencedColumnName: id
+            onDelete: RESTRICT
+
+    oneToMany:
+        fileBlocks:
+            targetEntity: Enginewerk\EmissionBundle\Entity\FileBlock
+            mappedBy: file
+

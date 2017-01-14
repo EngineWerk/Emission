@@ -1,8 +1,16 @@
 services:
-    enginewerk_bbs:
-        class:     Enginewerk\FSBundle\Storage\StorageService
-        arguments: ['@doctrine', '@egw_fs_local_storage']
-        
-    egw_fs_local_storage:
-        class:     Enginewerk\FSBundle\Storage\LocalStorage
+    enginewerk_fs.service.storage_service:
+        public: true
+        class: Enginewerk\FSBundle\Service\StorageService
+        arguments: ['@enginewerk_fs.repository.binary_block_repository', '@enginewerk_fs.storage.local_storage']
+
+    enginewerk_fs.repository.binary_block_repository:
+        public: false
+        class: Enginewerk\FSBundle\Repository\Doctrine\BinaryBlockRepository
+        factory:   ['@doctrine.orm.default_entity_manager', getRepository]
+        arguments: [Enginewerk\FSBundle\Entity\BinaryBlock]
+
+    enginewerk_fs.storage.local_storage:
+        public: false
+        class:  Enginewerk\FSBundle\Storage\LocalStorage
         arguments: ['%storage_root_directory%/local_fs/binary/']

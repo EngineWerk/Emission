@@ -1,14 +1,21 @@
 <?php
 namespace Enginewerk\EmissionBundle\FileResponse;
 
-/**
- * Description of ChunkedFile.
- *
- * @author Paweł Czyżewski <pawel.czyzewski@enginewerk.com>
- */
-class ChunkedFile implements FileInterface
+use RuntimeException;
+use Symfony\Component\HttpFoundation\File\File;
+
+class ChunkedFile implements FileReadInterface
 {
+    /** @var  File[] */
     protected $fileChunks;
+
+    /**
+     * @param File[] $fileChunks
+     */
+    public function __construct(array $fileChunks)
+    {
+        $this->fileChunks = $fileChunks;
+    }
 
     public function read()
     {
@@ -22,19 +29,21 @@ class ChunkedFile implements FileInterface
     protected function checkIfFileIsReadable()
     {
         foreach ($this->getChunks() as $chunk) {
-            /* @var $chunk \Enginewerk\FSBundle\Storage\File */
             if (!$chunk->isFile() || !$chunk->isReadable()) {
-                throw new \Exception(sprintf('File part is not readable from path "%s"', $chunk->getPathname()));
+                throw new RuntimeException(
+                    sprintf(
+                        'File part is not readable from path "%s"',
+                        $chunk->getPathname()
+                    )
+                );
             }
         }
     }
 
-    public function setChunks($chunks)
-    {
-        $this->fileChunks = $chunks;
-    }
-
-    public function getChunks()
+    /**
+     * @return File[]
+     */
+    protected function getChunks()
     {
         return $this->fileChunks;
     }

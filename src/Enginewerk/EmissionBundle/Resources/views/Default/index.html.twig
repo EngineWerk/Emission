@@ -69,9 +69,9 @@
                     </td>
                     {% if File.complete == 1 %}
                         <td class="fileOptions">
-                            <a href="{{ path('show_file', {'file': File.fileId}) }}" class="show_file" data-show-file-content-href="{{ path('show_file_content', {'file': File.fileId}) }}">{% trans %}gui.show_file{% endtrans %}</a>
-                            <a href="{{ path('download_file', {'file': File.fileId}) }}" class="fileOptionsDownloadLink">{% trans %}gui.download_file{% endtrans %}</a>
-                            <a href="{{ path('open_file', {'file': File.fileId}) }}" class="fileOptionsOpenLink">{% trans %}gui.open_file_in_browser{% endtrans %}</a> -
+                            <a href="{{ path('show_file', {'file': File.fileId}) }}" class="show_file" data-show-file-content-href="{{ path('show_file_content', {'fileShortIdentifier': File.fileId}) }}">{% trans %}gui.show_file{% endtrans %}</a>
+                            <a href="{{ path('download_file', {'fileShortIdentifier': File.fileId}) }}" class="fileOptionsDownloadLink">{% trans %}gui.download_file{% endtrans %}</a>
+                            <a href="{{ path('open_file', {'fileShortIdentifier': File.fileId}) }}" class="fileOptionsOpenLink">{% trans %}gui.open_file_in_browser{% endtrans %}</a> -
                             <a href="{{ path('delete_file', {'file': File.fileId}) }}" class="remove-file" data-filename="{{ File.name }}">{% trans %}gui.remove_file{% endtrans %}</a>
                         </td>
                     {% else %}

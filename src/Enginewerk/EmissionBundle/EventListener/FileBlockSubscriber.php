@@ -5,13 +5,11 @@ use Doctrine\Common\EventSubscriber;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Enginewerk\EmissionBundle\Entity\FileBlock;
 
-/**
- * FileBlockSubscriber.
- *
- * @author Paweł Czyżewski <pawel.czyzewski@enginewerk.com>
- */
 class FileBlockSubscriber implements EventSubscriber
 {
+    /**
+     * @return string[]
+     */
     public function getSubscribedEvents()
     {
         return [
@@ -19,6 +17,9 @@ class FileBlockSubscriber implements EventSubscriber
         ];
     }
 
+    /**
+     * @param LifecycleEventArgs $args
+     */
     public function prePersist(LifecycleEventArgs $args)
     {
         $fileBlock = $args->getEntity();

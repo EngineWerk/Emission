@@ -1,31 +1,35 @@
 <?php
 namespace Enginewerk\FSBundle\Storage;
 
-/**
- *
- * @author Paweł Czyżewski <pawel.czyzewski@enginewerk.com>
- */
+use Enginewerk\FSBundle\Storage\Exception\FileNotFoundException;
+use Enginewerk\FSBundle\Storage\Exception\SystemStorageException;
+use Symfony\Component\HttpFoundation\File\File;
+
 interface StorageInterface
 {
     /**
-     * @param  string                                        $key
-     * @param  \Symfony\Component\HttpFoundation\File\File $uploadedFile
+     * @param  string $key
+     * @param  File $uploadedFile
      *
-     * @return int                                     File size
+     * @return int File size
      */
-    public function put($key, $uploadedFile);
+    public function put($key, File $uploadedFile);
 
     /**
-     * @param  string                                      $key
+     * @param  string $key
      *
-     * @return \Symfony\Component\HttpFoundation\File\File
+     * @return File
      */
     public function get($key);
 
     /**
      * @param string $key
      *
+     * @throws FileNotFoundException
+     * @throws SystemStorageException
+     *
      * @return bool
+     *
      */
     public function delete($key);
 }

@@ -1,6 +1,8 @@
 <?php
 namespace Enginewerk\EmissionBundle\Controller;
 
+use Enginewerk\EmissionBundle\Entity\File;
+use Enginewerk\EmissionBundle\Entity\FileBlock;
 use Enginewerk\EmissionBundle\Form\Type\ResumableFileBlockType;
 use Enginewerk\EmissionBundle\Form\Type\ResumableFileType;
 use Enginewerk\EmissionBundle\Response\AppResponse;
@@ -10,11 +12,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
-/**
- * ResumableController.
- *
- * @author Paweł Czyżewski <pawel.czyzewski@enginewerk.com>
- */
 class ResumableController extends Controller
 {
     /**
@@ -43,7 +40,7 @@ class ResumableController extends Controller
         $fileBlock = $this->getDoctrine()
                 ->getRepository('EnginewerkEmissionBundle:FileBlock')
                 ->findOneBy([
-                    'fileId' => $file->getId(),
+                    'file' => $file->getId(),
                     'rangeStart' => $request->get('resumableCurrentStartByte'),
                     'rangeEnd' => $request->get('resumableCurrentEndByte'), ]);
 
@@ -65,7 +62,6 @@ class ResumableController extends Controller
     public function uploadAction(Request $request)
     {
         $appResponse = new AppResponse();
-
         $formRequest = $request->request->get('form');
 
         // File
@@ -86,9 +82,11 @@ class ResumableController extends Controller
             $fileForm->handleRequest($request);
 
             if ($fileForm->isValid()) {
+                /** @var File $file */
                 $file = $fileForm->getData();
                 $file->setType($fileForm->get('uploadedFile')->getData()->getMimeType());
                 $file->setUser($this->getUser());
+                $file->setComplete(false);
 
                 $em->persist($file);
             } else {
@@ -100,15 +98,14 @@ class ResumableController extends Controller
         }
 
         // Find out if we have this FileBlock
-        $FileBlockInStorage = $this->getDoctrine()
-                ->getRepository('EnginewerkEmissionBundle:FileBlock')
-                ->findOneBy([
-                    'fileId' => $file->getId(),
-                    'rangeStart' => $formRequest['resumableCurrentStartByte'],
-                    'rangeEnd' => $formRequest['resumableCurrentEndByte'], ]);
-
+        $fileBlockInStorage = $this->get('enginewerk_emission.repository.file_block_repository')
+            ->finOneById(
+                $file->getId(),
+                (int) $formRequest['resumableCurrentStartByte'],
+                (int) $formRequest['resumableCurrentEndByte']
+            );
         // No ? Lets create one
-        if (null === $FileBlockInStorage) {
+        if (null === $fileBlockInStorage) {
             $fileBlockForm = $this->createForm(new ResumableFileBlockType());
             $fileBlockForm->handleRequest($request);
 
@@ -116,8 +113,9 @@ class ResumableController extends Controller
             /* @var $uploadedFile \Symfony\Component\HttpFoundation\File\UploadedFile  */
             $key = sha1(microtime() . $uploadedFile->getPathname());
 
-            $size = $this->get('enginewerk_bbs')->put($key, $uploadedFile);
+            $size = $this->get('enginewerk_fs.service.storage_service')->store($uploadedFile, $key);
 
+            /** @var FileBlock $fileBlock */
             $fileBlock = $fileBlockForm->getData();
             $fileBlock->setFile($file);
             $fileBlock->setFileHash($key);
@@ -129,11 +127,14 @@ class ResumableController extends Controller
 
         // Do we have whole file?
         // Lets make sum for all rangeEnd and check against declared File size
-        $totalSize = $this->getDoctrine()
-            ->getRepository('EnginewerkEmissionBundle:FileBlock')
+        $totalSize = $this
+            ->get('enginewerk_emission.repository.file_block_repository')
             ->getTotalSize($file->getId());
 
-        if ($totalSize == $file->getSize()) {
+        $this->get('logger')->addDebug('$totalSize: ' . $totalSize);
+        $this->get('logger')->addDebug('$file->getSize(): ' . $file->getSize());
+
+        if ($totalSize === (int) $file->getSize()) {
 
             // Set complete property to true
             $file->setComplete(true);
@@ -152,8 +153,8 @@ class ResumableController extends Controller
                       'created_at' => $file->getCreatedAt()->format('Y-m-d H:i:s'),
                       'uploaded_by' => $file->getUser()->getUsername(),
                       'show_url' => $this->generateUrl('show_file', ['file' => $file->getFileId()], true),
-                      'download_url' => $this->generateUrl('download_file', ['file' => $file->getFileId()], true),
-                      'open_url' => $this->generateUrl('open_file', ['file' => $file->getFileId()], true),
+                      'download_url' => $this->generateUrl('download_file', ['fileShortIdentifier' => $file->getFileId()], true),
+                      'open_url' => $this->generateUrl('open_file', ['fileShortIdentifier' => $file->getFileId()], true),
                       'delete_url' => $this->generateUrl('delete_file', ['file' => $file->getFileId()], true),
                 ];
         } else {
