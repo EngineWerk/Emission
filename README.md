@@ -11,7 +11,7 @@ Web browser file sharing application.
 - Upload images via clipboard paste (Ctrl+v)
 
 ###Requirements
-PHP >= 5.3.3
+PHP >= 5.6.29
 
 ###Installation
 Clone repository.
