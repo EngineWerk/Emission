@@ -1,8 +1,11 @@
 <?php
-namespace Enginewerk\EmissionBundle\Response;
+namespace Enginewerk\ApplicationBundle\Response;
 
-class AppResponse
+class ApplicationResponse
 {
+    const STATUS_SUCCESS = 'Success';
+    const STATUS_ERROR = 'Error';
+
     /** @var string */
     private $message;
 
@@ -20,7 +23,7 @@ class AppResponse
     public function error($message = null)
     {
         $this->message = $message;
-        $this->status = 'Error';
+        $this->status = static::STATUS_ERROR;
     }
 
     /**
@@ -31,7 +34,7 @@ class AppResponse
     public function success($message = null)
     {
         $this->message = $message;
-        $this->status = 'Success';
+        $this->status = static::STATUS_SUCCESS;
     }
 
     /**

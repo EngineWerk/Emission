@@ -5,13 +5,19 @@ use Enginewerk\EmissionBundle\Generator\Hash;
 
 class HashTest extends \PHPUnit_Framework_TestCase
 {
-    public function testGenerate()
+    /**
+     * @test
+     */
+    public function generate()
     {
         $hash = Hash::generate();
         $this->assertEquals('a', $hash);
     }
 
-    public function testGenerateSequence()
+    /**
+     * @test
+     */
+    public function generateSequence()
     {
         $hash = Hash::generateSequencedHash();
         $this->assertEquals('a', $hash);
@@ -32,7 +38,10 @@ class HashTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('abda', $hash);
     }
 
-    public function testGenerateRandomHash()
+    /**
+     * @test
+     */
+    public function generateRandomHash()
     {
         $hash = Hash::genereateRandomHash();
         $this->assertEquals(4, strlen($hash));

@@ -1,9 +1,9 @@
 <?php
 namespace Enginewerk\EmissionBundle\Controller;
 
+use Enginewerk\ApplicationBundle\Response\ApplicationResponse;
 use Enginewerk\EmissionBundle\Form\Type\ResumableFileBlockType;
 use Enginewerk\EmissionBundle\Form\Type\ResumableFileType;
-use Enginewerk\EmissionBundle\Response\AppResponse;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -80,7 +80,7 @@ class DefaultController extends Controller
             throw $this->createNotFoundException(sprintf('File #%s not found.', $request->get('fileShortIdentifier')));
         }
 
-        $appResponse = new AppResponse();
+        $appResponse = new ApplicationResponse();
         $appResponse->success();
         $appResponse->data(
             $this->renderView(
@@ -141,7 +141,7 @@ class DefaultController extends Controller
      */
     public function deleteAction(Request $request)
     {
-        $appResponse = new AppResponse();
+        $appResponse = new ApplicationResponse();
 
         $fileStorage = $this->get('enginewerk_emission.storage.file_storage');
 
@@ -171,7 +171,7 @@ class DefaultController extends Controller
      */
     public function fileExpirationDateAction(Request $request)
     {
-        $appResponse = new AppResponse();
+        $appResponse = new ApplicationResponse();
 
         $efs = $this->get('enginewerk_emission.storage.file_storage');
 
@@ -205,7 +205,7 @@ class DefaultController extends Controller
      */
     public function replaceFileAction($replace, $replacement)
     {
-        $appResponse = new AppResponse();
+        $appResponse = new ApplicationResponse();
 
         $efs = $this->get('enginewerk_emission.storage.file_storage');
 
@@ -227,7 +227,7 @@ class DefaultController extends Controller
      */
     public function filesAction($created_after = null)
     {
-        $appResponse = new AppResponse();
+        $appResponse = new ApplicationResponse();
 
         $appResponse->success();
         $appResponse->data(

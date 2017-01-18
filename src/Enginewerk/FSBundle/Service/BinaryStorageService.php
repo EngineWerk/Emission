@@ -7,7 +7,7 @@ use Enginewerk\FSBundle\Storage\StorageInterface;
 use Exception;
 use Symfony\Component\HttpFoundation\File\File;
 
-class StorageService
+class BinaryStorageService
 {
     /** @var  BinaryBlockRepositoryInterface */
     private $binaryBlockRepository;
@@ -28,8 +28,8 @@ class StorageService
     }
 
     /**
-     * @param  File $file
-     * @param  string $key
+     * @param File $file
+     * @param string $key
      *
      * @return int
      */

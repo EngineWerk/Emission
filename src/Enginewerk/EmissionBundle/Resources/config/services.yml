@@ -2,7 +2,9 @@ services:
     enginewerk_emission.service.file_read_service:
         public: true
         class: Enginewerk\EmissionBundle\Service\FileReadService
-        arguments: ['@enginewerk_emission.repository.file_repository']
+        arguments:
+            - '@enginewerk_emission.repository.file_repository'
+            - '@enginewerk_emission.repository.file_block_repository'
 
     enginewerk_emission.repository.file_block_repository:
         class: Enginewerk\EmissionBundle\Repository\Doctrine\FileBlockRepository
@@ -37,4 +39,16 @@ services:
         arguments:
             - '@enginewerk_emission.repository.file_repository'
             - '@enginewerk_emission.repository.file_block_repository'
-            - '@enginewerk_fs.service.storage_service'
+            - '@enginewerk_fs.service.binary_storage_service'
+
+    enginewerk_emission.service.file_write_service:
+        public: false
+        class: Enginewerk\EmissionBundle\Service\FileWriteService
+        arguments:
+            - '@enginewerk_emission.repository.file_repository'
+            - '@enginewerk_emission.repository.file_block_repository'
+
+    enginewerk_emission.service.file_view_service:
+        public: false
+        class: Enginewerk\EmissionBundle\Service\FileViewService
+        arguments: ['@router']
