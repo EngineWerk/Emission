@@ -6,8 +6,6 @@ use Enginewerk\EmissionBundle\Entity\FileBlock;
 use Enginewerk\EmissionBundle\Form\Type\ResumableFileBlockType;
 use Enginewerk\EmissionBundle\Form\Type\ResumableFileType;
 use Enginewerk\EmissionBundle\Response\AppResponse;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -15,8 +13,9 @@ use Symfony\Component\HttpFoundation\Request;
 class ResumableController extends Controller
 {
     /**
-     * @Route("/uploadChunkTest", name="upload_file_chunk_test")
-     * @Method({"GET"})
+     * @param Request $request
+     *
+     * @return JsonResponse
      */
     public function uploadChunkTestAction(Request $request)
     {
@@ -56,8 +55,9 @@ class ResumableController extends Controller
     }
 
     /**
-     * @Route("/upload", name="upload_file")
-     * @Method({"POST"})
+     * @param Request $request
+     *
+     * @return JsonResponse
      */
     public function uploadAction(Request $request)
     {
