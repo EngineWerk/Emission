@@ -20,7 +20,6 @@ google_login:
 logout:
     path:   /logout
    
-enginewerk_emission:
-    resource: "@EnginewerkEmissionBundle/Controller/"
-    type:     annotation
-    prefix:   /
+emission-bundle:
+    resource: '@EnginewerkEmissionBundle/Resources/config/routing.yml'
+    prefix: /

@@ -1,0 +1,69 @@
+files-get:
+    path: /
+    methods: [GET]
+    defaults: { _controller: EnginewerkEmissionBundle:Default:index }
+
+show_file:
+    path: /f/{file}
+    methods: [GET]
+#    requirements: file
+    defaults: { _controller: EnginewerkEmissionBundle:Default:showFile }
+
+show_file_content:
+    path: /fc/{fileShortIdentifier}
+    methods: [GET]
+    requirements:
+        fileShortIdentifier: '.*'
+    defaults: { _controller: EnginewerkEmissionBundle:Default:showFileContent }
+
+download_file:
+    path: /d/{fileShortIdentifier}
+    methods: [GET]
+    requirements:
+        fileShortIdentifier: '.*'
+    defaults: { _controller: EnginewerkEmissionBundle:Default:downloadFile, dl: 1 }
+
+open_file:
+    path: /o/{fileShortIdentifier}
+    methods: [GET]
+    requirements:
+        fileShortIdentifier: '.*'
+    defaults: { _controller: EnginewerkEmissionBundle:Default:downloadFile }
+
+delete_file:
+    path: /delete/{file}
+    methods: [DELETE]
+    requirements:
+        fileShortIdentifier: '.*'
+    defaults: { _controller: EnginewerkEmissionBundle:Default:delete }
+
+file_expiration_date:
+    path: /{file}/expiration/{date}
+    methods: [GET]
+    requirements:
+        file: '.*'
+        date: '.*'
+    defaults: { _controller: EnginewerkEmissionBundle:Default:delete, date: 'never' }
+
+replace_file:
+    path: /replace/{replace}/with/{replacement}
+    methods: [GET]
+    requirements:
+        replace: '.*'
+        replacement: '.*'
+    defaults: { _controller: EnginewerkEmissionBundle:Default:replaceFile }
+
+list_files:
+    path: /files/{created_after}
+    methods: [GET]
+    defaults: { _controller: EnginewerkEmissionBundle:Default:files, created_after: null }
+
+upload_file_chunk_test:
+    path: /uploadChunkTest
+    methods: [GET]
+    defaults: { _controller: EnginewerkEmissionBundle:Resumable:uploadChunkTest }
+
+upload_file:
+    path: /upload
+    methods: [POST]
+    defaults: { _controller: EnginewerkEmissionBundle:Resumable:upload }

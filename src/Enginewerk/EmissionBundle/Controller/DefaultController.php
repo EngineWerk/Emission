@@ -4,8 +4,6 @@ namespace Enginewerk\EmissionBundle\Controller;
 use Enginewerk\EmissionBundle\Form\Type\ResumableFileBlockType;
 use Enginewerk\EmissionBundle\Form\Type\ResumableFileType;
 use Enginewerk\EmissionBundle\Response\AppResponse;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -16,8 +14,6 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 class DefaultController extends Controller
 {
     /**
-     * @Route("/")
-     * @Method({"GET"})
      * @Template()
      */
     public function indexAction()
@@ -50,8 +46,6 @@ class DefaultController extends Controller
     }
 
     /**
-     * @Route("/f/{file}", requirements={"file"}, name="show_file")
-     * @Method({"GET"})
      * @Template()
      *
      * @param  Request $request
@@ -72,9 +66,6 @@ class DefaultController extends Controller
     }
 
     /**
-     * @Route("/fc/{fileShortIdentifier}", requirements={"fileShortIdentifier"}, name="show_file_content")
-     * @Method({"GET"})
-     *
      * @param  Request                                                       $request
      *
      * @throws NotFoundHttpException
@@ -102,10 +93,6 @@ class DefaultController extends Controller
     }
 
     /**
-     * @Route("/d/{fileShortIdentifier}", requirements={"fileShortIdentifier"}, name="download_file", defaults={"dl" = 1})
-     * @Route("/o/{fileShortIdentifier}", requirements={"fileShortIdentifier"}, name="open_file")
-     * @Method({"GET"})
-     *
      * @param  Request $request
      *
      * @throws NotFoundHttpException
@@ -148,9 +135,6 @@ class DefaultController extends Controller
     }
 
     /**
-     * @Route("/delete/{file}", requirements={"file"}, name="delete_file")
-     * @Method({"DELETE"})
-     *
      * @param  Request      $request
      *
      * @return JsonResponse
@@ -181,9 +165,6 @@ class DefaultController extends Controller
     }
 
     /**
-     * @Route("/{file}/expiration/{date}", requirements={"file"}, defaults={"date" = "never"}, name="file_expiration_date")
-     * @Method({"GET"})
-     *
      * @param Request $request
      *
      * @return JsonResponse
@@ -217,9 +198,6 @@ class DefaultController extends Controller
     }
 
     /**
-     * @Route("/replace/{replace}/with/{replacement}", name="replace_file")
-     * @Method({"GET"})
-     *
      * @param string $replace
      * @param string $replacement
      *
@@ -243,9 +221,6 @@ class DefaultController extends Controller
     }
 
     /**
-     * @Route("/files/{created_after}", defaults={"created_after" = null})
-     * @Method({"GET"})
-     *
      * @param string $created_after
      *
      * @return JsonResponse
