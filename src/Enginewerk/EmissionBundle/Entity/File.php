@@ -1,7 +1,7 @@
 <?php
 namespace Enginewerk\EmissionBundle\Entity;
 
-use Enginewerk\EmissionBundle\Generator\Hash;
+use Enginewerk\EmissionBundle\Generator\HashGenerator;
 
 /**
  * File
@@ -398,7 +398,7 @@ class File
             $fileHash = sha1(uniqid(mt_rand(), true));
             $this->fileHash = $fileHash;
             $this->setCreatedAt($currentTime);
-            $this->setFileId(Hash::genereateRandomHash(8));
+            $this->setFileId(HashGenerator::generateRandomHash(8));
 
             $expirationTime = new \DateTime();
             $expirationTime->setTimestamp(time() + 86600);
