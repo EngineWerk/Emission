@@ -1,38 +1,44 @@
 <?php
 namespace Enginewerk\EmissionBundle\Generator;
 
-class Hash
+class HashGenerator
 {
     private static $feed = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
 
+    /**
+     * @param string|null $sequence
+     * @param int|null $characters
+     *
+     * @return string
+     */
     public static function generate($sequence = null, $characters = null)
     {
         return self::generateSequencedHash($sequence, $characters);
     }
 
     /**
-     * Generate random Hash at specified lenght based on "feed".
+     * Generate random HashGenerator at specified length based on "feed".
      *
      * @param  int       $length
      * @param  string    $charFeed
      *
-     * @throws \Exception
+     * @throws InvalidLengthException
      *
      * @return string
      */
-    public static function genereateRandomHash($length = 4, $charFeed = null)
+    public static function generateRandomHash($length = 4, $charFeed = null)
     {
-        $charFeed = ($charFeed) ? $charFeed : self::$feed;
+        $charFeed = $charFeed ?: self::$feed;
 
         if ($length <= 0) {
-            throw new \Exception('Length lower than, or equal 0');
+            throw new InvalidLengthException('Length lower than, or equal 0');
         }
 
         $hash = '';
         $feedMaxIndex = strlen($charFeed) - 1;
 
         for ($i = 1; $i <= $length; ++$i) {
-            $hash .= $charFeed[rand(0, $feedMaxIndex)];
+            $hash .= $charFeed[mt_rand(0, $feedMaxIndex)];
         }
 
         return $hash;
@@ -53,7 +59,7 @@ class Hash
             $characters = self::$feed;
         }
 
-        if ($sequence === null || $sequence == '') {
+        if ($sequence === null || $sequence === '') {
             return $characters[0];
         }
 
@@ -89,14 +95,14 @@ class Hash
      * @param  string $currentValue
      * @param  string $characters
      *
-     * @return string
+     * @return string|null
      */
     private static function getNextFeedValue($currentValue, $characters)
     {
         $currentPosition = strpos($characters, $currentValue);
 
         if ($currentPosition === (strlen($characters) - 1)) {
-            return;
+            return null;
         } else {
             return $characters[$currentPosition + 1];
         }
