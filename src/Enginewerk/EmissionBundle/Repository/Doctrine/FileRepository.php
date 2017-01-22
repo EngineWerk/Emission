@@ -2,6 +2,8 @@
 namespace Enginewerk\EmissionBundle\Repository\Doctrine;
 
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\NoResultException;
 use Enginewerk\EmissionBundle\Entity\File;
 use Enginewerk\EmissionBundle\Repository\FileRepositoryInterface;
 
@@ -71,11 +73,30 @@ class FileRepository extends EntityRepository implements FileRepositoryInterface
     }
 
     /**
-     * @param File $file
+     * @inheritdoc
      */
-    public function update(File $file)
+    public function findOneByNameAndChecksumAndSize($fileName, $fileChecksum, $fileSize)
     {
-        $this->getEntityManager()->refresh($file);
+        $queryBuilder = $this->createQueryBuilder('f');
+        $queryBuilder
+            ->where($queryBuilder->expr()->eq('f.name', ':fileName'))
+            ->setParameter('fileName', $fileName)
+            ->andWhere($queryBuilder->expr()->eq('f.checksum', ':fileChecksum'))
+            ->setParameter('fileChecksum', $fileChecksum)
+            ->andWhere($queryBuilder->expr()->eq('f.size', ':fileSize'))
+            ->setParameter('fileSize', $fileSize);
+
+        try {
+            $result = $queryBuilder->getQuery()->getSingleResult();
+        } catch (NoResultException $e) {
+            $result = null;
+            // Add logger
+        } catch (NonUniqueResultException $e) {
+            $result = null;
+            // Add logger
+        }
+
+        return $result;
     }
 
     /**
@@ -84,6 +105,15 @@ class FileRepository extends EntityRepository implements FileRepositoryInterface
     public function remove(File $file)
     {
         $this->getEntityManager()->remove($file);
+        $this->getEntityManager()->flush();
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function persist(File $file)
+    {
+        $this->getEntityManager()->persist($file);
         $this->getEntityManager()->flush();
     }
 }

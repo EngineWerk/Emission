@@ -6,15 +6,6 @@ use Enginewerk\EmissionBundle\Entity\FileBlock;
 interface FileBlockRepositoryInterface
 {
     /**
-     * @param string $fileId
-     * @param int $rangeStart
-     * @param int $rangeEnd
-     *
-     * @return FileBlock
-     */
-    public function finOneById($fileId, $rangeStart, $rangeEnd);
-
-    /**
      * @param string $fileHash
      *
      * @return int
@@ -38,9 +29,25 @@ interface FileBlockRepositoryInterface
     public function findByFileId($fileId);
 
     /**
-     * @param FileBlock $file
+     * @param int $fileId
+     * @param int $rangeStart
+     * @param int $rangeEnd
+     *
+     * @return FileBlock|null
+     */
+    public function findByFileIdAndRangeStartAndRangeEnd($fileId, $rangeStart, $rangeEnd);
+
+    /**
+     * @param FileBlock $fileBlock
      *
      * @return void
      */
-    public function remove(FileBlock $file);
+    public function remove(FileBlock $fileBlock);
+
+    /**
+     * @param FileBlock $fileBlock
+     *
+     * @return void
+     */
+    public function persist(FileBlock $fileBlock);
 }

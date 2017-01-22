@@ -23,3 +23,7 @@ logout:
 emission-bundle:
     resource: '@EnginewerkEmissionBundle/Resources/config/routing.yml'
     prefix: /
+
+resumable-bundle:
+    resource: '@EnginewerkResumableBundle/Resources/config/routing.yml'
+    prefix: /

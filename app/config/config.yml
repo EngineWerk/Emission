@@ -4,6 +4,7 @@ imports:
     - { resource: '@EnginewerkFSBundle/Resources/config/services.yml' }
     - { resource: '@UserBundle/Resources/config/services.yml' }
     - { resource: '@OAuthBundle/Resources/config/services.yml' }
+    - { resource: '@EnginewerkResumableBundle/Resources/config/services.yml' }
 
 framework:
     #esi:             ~

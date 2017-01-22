@@ -2,28 +2,13 @@
 namespace Enginewerk\EmissionBundle\Repository\Doctrine;
 
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\NoResultException;
 use Enginewerk\EmissionBundle\Entity\FileBlock;
 use Enginewerk\EmissionBundle\Repository\FileBlockRepositoryInterface;
 
 class FileBlockRepository extends EntityRepository implements FileBlockRepositoryInterface
 {
-    /**
-     * @inheritdoc
-     */
-    public function finOneById($fileId, $rangeStart, $rangeEnd)
-    {
-        $queryBuilder = $this->createQueryBuilder('fb');
-        $queryBuilder
-            ->where($queryBuilder->expr()->eq('fb.id', ':id'))
-            ->setParameter('id', $fileId)
-            ->andWhere($queryBuilder->expr()->eq('fb.rangeStart', ':rangeStart'))
-            ->setParameter('rangeStart', $rangeStart)
-            ->andWhere($queryBuilder->expr()->eq('fb.rangeEnd', ':rangeEnd'))
-            ->setParameter('rangeEnd', $rangeEnd);
-
-        return $queryBuilder->getQuery()->getFirstResult();
-    }
-
     /**
      * @inheritdoc
      */
@@ -68,9 +53,45 @@ class FileBlockRepository extends EntityRepository implements FileBlockRepositor
     /**
      * @inheritdoc
      */
+    public function findByFileIdAndRangeStartAndRangeEnd($fileId, $rangeStart, $rangeEnd)
+    {
+        $queryBuilder = $this->createQueryBuilder('fb');
+        $queryBuilder
+            ->where($queryBuilder->expr()->eq('fb.file', ':fileId'))
+            ->setParameter('fileId', $fileId)
+            ->andWhere($queryBuilder->expr()->eq('fb.rangeStart', ':rangeStart'))
+            ->setParameter('rangeStart', $rangeStart)
+            ->andWhere($queryBuilder->expr()->eq('fb.rangeEnd', ':rangeEnd'))
+            ->setParameter('rangeEnd', $rangeEnd);
+
+        try {
+            $result = $queryBuilder->getQuery()->getSingleResult();
+        } catch (NoResultException $e) {
+            $result = null;
+            // Add logger
+        } catch (NonUniqueResultException $e) {
+            $result = null;
+            // Add logger
+        }
+
+        return $result;
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function remove(FileBlock $fileBlock)
     {
         $this->getEntityManager()->remove($fileBlock);
+        $this->getEntityManager()->flush();
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function persist(FileBlock $fileBlock)
+    {
+        $this->getEntityManager()->persist($fileBlock);
         $this->getEntityManager()->flush();
     }
 }

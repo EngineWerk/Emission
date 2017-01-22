@@ -32,11 +32,13 @@ interface FileRepositoryInterface
     public function findOneByShortIdentifier($shortIdentifier);
 
     /**
-     * @param File $file
+     * @param string $fileName
+     * @param string $fileChecksum
+     * @param int $fileSize
      *
-     * @return void
+     * @return File|null
      */
-    public function update(File $file);
+    public function findOneByNameAndChecksumAndSize($fileName, $fileChecksum, $fileSize);
 
     /**
      * @param File $file
@@ -44,4 +46,11 @@ interface FileRepositoryInterface
      * @return void
      */
     public function remove(File $file);
+
+    /**
+     * @param File $file
+     *
+     * @return void
+     */
+    public function persist(File $file);
 }

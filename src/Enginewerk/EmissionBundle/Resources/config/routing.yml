@@ -57,13 +57,3 @@ list_files:
     path: /files/{created_after}
     methods: [GET]
     defaults: { _controller: EnginewerkEmissionBundle:Default:files, created_after: null }
-
-upload_file_chunk_test:
-    path: /uploadChunkTest
-    methods: [GET]
-    defaults: { _controller: EnginewerkEmissionBundle:Resumable:uploadChunkTest }
-
-upload_file:
-    path: /upload
-    methods: [POST]
-    defaults: { _controller: EnginewerkEmissionBundle:Resumable:upload }

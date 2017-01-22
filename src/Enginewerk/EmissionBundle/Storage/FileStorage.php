@@ -6,7 +6,7 @@ use Enginewerk\EmissionBundle\Entity\FileBlock;
 use Enginewerk\EmissionBundle\FileResponse\ChunkedFile;
 use Enginewerk\EmissionBundle\Repository\FileBlockRepositoryInterface;
 use Enginewerk\EmissionBundle\Repository\FileRepositoryInterface;
-use Enginewerk\FSBundle\Service\StorageService;
+use Enginewerk\FSBundle\Service\BinaryStorageService;
 
 final class FileStorage
 {
@@ -16,18 +16,18 @@ final class FileStorage
     /** @var  FileBlockRepositoryInterface */
     private $fileBlockRepository;
 
-    /** @var  StorageService */
+    /** @var  BinaryStorageService */
     private $binaryBlockStorage;
 
     /**
      * @param FileRepositoryInterface $fileRepository
      * @param FileBlockRepositoryInterface $fileBlockRepository
-     * @param StorageService $binaryBlockStorage
+     * @param BinaryStorageService $binaryBlockStorage
      */
     public function __construct(
         FileRepositoryInterface $fileRepository,
         FileBlockRepositoryInterface $fileBlockRepository,
-        StorageService $binaryBlockStorage
+        BinaryStorageService $binaryBlockStorage
     ) {
         $this->fileRepository = $fileRepository;
         $this->fileBlockRepository = $fileBlockRepository;
@@ -127,7 +127,7 @@ final class FileStorage
 
         if ($replaceFile->getUser()->getId() === $replacementFile->getUser()->getId()) {
             $replacementFile->setFileId($replaceFile->getFileId());
-            $this->fileRepository->update($replacementFile);
+            $this->fileRepository->persist($replacementFile);
 
             $replaceFileKey = $replaceFile->getFileHash();
             $this->binaryBlockStorage->delete($replaceFileKey);
@@ -150,6 +150,6 @@ final class FileStorage
 
         $file->setExpirationDate(new \DateTime($expirationDate->getTimestamp()));
 
-        $this->fileRepository->update($file);
+        $this->fileRepository->persist($file);
     }
 }

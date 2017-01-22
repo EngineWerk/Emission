@@ -1,0 +1,9 @@
+upload_file_chunk_test:
+    path: /uploadChunkTest
+    methods: [GET]
+    defaults: { _controller: EnginewerkResumableBundle:Resumable:uploadChunkTest }
+
+upload_file:
+    path: /upload
+    methods: [POST]
+    defaults: { _controller: EnginewerkResumableBundle:Resumable:upload }

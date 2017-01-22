@@ -105,7 +105,11 @@
 </div>
 
 <script type="text/javascript">
-    // memory_limit: {{ Capabilities.memory_limit }}, upload_max_filesize: {{ Capabilities.upload_max_filesize }}, post_max_size: {{ Capabilities.post_max_size }}, browser_file_memory_limit: {{ Capabilities.browser_file_memory_limit }}
+    // memory_limit: {{ Capabilities.memory_limit }},
+    // upload_max_filesize: {{ Capabilities.upload_max_filesize }},
+    // post_max_size: {{ Capabilities.post_max_size }},
+    // browser_file_memory_limit: {{ Capabilities.browser_file_memory_limit }}
+
     var url = '{{ path('upload_file') }}';
     var urlChunkTest = '{{ path('upload_file_chunk_test') }}';
     var maxChunkSize = ({{ MaxUploadFileSize }} * 1024 * 1024); // to MB
@@ -113,6 +117,7 @@
     var appUserName = '{% if app.user %}{{ app.user.username }}{% else %}Unknown user{% endif %}';
 
     var postdata = {'_tokenFile' : '{{FileForm._tokenFile.vars.value}}', '_tokenFileBlock' : '{{FileBlockForm._tokenFileBlock.vars.value}}'};
+    {# var postdata = {'_tokenFile' : '{{FileFormToken}}', '_tokenFileBlock' : '{{FileBlockFormToken}}'}; #}
     var pendingFilesNumber = 0;
 
     $('#emissionSettingsContainerSwitch, #emissionSettingsContainerUpperSwitch').click(function(event){
