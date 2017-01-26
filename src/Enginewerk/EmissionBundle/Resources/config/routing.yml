@@ -43,7 +43,7 @@ file_expiration_date:
     requirements:
         file: '.*'
         date: '.*'
-    defaults: { _controller: EnginewerkEmissionBundle:Default:delete, date: 'never' }
+    defaults: { _controller: EnginewerkEmissionBundle:Default:fileExpirationDate, date: 'never' }
 
 replace_file:
     path: /replace/{replace}/with/{replacement}
@@ -54,6 +54,6 @@ replace_file:
     defaults: { _controller: EnginewerkEmissionBundle:Default:replaceFile }
 
 list_files:
-    path: /files/{created_after}
+    path: /files/{createdAfter}
     methods: [GET]
     defaults: { _controller: EnginewerkEmissionBundle:Default:files, created_after: null }

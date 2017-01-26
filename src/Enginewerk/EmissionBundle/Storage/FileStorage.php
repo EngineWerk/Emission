@@ -1,155 +1,201 @@
 <?php
 namespace Enginewerk\EmissionBundle\Storage;
 
-use Enginewerk\EmissionBundle\Entity\File;
+use DateTimeInterface;
+use Enginewerk\ApplicationBundle\Logger\HasLoggerTrait;
+use Enginewerk\ApplicationBundle\Response\ApplicationResponse;
+use Enginewerk\ApplicationBundle\Response\ServiceResponse;
 use Enginewerk\EmissionBundle\Entity\FileBlock;
-use Enginewerk\EmissionBundle\FileResponse\ChunkedFile;
-use Enginewerk\EmissionBundle\Repository\FileBlockRepositoryInterface;
-use Enginewerk\EmissionBundle\Repository\FileRepositoryInterface;
-use Enginewerk\FSBundle\Service\BinaryStorageService;
+use Enginewerk\EmissionBundle\Service\FileReadServiceInterface;
+use Enginewerk\EmissionBundle\Service\FileWriteServiceInterface;
+use Enginewerk\FSBundle\Service\BinaryStorageServiceInterface;
 
 final class FileStorage
 {
-    /** @var  FileRepositoryInterface */
-    private $fileRepository;
+    use HasLoggerTrait;
 
-    /** @var  FileBlockRepositoryInterface */
-    private $fileBlockRepository;
-
-    /** @var  BinaryStorageService */
+    /** @var  BinaryStorageServiceInterface */
     private $binaryBlockStorage;
 
+    /** @var  FileReadServiceInterface */
+    private $fileReadService;
+
+    /** @var  FileWriteServiceInterface */
+    private $fileWriteService;
+
     /**
-     * @param FileRepositoryInterface $fileRepository
-     * @param FileBlockRepositoryInterface $fileBlockRepository
-     * @param BinaryStorageService $binaryBlockStorage
+     * @param BinaryStorageServiceInterface $binaryBlockStorage
+     * @param FileReadServiceInterface $fileReadService
+     * @param FileWriteServiceInterface $fileWriteService
      */
     public function __construct(
-        FileRepositoryInterface $fileRepository,
-        FileBlockRepositoryInterface $fileBlockRepository,
-        BinaryStorageService $binaryBlockStorage
+        BinaryStorageServiceInterface $binaryBlockStorage,
+        FileReadServiceInterface $fileReadService,
+        FileWriteServiceInterface $fileWriteService
     ) {
-        $this->fileRepository = $fileRepository;
-        $this->fileBlockRepository = $fileBlockRepository;
         $this->binaryBlockStorage = $binaryBlockStorage;
-    }
-
-    /**
-     * @param string $shortFileIdentifier
-     */
-    public function delete($shortFileIdentifier)
-    {
-        $file = $this->getByShortFileIdentifier($shortFileIdentifier);
-
-        /** @var FileBlock $fileBlock */
-        foreach ($file->getFileBlocks() as $fileBlock) {
-            $usedBlocks = $this->fileBlockRepository->getUsedBlocksNumber($fileBlock->getFileHash());
-
-            $binaryBlockKey = $fileBlock->getFileHash();
-            $this->fileBlockRepository->remove($fileBlock);
-
-            if (null === $usedBlocks || 1 === $usedBlocks) {
-                $this->binaryBlockStorage->delete($binaryBlockKey);
-            }
-        }
-
-        $this->fileRepository->remove($file);
+        $this->fileReadService = $fileReadService;
+        $this->fileWriteService = $fileWriteService;
     }
 
     /**
      * @param string $shortFileIdentifier
      *
      * @throws FileNotFoundException
-     *
-     * @return File
-     *
+     * @throws InvalidFileIdentifierException
      */
-    public function getByShortFileIdentifier($shortFileIdentifier)
+    protected function delete($shortFileIdentifier)
     {
-        $file = $this->findByShortIdentifier($shortFileIdentifier);
+        $file = $this->fileReadService->getByShortFileIdentifier($shortFileIdentifier);
 
-        if (null !== $file) {
-            return $file;
-        } else {
-            throw new FileNotFoundException(sprintf('File with key "%s" not found.', $shortFileIdentifier));
-        }
-    }
+        /** @var FileBlock $fileBlock */
+        foreach ($file->getFileBlocks() as $fileBlock) {
+            $usedBlocks = $this->fileReadService->getUsedBlocksNumber($fileBlock->getFileHash());
 
-    /**
-     * @param string $fileShortIdentifier
-     *
-     * @return ChunkedFile
-     */
-    public function getFileForDownload($fileShortIdentifier)
-    {
-        $file = $this->findByShortIdentifier($fileShortIdentifier);
+            $binaryBlockKey = $fileBlock->getFileHash();
+            $this->fileWriteService->removeFileBlock($fileBlock);
 
-        $fileBlocks = $this->fileBlockRepository->findByFileId($file->getId());
-
-        $binaryBlocks = [];
-        foreach ($fileBlocks as $fileBlock) {
-            $binaryBlocks[] = $this->binaryBlockStorage->get($fileBlock->getFileHash());
+            if (null === $usedBlocks || 1 === $usedBlocks) {
+                $this->binaryBlockStorage->delete($binaryBlockKey);
+            }
         }
 
-        return new ChunkedFile($binaryBlocks);
-    }
-
-    /**
-     * @param string $identifier
-     *
-     * @throws \RuntimeException
-     *
-     * @return File|null
-     *
-     */
-    public function findByShortIdentifier($identifier)
-    {
-        if (mb_strlen($identifier) === 0) {
-            throw new \RuntimeException('File short identifier cannot be empty');
-        }
-
-        return $this->fileRepository->findOneByShortIdentifier($identifier);
-    }
-
-    /**
-     * @param string $replace
-     * @param string $replacement
-     *
-     * @throws \Exception
-     */
-    public function replace($replace, $replacement)
-    {
-        $replaceFile = $this->getByShortFileIdentifier($replace);
-        /* @var $replaceFile \Enginewerk\EmissionBundle\Entity\File */
-
-        $replacementFile = $this->getByShortFileIdentifier($replacement);
-        /* @var $replacementFile \Enginewerk\EmissionBundle\Entity\File */
-
-        if ($replaceFile->getUser()->getId() === $replacementFile->getUser()->getId()) {
-            $replacementFile->setFileId($replaceFile->getFileId());
-            $this->fileRepository->persist($replacementFile);
-
-            $replaceFileKey = $replaceFile->getFileHash();
-            $this->binaryBlockStorage->delete($replaceFileKey);
-            $this->fileRepository->remove($replaceFile);
-        } else {
-            throw new UserPermissionException(sprintf(
-                'Only owner "%s" can replace file.',
-                $replaceFile->getUser()->getUsername()
-            ));
-        }
+        $this->fileWriteService->removeFile($file);
     }
 
     /**
      * @param string $shortFileIdentifier
-     * @param \DateTimeInterface $expirationDate
+     *
+     * @return ServiceResponse
      */
-    public function alterExpirationDate($shortFileIdentifier, \DateTimeInterface $expirationDate)
+    public function deleteFile($shortFileIdentifier)
     {
-        $file = $this->getByShortFileIdentifier($shortFileIdentifier);
+        $applicationResponse = new ApplicationResponse();
 
-        $file->setExpirationDate(new \DateTime($expirationDate->getTimestamp()));
+        try {
+            $this->delete($shortFileIdentifier);
+            $applicationResponse->success();
+        } catch (\Exception $ex) {
+            $applicationResponse->error(sprintf(
+                'Can`t delete File identified by shortFileIdentifier "%s"',
+                $shortFileIdentifier
+            ));
+            $this->getLogger()
+                ->error(
+                sprintf(
+                    'Can`t delete File identified by shortFileIdentifier "%s". %s',
+                    $shortFileIdentifier,
+                    $ex->getMessage())
+            );
+        }
 
-        $this->fileRepository->persist($file);
+        return new ServiceResponse(200, $applicationResponse->toArray());
+    }
+
+    /**
+     * @param string $replaceShortFileIdentifier
+     * @param string $replacementShortFileIdentifier
+     *
+     * @return ServiceResponse
+     */
+    public function replace($replaceShortFileIdentifier, $replacementShortFileIdentifier)
+    {
+        $appResponse = new ApplicationResponse();
+
+        $replaceFile = $this->fileReadService->getByShortFileIdentifier($replaceShortFileIdentifier);
+        $replacementFile = $this->fileReadService->getByShortFileIdentifier($replacementShortFileIdentifier);
+
+        if ($replaceFile->getUser()->getId() === $replacementFile->getUser()->getId()) {
+            try {
+                $replacementFile->setFileId($replaceFile->getFileId());
+                $this->fileWriteService->persistFile($replacementFile);
+
+                $replaceFileKey = $replaceFile->getFileHash();
+                $this->binaryBlockStorage->delete($replaceFileKey);
+                $this->fileWriteService->removeFile($replaceFile);
+
+                $appResponse->success('File replaced.');
+                $responseCode = 200;
+            } catch (\Exception $exception) {
+                $this->getLogger()->error($exception->getMessage());
+                $appResponse->error('Can\'t replace file');
+                $responseCode = 403;
+            }
+        } else {
+            $this->getLogger()->error(
+                sprintf(
+                    'Only owner "%s" can replace file.',
+                    $replaceFile->getUser()->getUsername()
+                )
+            );
+
+            $appResponse->error(sprintf(
+                'Only owner "%s" can replace file.',
+                $replaceFile->getUser()->getUsername()
+            ));
+            $responseCode = 403;
+        }
+
+        return new ServiceResponse($responseCode, $appResponse->toArray());
+    }
+
+    /**
+     * @param string $fileShortIdentifier
+     * @param DateTimeInterface|null $expirationDate
+     *
+     * @return ServiceResponse
+     */
+    public function setFileExpirationDate($fileShortIdentifier, DateTimeInterface $expirationDate = null)
+    {
+        $applicationResponse = new ApplicationResponse();
+
+        try {
+            $file = $this->fileReadService->findByShortIdentifier($fileShortIdentifier);
+            $file->setExpirationDate(new \DateTime($expirationDate->getTimestamp()));
+            $this->fileWriteService->persistFile($file);
+
+            $applicationResponse->success();
+            $responseCode = 200;
+        } catch (InvalidFileIdentifierException $invalidIdentifierException) {
+            $this->getLogger()->error($invalidIdentifierException->getMessage());
+
+            $applicationResponse->error(sprintf(
+                'File identified by "%s" was not found.',
+                $fileShortIdentifier
+            ));
+            $responseCode = 404;
+        } catch (FileNotFoundException $fileNotFoundException) {
+            $this->getLogger()->error(sprintf(
+                'Can`t change expiration date of File #%s. %s',
+                $fileShortIdentifier,
+                $fileNotFoundException->getMessage()
+            ));
+
+            $applicationResponse->error('Can`t change expiration date');
+            $responseCode = 413;
+        } catch (\Exception $exception) {
+            $this->getLogger()->error($exception->getMessage());
+            $applicationResponse->error('Can`t change expiration date');
+            $responseCode = 404; // Set proper code
+        }
+
+        return new ServiceResponse($responseCode, $applicationResponse->toArray());
+    }
+
+    /**
+     * @param string|null $createdAfter
+     *
+     * @return ServiceResponse
+     */
+    public function getFilesForJsonApi($createdAfter = null)
+    {
+        $applicationResponse = new ApplicationResponse();
+
+        $applicationResponse->success();
+        $applicationResponse->data(
+            $this->fileReadService->getFilesForJsonApi(new \DateTime($createdAfter ?: 'now'))
+        );
+
+        return new ServiceResponse(200, $applicationResponse->toArray());
     }
 }

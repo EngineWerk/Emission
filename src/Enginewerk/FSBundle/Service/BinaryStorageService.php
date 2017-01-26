@@ -3,13 +3,14 @@ namespace Enginewerk\FSBundle\Service;
 
 use Enginewerk\FSBundle\Entity\BinaryBlock;
 use Enginewerk\FSBundle\Repository\BinaryBlockRepositoryInterface;
+use Enginewerk\FSBundle\Storage\Exception\FileNotFoundException;
+use Enginewerk\FSBundle\Storage\Exception\SystemStorageException;
 use Enginewerk\FSBundle\Storage\StorageInterface;
-use Exception;
 use Symfony\Component\HttpFoundation\File\File;
 
-class BinaryStorageService
+class BinaryStorageService implements BinaryStorageServiceInterface
 {
-    /** @var  BinaryBlockRepositoryInterface */
+    /** @var BinaryBlockRepositoryInterface */
     private $binaryBlockRepository;
 
     /** @var StorageInterface */
@@ -72,7 +73,8 @@ class BinaryStorageService
     /**
      * @param string $key
      *
-     * @throws Exception
+     * @throws FileNotFoundException
+     * @throws SystemStorageException
      */
     public function delete($key)
     {

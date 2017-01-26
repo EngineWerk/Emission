@@ -4,6 +4,10 @@ namespace Enginewerk\EmissionBundle\Repository\Doctrine;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
+use Doctrine\ORM\OptimisticLockException as DoctrineOptimisticLockException;
+use Doctrine\ORM\ORMInvalidArgumentException;
+use Enginewerk\ApplicationBundle\Repository\InvalidEntityException;
+use Enginewerk\ApplicationBundle\Repository\OptimisticLockException;
 use Enginewerk\EmissionBundle\Entity\File;
 use Enginewerk\EmissionBundle\Repository\FileRepositoryInterface;
 
@@ -104,8 +108,24 @@ class FileRepository extends EntityRepository implements FileRepositoryInterface
      */
     public function remove(File $file)
     {
-        $this->getEntityManager()->remove($file);
-        $this->getEntityManager()->flush();
+        try {
+            $this->getEntityManager()->remove($file);
+        } catch (ORMInvalidArgumentException $invalidArgumentException) {
+            throw new InvalidEntityException(
+                $invalidArgumentException->getMessage(),
+                $invalidArgumentException->getCode(),
+                $invalidArgumentException
+            );
+        }
+        try {
+            $this->getEntityManager()->flush();
+        } catch (DoctrineOptimisticLockException $optimisticLockException) {
+            throw new OptimisticLockException(
+                $optimisticLockException->getMessage(),
+                $optimisticLockException->getCode(),
+                $optimisticLockException
+            );
+        }
     }
 
     /**
@@ -113,7 +133,23 @@ class FileRepository extends EntityRepository implements FileRepositoryInterface
      */
     public function persist(File $file)
     {
-        $this->getEntityManager()->persist($file);
-        $this->getEntityManager()->flush();
+        try {
+            $this->getEntityManager()->persist($file);
+        } catch (ORMInvalidArgumentException $invalidArgumentException) {
+            throw new InvalidEntityException(
+                $invalidArgumentException->getMessage(),
+                $invalidArgumentException->getCode(),
+                $invalidArgumentException
+            );
+        }
+        try {
+            $this->getEntityManager()->flush();
+        } catch (DoctrineOptimisticLockException $optimisticLockException) {
+            throw new OptimisticLockException(
+                $optimisticLockException->getMessage(),
+                $optimisticLockException->getCode(),
+                $optimisticLockException
+            );
+        }
     }
 }

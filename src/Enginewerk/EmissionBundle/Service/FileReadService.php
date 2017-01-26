@@ -2,11 +2,11 @@
 namespace Enginewerk\EmissionBundle\Service;
 
 use DateTimeInterface;
-use Enginewerk\ApplicationBundle\Response\ApplicationResponse;
-use Enginewerk\ApplicationBundle\Response\ServiceResponse;
 use Enginewerk\EmissionBundle\Entity\File;
 use Enginewerk\EmissionBundle\Repository\FileBlockRepositoryInterface;
 use Enginewerk\EmissionBundle\Repository\FileRepositoryInterface;
+use Enginewerk\EmissionBundle\Storage\FileNotFoundException;
+use Enginewerk\EmissionBundle\Storage\InvalidFileIdentifierException;
 
 class FileReadService implements FileReadServiceInterface
 {
@@ -29,54 +29,17 @@ class FileReadService implements FileReadServiceInterface
     }
 
     /**
-     * @param string $fileName
-     * @param string $fileChecksum
-     * @param int $fileSize
-     * @param int $chunkRangeStart
-     * @param int $chunkRangeEnd
+     * Change to View object
      *
-     * @return ServiceResponse
+     * @return File[]
      */
-    public function findFileChunk($fileName, $fileChecksum, $fileSize, $chunkRangeStart, $chunkRangeEnd)
+    public function findAllFiles()
     {
-        $response = new ApplicationResponse();
-
-        $file = $this->fileRepository
-            ->findOneByNameAndChecksumAndSize($fileName, $fileChecksum, $fileSize);
-
-        if ($file) {
-            if ($this->hasFileFileBlock($file->getId(), $chunkRangeStart, $chunkRangeEnd)) {
-                $response->success('Block found');
-                $responseCode = 200;
-            } else {
-                $response->success('Block not found');
-                $responseCode = 306;
-            }
-        } else {
-            $response->error(sprintf('File "%s" not found', $fileName));
-            $responseCode = 306;
-        }
-
-        return new ServiceResponse($responseCode, $response->toArray());
+        return $this->fileRepository->getFiles();
     }
 
     /**
-     * @param int $fileId
-     * @param int $chunkRangeStart
-     * @param int $chunkRangeEnd
-     *
-     * @return bool
-     */
-    protected function hasFileFileBlock($fileId, $chunkRangeStart, $chunkRangeEnd)
-    {
-        return null !== $this->fileBlockRepository
-            ->findByFileIdAndRangeStartAndRangeEnd($fileId, $chunkRangeStart, $chunkRangeEnd);
-    }
-
-    /**
-     * @param DateTimeInterface $createdAfter
-     *
-     * @return string[]
+     * @inheritdoc
      */
     public function getFilesForJsonApi(DateTimeInterface $createdAfter)
     {
@@ -91,14 +54,6 @@ class FileReadService implements FileReadServiceInterface
     public function getExpiredFiles(\DateTimeInterface $nowDate = null)
     {
         return $this->fileRepository->getExpiredFiles($nowDate);
-    }
-
-    /**
-     * @return File[]
-     */
-    public function findAllFiles()
-    {
-        return $this->fileRepository->getFiles();
     }
 
     /**
@@ -123,5 +78,64 @@ class FileReadService implements FileReadServiceInterface
     public function findFileBlock($fileId, $rangeStart, $rangeEnd)
     {
         return $this->fileBlockRepository->findByFileIdAndRangeStartAndRangeEnd($fileId, $rangeStart, $rangeEnd);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function hasFileFileBlock($fileId, $chunkRangeStart, $chunkRangeEnd)
+    {
+        return null !== $this->fileBlockRepository
+            ->findByFileIdAndRangeStartAndRangeEnd($fileId, $chunkRangeStart, $chunkRangeEnd);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function findOneByNameAndChecksumAndSize($fileName, $fileChecksum, $fileSize)
+    {
+        return $this->fileRepository->findOneByNameAndChecksumAndSize($fileName, $fileChecksum, $fileSize);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getByShortFileIdentifier($shortFileIdentifier)
+    {
+        $file = $this->findByShortIdentifier($shortFileIdentifier);
+
+        if (null !== $file) {
+            return $file;
+        } else {
+            throw new FileNotFoundException(sprintf('File with key "%s" not found.', $shortFileIdentifier));
+        }
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function findByShortIdentifier($identifier)
+    {
+        if (mb_strlen($identifier) === 0) {
+            throw new InvalidFileIdentifierException('File short identifier cannot be empty.');
+        }
+
+        return $this->fileRepository->findOneByShortIdentifier($identifier);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getUsedBlocksNumber($fileHash)
+    {
+        return $this->fileBlockRepository->getUsedBlocksNumber($fileHash);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function findBlocksByFileId($fileId)
+    {
+        return $this->fileBlockRepository->findByFileId($fileId);
     }
 }

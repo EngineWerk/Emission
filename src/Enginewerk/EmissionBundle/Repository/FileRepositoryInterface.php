@@ -1,6 +1,8 @@
 <?php
 namespace Enginewerk\EmissionBundle\Repository;
 
+use Enginewerk\ApplicationBundle\Repository\InvalidEntityException;
+use Enginewerk\ApplicationBundle\Repository\OptimisticLockException;
 use Enginewerk\EmissionBundle\Entity\File;
 
 interface FileRepositoryInterface
@@ -43,14 +45,22 @@ interface FileRepositoryInterface
     /**
      * @param File $file
      *
+     * @throws InvalidEntityException
+     * @throws OptimisticLockException
+     *
      * @return void
+     *
      */
     public function remove(File $file);
 
     /**
      * @param File $file
      *
+     * @throws InvalidEntityException
+     * @throws OptimisticLockException
+     *
      * @return void
+     *
      */
     public function persist(File $file);
 }

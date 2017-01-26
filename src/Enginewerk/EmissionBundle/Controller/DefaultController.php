@@ -4,69 +4,64 @@ namespace Enginewerk\EmissionBundle\Controller;
 use Enginewerk\ApplicationBundle\Response\ApplicationResponse;
 use Enginewerk\EmissionBundle\Form\Type\ResumableFileBlockType;
 use Enginewerk\EmissionBundle\Form\Type\ResumableFileType;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class DefaultController extends Controller
 {
     /**
-     * @Template()
+     * @return Response
      */
     public function indexAction()
     {
-        $files = $this
-                ->get('enginewerk_emission.service.file_read_service')
-                ->findAllFiles();
-
         $fileBlockForm = $this->createForm(new ResumableFileBlockType());
         $fileForm = $this->createForm(new ResumableFileType());
 
-        $capabilities = [
-            'memory_limit' => ini_get('memory_limit'),
-            'post_max_size' => ini_get('post_max_size'),
-            'upload_max_filesize' => ini_get('upload_max_filesize'),
-            'browser_file_memory_limit' => $this->container->getParameter('app.uploader_max_chunk_size'),
-            ];
+        $responseContent = $this->renderView(
+            'EnginewerkEmissionBundle:Default:index.html.twig',
+            [
+                'Files' => $this->get('enginewerk_emission.service.file_read_service')->findAllFiles(),
+                'FileBlockForm' => $fileBlockForm->createView(),
+                'FileForm' => $fileForm->createView(),
+                'Capabilities' => $this->get('enginewerk_emission.service.capabilities_service')->getCapabilities(),
+                'MaxUploadFileSize' => $this->get('enginewerk_emission.service.capabilities_service')->getMaxUploadFileSize(),
+            ]
+        );
 
-        $uploaderCapabilities = $capabilities;
-        sort($uploaderCapabilities, SORT_NUMERIC);
-        $maxUploadFileSize = (int) $uploaderCapabilities[0];
-
-        return [
-            'Files' => $files,
-            'FileBlockForm' => $fileBlockForm->createView(),
-            'FileForm' => $fileForm->createView(),
-            'Capabilities' => $capabilities,
-            'MaxUploadFileSize' => $maxUploadFileSize,
-        ];
+        return new Response($responseContent);
     }
 
     /**
-     * @Template()
-     *
      * @param  Request $request
      *
      * @throws NotFoundHttpException
      *
-     * @return array
+     * @return Response
      */
     public function showFileAction(Request $request)
     {
-        $efs = $this->get('enginewerk_emission.storage.file_storage');
+        $fileReadService = $this->get('enginewerk_emission.service.file_read_service');
 
-        if (null === ($file = $efs->findByShortIdentifier($request->get('file')))) {
+        if (null === ($file = $fileReadService->findByShortIdentifier($request->get('file')))) {
             throw $this->createNotFoundException(sprintf('File #%s not found.', $request->get('file')));
         }
 
-        return ['File' => $file];
+        $responseContent = $this->renderView(
+            'EnginewerkEmissionBundle:Default:showFile.html.twig',
+            [
+                'File' => $file,
+            ]
+        );
+
+        return new Response($responseContent);
     }
 
     /**
-     * @param  Request                                                       $request
+     * @param  Request $request
      *
      * @throws NotFoundHttpException
      *
@@ -74,9 +69,9 @@ class DefaultController extends Controller
      */
     public function showFileContentAction(Request $request)
     {
-        $efs = $this->get('enginewerk_emission.storage.file_storage');
+        $fileReadService = $this->get('enginewerk_emission.service.file_read_service');
 
-        if (null === ($file = $efs->findByShortIdentifier($request->get('fileShortIdentifier')))) {
+        if (null === ($file = $fileReadService->findByShortIdentifier($request->get('fileShortIdentifier')))) {
             throw $this->createNotFoundException(sprintf('File #%s not found.', $request->get('fileShortIdentifier')));
         }
 
@@ -95,73 +90,33 @@ class DefaultController extends Controller
     /**
      * @param  Request $request
      *
-     * @throws NotFoundHttpException
-     *
      * @return StreamedResponse
      */
     public function downloadFileAction(Request $request)
     {
-        $fileStorage = $this->get('enginewerk_emission.storage.file_storage');
-        $fileShortIdentifier = $request->get('fileShortIdentifier');
-
-        if (null === ($file = $fileStorage->findByShortIdentifier($fileShortIdentifier))) {
-            throw $this->createNotFoundException(
-                sprintf(
-                    'File identified by "%s" not found.',
-                    $request->get('fileShortIdentifier')
-                )
-            );
-        }
-
-        $responseFile = $fileStorage->getFileForDownload($fileShortIdentifier);
-
         set_time_limit(0);
 
-        $response = new StreamedResponse();
-
-        $response->headers->set('Content-Type', $file->getType());
-        $response->headers->set('Content-Length', $file->getSize());
-        $response->headers->set('Content-Transfer-Encoding', 'binary');
-
-        if ($request->get('dl')) {
-            $response->headers->set('Content-Disposition', 'attachment; filename="' . $file->getName() . '"');
-        }
-
-        $response->setCallback(function () use ($responseFile) {
-            $responseFile->read();
-        });
-
-        return $response;
+        return $this->get('enginewerk_emission.service.file_stream_service')
+            ->getFileForDownload(
+                $request->get('fileShortIdentifier'),
+                $request->get('dl') === '1'
+            );
     }
 
     /**
-     * @param  Request      $request
+     * @param Request $request
      *
      * @return JsonResponse
      */
     public function deleteAction(Request $request)
     {
-        $appResponse = new ApplicationResponse();
+        $serviceResponse = $this->get('enginewerk_emission.storage.file_storage')
+            ->deleteFile($request->get('file'));
 
-        $fileStorage = $this->get('enginewerk_emission.storage.file_storage');
-
-        try {
-            $fileStorage->delete($request->get('file'));
-            $appResponse->success();
-        } catch (\Exception $ex) {
-            $appResponse->error(sprintf(
-                'Can`t delete File identified by shortFileIdentifier "%s"',
-                $request->get('file')
-            ));
-            $this->get('logger')->error(
-                sprintf(
-                    'Can`t delete File identified by shortFileIdentifier "%s". %s',
-                    $request->get('file'),
-                    $ex->getMessage())
-            );
-        }
-
-        return new JsonResponse($appResponse->toArray(), 200);
+        return new JsonResponse(
+            $serviceResponse->getResponseContent(),
+            $serviceResponse->getResponseCode()
+        );
     }
 
     /**
@@ -171,30 +126,16 @@ class DefaultController extends Controller
      */
     public function fileExpirationDateAction(Request $request)
     {
-        $appResponse = new ApplicationResponse();
+        $serviceResponse = $this->get('enginewerk_emission.storage.file_storage')
+            ->setFileExpirationDate(
+                $request->get('file'),
+                $request->get('date') ? new \DateTimeImmutable($request->get('date')) : null
+            );
 
-        $efs = $this->get('enginewerk_emission.storage.file_storage');
-
-        if (null === $efs->findByShortIdentifier($request->get('file'))) {
-            $appResponse->error(sprintf('File #%s not found.', $request->get('file')));
-        } else {
-            if ('never' === $request->get('date')) {
-                $expirationDate = null;
-            } else {
-                $expirationDate = new \DateTimeImmutable($request->get('date'));
-            }
-
-            try {
-                $efs->alterExpirationDate($request->get('file'), $expirationDate);
-
-                $appResponse->success();
-            } catch (\Exception $ex) {
-                $appResponse->error('Can`t change expiration date');
-                $this->get('logger')->error(sprintf('Can`t change expiration date of File #%s. %s', $request->get('file'), $ex->getMessage()));
-            }
-        }
-
-        return new JsonResponse($appResponse->toArray(), 200);
+        return new JsonResponse(
+            $serviceResponse->getResponseContent(),
+            $serviceResponse->getResponseCode()
+        );
     }
 
     /**
@@ -205,36 +146,28 @@ class DefaultController extends Controller
      */
     public function replaceFileAction($replace, $replacement)
     {
-        $appResponse = new ApplicationResponse();
+        $serviceResponse = $this->get('enginewerk_emission.storage.file_storage')
+            ->replace($replace, $replacement);
 
-        $efs = $this->get('enginewerk_emission.storage.file_storage');
-
-        try {
-            $efs->replace($replace, $replacement);
-            $appResponse->success('File replaced.');
-        } catch (\Exception $ex) {
-            $this->get('logger')->error(sprintf('Can`t replace file. [%s] %s', get_class($ex), $ex->getMessage()));
-            $appResponse->error(sprintf('Can`t replace file.'));
-        }
-
-        return new JsonResponse($appResponse->toArray());
+        return new JsonResponse(
+            $serviceResponse->getResponseContent(),
+            $serviceResponse->getResponseCode()
+        );
     }
 
     /**
-     * @param string $created_after
+     * @param string|null $createdAfter
      *
      * @return JsonResponse
      */
-    public function filesAction($created_after = null)
+    public function filesAction($createdAfter = null)
     {
-        $appResponse = new ApplicationResponse();
+        $serviceResponse = $this->get('enginewerk_emission.storage.file_storage')
+            ->getFilesForJsonApi($createdAfter);
 
-        $appResponse->success();
-        $appResponse->data(
-            $this->get('enginewerk_emission.service.file_read_service')
-                ->getFilesForJsonApi(new \DateTime($created_after ?: 'now'))
+        return new JsonResponse(
+            $serviceResponse->getResponseContent(),
+            $serviceResponse->getResponseCode()
         );
-
-        return new JsonResponse($appResponse->toArray(), 200);
     }
 }

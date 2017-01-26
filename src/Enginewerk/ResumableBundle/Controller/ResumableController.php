@@ -15,7 +15,7 @@ class ResumableController extends BaseController
      */
     public function uploadChunkTestAction(Request $request)
     {
-        $fileUploadService = $this->get('enginewerk_emission.service.file_read_service');
+        $fileUploadService = $this->get('enginewerk_resumable.service.resumable_file_upload_service');
         $serviceResponse = $fileUploadService->findFileChunk(
             $request->get('resumableFilename'),
             $request->get('resumableIdentifier'),

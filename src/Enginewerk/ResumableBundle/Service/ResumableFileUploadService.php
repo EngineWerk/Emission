@@ -6,14 +6,14 @@ use Enginewerk\ApplicationBundle\Response\ServiceResponse;
 use Enginewerk\EmissionBundle\Service\FileReadServiceInterface;
 use Enginewerk\EmissionBundle\Service\FileViewServiceInterface;
 use Enginewerk\EmissionBundle\Service\FileWriteServiceInterface;
-use Enginewerk\FSBundle\Service\BinaryStorageService;
+use Enginewerk\FSBundle\Service\BinaryStorageServiceInterface;
 use Enginewerk\ResumableBundle\Request\FileRequest;
 use Enginewerk\UserBundle\Entity\User;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class ResumableFileUploadService
 {
-    /** @var  BinaryStorageService */
+    /** @var  BinaryStorageServiceInterface */
     protected $binaryStorageService;
 
     /** @var  FileViewServiceInterface */
@@ -26,13 +26,13 @@ class ResumableFileUploadService
     protected $fileReadService;
 
     /**
-     * @param BinaryStorageService $binaryStorageService
+     * @param BinaryStorageServiceInterface $binaryStorageService
      * @param FileViewServiceInterface $fileViewService
      * @param FileWriteServiceInterface $fileWriteService
      * @param FileReadServiceInterface $fileReadService
      */
     public function __construct(
-        BinaryStorageService $binaryStorageService,
+        BinaryStorageServiceInterface $binaryStorageService,
         FileViewServiceInterface $fileViewService,
         FileWriteServiceInterface $fileWriteService,
         FileReadServiceInterface $fileReadService
@@ -103,5 +103,36 @@ class ResumableFileUploadService
         $applicationResponse->data($responseData);
 
         return new ServiceResponse($responseCode, $applicationResponse->toArray());
+    }
+
+    /**
+     * @param string $fileName
+     * @param string $fileChecksum
+     * @param int $fileSize
+     * @param int $chunkRangeStart
+     * @param int $chunkRangeEnd
+     *
+     * @return ServiceResponse
+     */
+    public function findFileChunk($fileName, $fileChecksum, $fileSize, $chunkRangeStart, $chunkRangeEnd)
+    {
+        $response = new ApplicationResponse();
+
+        $file = $this->fileReadService->findOneByNameAndChecksumAndSize($fileName, $fileChecksum, $fileSize);
+
+        if ($file) {
+            if ($this->fileReadService->hasFileFileBlock($file->getId(), $chunkRangeStart, $chunkRangeEnd)) {
+                $response->success('Block found');
+                $responseCode = 200;
+            } else {
+                $response->success('Block not found');
+                $responseCode = 306;
+            }
+        } else {
+            $response->error(sprintf('File "%s" not found', $fileName));
+            $responseCode = 306;
+        }
+
+        return new ServiceResponse($responseCode, $response->toArray());
     }
 }

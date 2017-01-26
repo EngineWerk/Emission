@@ -1,22 +1,22 @@
 <?php
-namespace Enginewerk\FSBundle\Storage;
+namespace Enginewerk\FSBundle\Service;
 
 use Enginewerk\FSBundle\Storage\Exception\FileNotFoundException;
 use Enginewerk\FSBundle\Storage\Exception\SystemStorageException;
 use Symfony\Component\HttpFoundation\File\File;
 
-interface StorageInterface
+interface BinaryStorageServiceInterface
 {
     /**
-     * @param  string $key
-     * @param  File $uploadedFile
+     * @param File $file
+     * @param string $key
      *
-     * @return int File size
+     * @return int
      */
-    public function put($key, File $uploadedFile);
+    public function store(File $file, $key);
 
     /**
-     * @param  string $key
+     * @param string $key
      *
      * @return File
      */
@@ -27,8 +27,6 @@ interface StorageInterface
      *
      * @throws FileNotFoundException
      * @throws SystemStorageException
-     *
-     * @return bool
      */
     public function delete($key);
 }

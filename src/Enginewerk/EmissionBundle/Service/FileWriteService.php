@@ -73,4 +73,28 @@ class FileWriteService implements FileWriteServiceInterface
 
         return $fileBlock;
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function removeFile(File $file)
+    {
+        $this->fileRepository->remove($file);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function removeFileBlock(FileBlock $fileBlock)
+    {
+        $this->fileBlockRepository->remove($fileBlock);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function persistFile(File $file)
+    {
+        $this->fileRepository->persist($file);
+    }
 }
