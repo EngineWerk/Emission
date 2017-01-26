@@ -4,6 +4,8 @@ namespace Enginewerk\EmissionBundle\Service;
 use DateTimeInterface;
 use Enginewerk\EmissionBundle\Entity\File;
 use Enginewerk\EmissionBundle\Entity\FileBlock;
+use Enginewerk\EmissionBundle\Model\File as FileModel;
+use Enginewerk\EmissionBundle\Model\FileCollection;
 use Enginewerk\EmissionBundle\Storage\FileNotFoundException;
 use Enginewerk\EmissionBundle\Storage\InvalidFileIdentifierException;
 
@@ -93,4 +95,16 @@ interface FileReadServiceInterface
      * @return string[]
      */
     public function getFilesForJsonApi(DateTimeInterface $createdAfter);
+
+    /**
+     * @return FileCollection
+     */
+    public function findAllFiles();
+
+    /**
+     * @param string $shortIdentifier
+     *
+     * @return FileModel
+     */
+    public function findFileByShortIdentifier($shortIdentifier);
 }

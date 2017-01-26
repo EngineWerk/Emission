@@ -3,7 +3,7 @@ namespace Enginewerk\EmissionBundle\Service;
 
 use Enginewerk\ApplicationBundle\Logger\HasLoggerTrait;
 use Enginewerk\EmissionBundle\Entity\File;
-use Enginewerk\EmissionBundle\FileResponse\FileBinaryBlockCollection;
+use Enginewerk\EmissionBundle\FileResponse\BinaryBlockCollection;
 use Enginewerk\EmissionBundle\Storage\InvalidFileIdentifierException;
 use Enginewerk\FSBundle\Service\BinaryStorageServiceInterface;
 use Symfony\Component\HttpFoundation\Response;
@@ -50,7 +50,7 @@ class FileStreamService
             return new Response('File not found', 404);
         }
 
-        $fileBinaryBlockCollection = $this->getBlockCollection($file);
+        $binaryBlockCollection = $this->getBlockCollection($file);
 
         $response = new StreamedResponse();
 
@@ -63,9 +63,9 @@ class FileStreamService
         }
 
         try {
-            $response->setCallback(function () use ($fileBinaryBlockCollection) {
+            $response->setCallback(function () use ($binaryBlockCollection) {
                 try {
-                    $fileBinaryBlockCollection->read();
+                    $binaryBlockCollection->read();
                 } catch (\RuntimeException $exception) {
                     $this->getLogger()->critical($exception->getMessage());
                 }
@@ -84,7 +84,7 @@ class FileStreamService
      *
      * @throws InvalidFileIdentifierException
      *
-     * @return FileBinaryBlockCollection
+     * @return BinaryBlockCollection
      *
      */
     protected function getBlockCollection(File $file)
@@ -96,6 +96,6 @@ class FileStreamService
             $binaryBlocks[] = $this->binaryBlockStorage->get($fileBlock->getFileHash());
         }
 
-        return new FileBinaryBlockCollection($binaryBlocks);
+        return new BinaryBlockCollection($binaryBlocks);
     }
 }

@@ -4,31 +4,31 @@ namespace Enginewerk\EmissionBundle\FileResponse;
 use RuntimeException;
 use Symfony\Component\HttpFoundation\File\File;
 
-class FileBinaryBlockCollection implements FileReadInterface
+class BinaryBlockCollection implements FileReadInterface
 {
     /** @var  File[] */
-    private $fileBinaryBlockCollection;
+    private $binaryBlockCollection;
 
     /**
      * @param File[] $fileBinaryBlockCollection
      */
     public function __construct(array $fileBinaryBlockCollection)
     {
-        $this->fileBinaryBlockCollection = $fileBinaryBlockCollection;
+        $this->binaryBlockCollection = $fileBinaryBlockCollection;
     }
 
     public function read()
     {
         $this->checkIfFileIsReadable();
 
-        foreach ($this->getFileBinaryBlockCollection() as $chunk) {
+        foreach ($this->getBinaryBlockCollection() as $chunk) {
             readfile($chunk->getPathname());
         }
     }
 
     protected function checkIfFileIsReadable()
     {
-        foreach ($this->getFileBinaryBlockCollection() as $chunk) {
+        foreach ($this->getBinaryBlockCollection() as $chunk) {
             if (!$chunk->isFile() || !$chunk->isReadable()) {
                 throw new RuntimeException(
                     sprintf(
@@ -43,8 +43,8 @@ class FileBinaryBlockCollection implements FileReadInterface
     /**
      * @return File[]
      */
-    protected function getFileBinaryBlockCollection()
+    protected function getBinaryBlockCollection()
     {
-        return $this->fileBinaryBlockCollection;
+        return $this->binaryBlockCollection;
     }
 }

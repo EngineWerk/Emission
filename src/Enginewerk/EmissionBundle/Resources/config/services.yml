@@ -4,12 +4,17 @@ services:
         class: Enginewerk\EmissionBundle\Service\CapabilitiesService
         arguments: ['%app.uploader_max_chunk_size%']
 
+    enginewerk_emission.model.file_factory:
+        public: false
+        class: Enginewerk\EmissionBundle\Model\FileFactory
+
     enginewerk_emission.service.file_read_service:
         public: true
         class: Enginewerk\EmissionBundle\Service\FileReadService
         arguments:
             - '@enginewerk_emission.repository.file_repository'
             - '@enginewerk_emission.repository.file_block_repository'
+            - '@enginewerk_emission.model.file_factory'
 
     enginewerk_emission.repository.file_block_repository:
         public: false

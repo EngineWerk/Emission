@@ -3,6 +3,9 @@ namespace Enginewerk\EmissionBundle\Service;
 
 use DateTimeInterface;
 use Enginewerk\EmissionBundle\Entity\File;
+use Enginewerk\EmissionBundle\Model\File as FileModel;
+use Enginewerk\EmissionBundle\Model\FileCollection;
+use Enginewerk\EmissionBundle\Model\FileFactoryInterface;
 use Enginewerk\EmissionBundle\Repository\FileBlockRepositoryInterface;
 use Enginewerk\EmissionBundle\Repository\FileRepositoryInterface;
 use Enginewerk\EmissionBundle\Storage\FileNotFoundException;
@@ -11,31 +14,52 @@ use Enginewerk\EmissionBundle\Storage\InvalidFileIdentifierException;
 class FileReadService implements FileReadServiceInterface
 {
     /** @var  FileRepositoryInterface */
-    protected $fileRepository;
+    private $fileRepository;
 
     /** @var  FileBlockRepositoryInterface */
-    protected $fileBlockRepository;
+    private $fileBlockRepository;
+
+    /** @var  FileFactoryInterface */
+    private $fileFactory;
 
     /**
      * @param FileRepositoryInterface $fileRepository
      * @param FileBlockRepositoryInterface $fileBlockRepository
+     * @param FileFactoryInterface $fileFactory
      */
     public function __construct(
         FileRepositoryInterface $fileRepository,
-        FileBlockRepositoryInterface $fileBlockRepository
+        FileBlockRepositoryInterface $fileBlockRepository,
+        FileFactoryInterface $fileFactory
     ) {
         $this->fileRepository = $fileRepository;
         $this->fileBlockRepository = $fileBlockRepository;
+        $this->fileFactory = $fileFactory;
     }
 
     /**
-     * Change to View object
-     *
-     * @return File[]
+     * @return FileCollection
      */
     public function findAllFiles()
     {
-        return $this->fileRepository->getFiles();
+        $fileCollection = new FileCollection();
+        foreach ($this->fileRepository->getFiles() as $fileEntity) {
+            $fileCollection->add($this->fileFactory->createFromEntity($fileEntity));
+        }
+
+        return $fileCollection;
+    }
+
+    /**
+     * @param string $shortIdentifier
+     *
+     * @return FileModel
+     */
+    public function findFileByShortIdentifier($shortIdentifier)
+    {
+        $fileEntity = $this->findByShortIdentifier($shortIdentifier);
+
+        return $this->fileFactory->createFromEntity($fileEntity);
     }
 
     /**

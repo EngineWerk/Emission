@@ -22,8 +22,6 @@
 <link rel="stylesheet" href="{{ asset('bundles/enginewerkemission/vendor/Resumable/resumable.css') }}">
 {% endblock %}
 
-{% import '::macro.html.twig' as marco %}
-
 {% block body %}
 <div id="emissionApplicationContainer">
 <!-- The fileinput-button span is used to style the file input field as button -->
@@ -60,23 +58,23 @@
         <div id="files" class="files">
             <table cellspacing="0" cellpadding="10" id="filesTable" class="center">
                 <tbody>
-            {% for File in Files %}
-                <tr{% if File.complete == 1 %} data-file-completed="yes"{% endif%} data-file-id="{{ File.id }}" data-search="{{ File.name }}" id="fhash-{% if File.checksum == null %}{{ File.name|md5 }}{% else %}{{ File.checksum }}{% endif %}">
+            {% for File in FileCollection.getAll %}
+                <tr{% if File.isComplete %} data-file-completed="yes"{% endif%} data-file-id="{{ File.id }}" data-search="{{ File.name }}" id="fhash-{% if File.checksum == null %}{{ File.name|md5 }}{% else %}{{ File.checksum }}{% endif %}">
                     <td>
-                        <div class="fileName">{% if File.complete == 0 %}(incomplete){% endif %}{{ File.name }}</div>
-                        <div class="fileUploadedBy">{{ File.User.Username }}</div>
-                        <div class="fileSize">{{ marco.bytesToSize(File.size) }}</div>
+                        <div class="fileName">{% if false == File.isComplete %}(incomplete){% endif %}{{ File.name }}</div>
+                        <div class="fileUploadedBy">{{ File.getOwnerName }}</div>
+                        <div class="fileSize">{{ File.getHumanReadableSize }}</div>
                     </td>
                     {% if File.complete == 1 %}
                         <td class="fileOptions">
-                            <a href="{{ path('show_file', {'file': File.fileId}) }}" class="show_file" data-show-file-content-href="{{ path('show_file_content', {'fileShortIdentifier': File.fileId}) }}">{% trans %}gui.show_file{% endtrans %}</a>
-                            <a href="{{ path('download_file', {'fileShortIdentifier': File.fileId}) }}" class="fileOptionsDownloadLink">{% trans %}gui.download_file{% endtrans %}</a>
-                            <a href="{{ path('open_file', {'fileShortIdentifier': File.fileId}) }}" class="fileOptionsOpenLink">{% trans %}gui.open_file_in_browser{% endtrans %}</a> -
-                            <a href="{{ path('delete_file', {'file': File.fileId}) }}" class="remove-file" data-filename="{{ File.name }}">{% trans %}gui.remove_file{% endtrans %}</a>
+                            <a href="{{ path('show_file', {'file': File.shortIdentifier}) }}" class="show_file" data-show-file-content-href="{{ path('show_file_content', {'fileShortIdentifier': File.shortIdentifier}) }}">{% trans %}gui.show_file{% endtrans %}</a>
+                            <a href="{{ path('download_file', {'fileShortIdentifier': File.shortIdentifier}) }}" class="fileOptionsDownloadLink">{% trans %}gui.download_file{% endtrans %}</a>
+                            <a href="{{ path('open_file', {'fileShortIdentifier': File.shortIdentifier}) }}" class="fileOptionsOpenLink">{% trans %}gui.open_file_in_browser{% endtrans %}</a> -
+                            <a href="{{ path('delete_file', {'file': File.shortIdentifier}) }}" class="remove-file" data-filename="{{ File.name }}">{% trans %}gui.remove_file{% endtrans %}</a>
                         </td>
                     {% else %}
                         <td class="fileOptions">
-                            <a href="{{ path('delete_file', {'file': File.fileId}) }}" class="remove-file" data-filename="{{ File.name }}">{% trans %}gui.remove_file{% endtrans %}</a>
+                            <a href="{{ path('delete_file', {'file': File.shortIdentifier}) }}" class="remove-file" data-filename="{{ File.name }}">{% trans %}gui.remove_file{% endtrans %}</a>
                         </td>
                     {% endif%}
                 </tr>

@@ -24,7 +24,7 @@ class DefaultController extends Controller
         $responseContent = $this->renderView(
             'EnginewerkEmissionBundle:Default:index.html.twig',
             [
-                'Files' => $this->get('enginewerk_emission.service.file_read_service')->findAllFiles(),
+                'FileCollection' => $this->get('enginewerk_emission.storage.file_storage')->findAllFiles(),
                 'FileBlockForm' => $fileBlockForm->createView(),
                 'FileForm' => $fileForm->createView(),
                 'Capabilities' => $this->get('enginewerk_emission.service.capabilities_service')->getCapabilities(),
@@ -44,9 +44,9 @@ class DefaultController extends Controller
      */
     public function showFileAction(Request $request)
     {
-        $fileReadService = $this->get('enginewerk_emission.service.file_read_service');
+        $fileStorage = $this->get('enginewerk_emission.storage.file_storage');
 
-        if (null === ($file = $fileReadService->findByShortIdentifier($request->get('file')))) {
+        if (null === ($file = $fileStorage->findByShortIdentifier($request->get('file')))) {
             throw $this->createNotFoundException(sprintf('File #%s not found.', $request->get('file')));
         }
 
@@ -69,9 +69,9 @@ class DefaultController extends Controller
      */
     public function showFileContentAction(Request $request)
     {
-        $fileReadService = $this->get('enginewerk_emission.service.file_read_service');
+        $fileStorage = $this->get('enginewerk_emission.storage.file_storage');
 
-        if (null === ($file = $fileReadService->findByShortIdentifier($request->get('fileShortIdentifier')))) {
+        if (null === ($file = $fileStorage->findByShortIdentifier($request->get('fileShortIdentifier')))) {
             throw $this->createNotFoundException(sprintf('File #%s not found.', $request->get('fileShortIdentifier')));
         }
 

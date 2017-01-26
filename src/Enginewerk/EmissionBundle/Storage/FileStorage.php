@@ -6,6 +6,8 @@ use Enginewerk\ApplicationBundle\Logger\HasLoggerTrait;
 use Enginewerk\ApplicationBundle\Response\ApplicationResponse;
 use Enginewerk\ApplicationBundle\Response\ServiceResponse;
 use Enginewerk\EmissionBundle\Entity\FileBlock;
+use Enginewerk\EmissionBundle\Model\File as FileModel;
+use Enginewerk\EmissionBundle\Model\FileCollection;
 use Enginewerk\EmissionBundle\Service\FileReadServiceInterface;
 use Enginewerk\EmissionBundle\Service\FileWriteServiceInterface;
 use Enginewerk\FSBundle\Service\BinaryStorageServiceInterface;
@@ -36,6 +38,24 @@ final class FileStorage
         $this->binaryBlockStorage = $binaryBlockStorage;
         $this->fileReadService = $fileReadService;
         $this->fileWriteService = $fileWriteService;
+    }
+
+    /**
+     * @return FileCollection
+     */
+    public function findAllFiles()
+    {
+        return $this->fileReadService->findAllFiles();
+    }
+
+    /**
+     * @param string $shortIdentifier
+     *
+     * @return FileModel
+     */
+    public function findByShortIdentifier($shortIdentifier)
+    {
+        return $this->fileReadService->findFileByShortIdentifier($shortIdentifier);
     }
 
     /**

@@ -1,16 +1,14 @@
-{% import '::macro.html.twig' as marco %}
-
 {% block body %}
 <div id="showFileContainer">
     <h2>{{ File.name }}</h2>
     <div class="fileProperties">
         <div class="property">
             <span class="name">{% trans %}gui.file.type{% endtrans %}</span>:
-            <span class="value">{{ File.type }}</span>
+            <span class="value">{{ File.mimeType }}</span>
         </div>
         <div class="property">
             <span class="name">{% trans %}gui.file.size{% endtrans %}</span>:
-            <span class="value">{{ marco.bytesToSize(File.size) }}</span>
+            <span class="value">{{ File.getHumanReadableSize }}</span>
         </div>
         {% if File.checksum %}
         <div class="property">
@@ -20,15 +18,15 @@
         {% endif %}
     </div>
     {% trans %}gui.click_to{% endtrans %}
-    <a href="{{ path('download_file', {'fileShortIdentifier': File.fileId}) }}">{% trans %}gui.download_file{% endtrans %}</a>
-    <a href="{{ path('open_file', {'fileShortIdentifier': File.fileId}) }}">{% trans %}gui.open_file_in_browser{% endtrans %}</a>
-    {% if (File.type == 'application/pdf' or File.type == 'image/jpg' or File.type == 'image/png' or File.type == 'image/jpeg' or File.type == 'video/mp4') %}
-    <a id="{{ File.fileId }}" class="preview_file" href="{{ path('open_file', {'fileShortIdentifier': File.fileId}) }}">{% trans %}gui.preview_file{% endtrans %}</a>
+    <a href="{{ path('download_file', {'fileShortIdentifier': File.shortIdentifier}) }}">{% trans %}gui.download_file{% endtrans %}</a>
+    <a href="{{ path('open_file', {'fileShortIdentifier': File.shortIdentifier}) }}">{% trans %}gui.open_file_in_browser{% endtrans %}</a>
+    {% if (File.mimeType == 'application/pdf' or File.mimeType == 'image/jpg' or File.mimeType == 'image/png' or File.mimeType == 'image/jpeg' or File.mimeType == 'video/mp4') %}
+    <a id="{{ File.shortIdentifier }}" class="preview_file" href="{{ path('open_file', {'fileShortIdentifier': File.shortIdentifier}) }}">{% trans %}gui.preview_file{% endtrans %}</a>
     <script>
         $(function(){
             if ($.jStorage.get('app.settings.enable_auto_file_preview', 'yes') === 'yes') {
-                $('#{{ File.fileId }}').css('display', 'none');
-                showFilepreviewFile($('#{{ File.fileId }}'), $('#{{ File.fileId }}').parent());
+                $('#{{ File.shortIdentifier }}').css('display', 'none');
+                showFilepreviewFile($('#{{ File.shortIdentifier }}'), $('#{{ File.shortIdentifier }}').parent());
             }
         });
     </script>
