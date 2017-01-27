@@ -1,7 +1,7 @@
 <?php
 namespace Enginewerk\ApplicationBundle\Tests\Response;
 
-use Enginewerk\ApplicationBundle\Response\ApplicationResponse;
+use Enginewerk\ApplicationBundle\Response\AbstractApplicationResponse;
 use Enginewerk\ApplicationBundle\Response\ErrorResponse;
 
 class ErrorResponseTest extends \PHPUnit_Framework_TestCase
@@ -20,7 +20,7 @@ class ErrorResponseTest extends \PHPUnit_Framework_TestCase
             [
                 'response' => [
                     'message' => 'SuccessMessage',
-                    'status' => ApplicationResponse::STATUS_ERROR,
+                    'status' => AbstractApplicationResponse::STATUS_ERROR,
                     'data' => 'SomeDataString',
                 ],
             ],
@@ -39,7 +39,7 @@ class ErrorResponseTest extends \PHPUnit_Framework_TestCase
             [
                 'response' => [
                     'message' => ErrorResponse::DEFAULT_MESSAGE,
-                    'status' => ApplicationResponse::STATUS_ERROR,
+                    'status' => AbstractApplicationResponse::STATUS_ERROR,
                     'data' => null,
                 ],
             ],
