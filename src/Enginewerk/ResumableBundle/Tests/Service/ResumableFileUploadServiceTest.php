@@ -2,12 +2,13 @@
 namespace Enginewerk\ResumableBundle\Tests\Service;
 
 use Enginewerk\ApplicationBundle\Response\ServiceResponse;
-use Enginewerk\EmissionBundle\Repository\FileBlockRepositoryInterface;
-use Enginewerk\EmissionBundle\Repository\FileRepositoryInterface;
-use Enginewerk\EmissionBundle\Service\FileReadServiceInterface;
 use Enginewerk\EmissionBundle\Service\FileViewServiceInterface;
-use Enginewerk\EmissionBundle\Service\FileWriteServiceInterface;
+use Enginewerk\FileManagementBundle\Entity\File;
 use Enginewerk\FileManagementBundle\Entity\FileBlock;
+use Enginewerk\FileManagementBundle\Repository\FileBlockRepositoryInterface;
+use Enginewerk\FileManagementBundle\Repository\FileRepositoryInterface;
+use Enginewerk\FileManagementBundle\Service\FileReadServiceInterface;
+use Enginewerk\FileManagementBundle\Service\FileWriteServiceInterface;
 use Enginewerk\FSBundle\Service\BinaryStorageServiceInterface;
 use Enginewerk\ResumableBundle\Service\ResumableFileUploadService;
 
@@ -35,6 +36,10 @@ class ResumableFileUploadServiceTest extends \PHPUnit_Framework_TestCase
     {
         $this->fileRepository = $this->getMock(FileRepositoryInterface::class);
         $this->fileBlockRepository = $this->getMock(FileBlockRepositoryInterface::class);
+        $this->fileWriteService = $this->getMock(FileWriteServiceInterface::class);
+        $this->fileReadService = $this->getMock(FileReadServiceInterface::class);
+        $this->binaryStorageService = $this->getMock(BinaryStorageServiceInterface::class);
+        $this->fileViewService = $this->getMock(FileViewServiceInterface::class);
     }
 
     /**
