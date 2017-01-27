@@ -1,19 +1,15 @@
 <?php
 namespace Enginewerk\ApplicationBundle\Response;
 
-class ApplicationResponse
+class ApplicationResponse extends AbstractApplicationResponse
 {
-    const STATUS_SUCCESS = 'Success';
-    const STATUS_ERROR = 'Error';
-
-    /** @var string */
-    private $message;
-
-    /** @var  string */
-    private $status;
-
-    /** @var  string|string[] */
-    private $data;
+    /**
+     * @deprecated Please use SuccessResponse or ErrorResponse
+     */
+    public function __construct()
+    {
+        parent::__construct('', '', '');
+    }
 
     /**
      * Sets status on Error and response message.
@@ -23,7 +19,7 @@ class ApplicationResponse
     public function error($message = null)
     {
         $this->message = $message;
-        $this->status = static::STATUS_ERROR;
+        $this->status = parent::STATUS_ERROR;
     }
 
     /**
@@ -34,7 +30,7 @@ class ApplicationResponse
     public function success($message = null)
     {
         $this->message = $message;
-        $this->status = static::STATUS_SUCCESS;
+        $this->status = parent::STATUS_SUCCESS;
     }
 
     /**
@@ -45,19 +41,5 @@ class ApplicationResponse
     public function data($data)
     {
         $this->data = $data;
-    }
-
-    /**
-     * @return string[]
-     */
-    public function toArray()
-    {
-        return [
-            'response' => [
-                'message' => $this->message ?: '',
-                'status' => $this->status ?: '',
-                'data' => $this->data ?: '',
-            ],
-        ];
     }
 }

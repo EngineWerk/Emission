@@ -32,7 +32,7 @@ class User extends BaseUser
     protected $invitation;
 
     /**
-     * @ORM\OneToMany(targetEntity="Enginewerk\EmissionBundle\Entity\File", mappedBy="user", cascade={"remove"})
+     * @ORM\OneToMany(targetEntity="Enginewerk\FileManagementBundle\Entity\File", mappedBy="user", cascade={"remove"})
      */
     protected $files;
 
@@ -104,11 +104,11 @@ class User extends BaseUser
     /**
      * Add files
      *
-     * @param \Enginewerk\EmissionBundle\Entity\File $files
+     * @param \Enginewerk\FileManagementBundle\Entity\File $files
      *
      * @return User
      */
-    public function addFile(\Enginewerk\EmissionBundle\Entity\File $files)
+    public function addFile(\Enginewerk\FileManagementBundle\Entity\File $files)
     {
         $this->files[] = $files;
 
@@ -118,9 +118,9 @@ class User extends BaseUser
     /**
      * Remove files
      *
-     * @param \Enginewerk\EmissionBundle\Entity\File $files
+     * @param \Enginewerk\FileManagementBundle\Entity\File $files
      */
-    public function removeFile(\Enginewerk\EmissionBundle\Entity\File $files)
+    public function removeFile(\Enginewerk\FileManagementBundle\Entity\File $files)
     {
         $this->files->removeElement($files);
     }

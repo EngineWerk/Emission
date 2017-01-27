@@ -3,9 +3,9 @@ namespace Enginewerk\ResumableBundle\Service;
 
 use Enginewerk\ApplicationBundle\Response\ApplicationResponse;
 use Enginewerk\ApplicationBundle\Response\ServiceResponse;
-use Enginewerk\EmissionBundle\Service\FileReadServiceInterface;
 use Enginewerk\EmissionBundle\Service\FileViewServiceInterface;
-use Enginewerk\EmissionBundle\Service\FileWriteServiceInterface;
+use Enginewerk\FileManagementBundle\Service\FileReadServiceInterface;
+use Enginewerk\FileManagementBundle\Service\FileWriteServiceInterface;
 use Enginewerk\FSBundle\Service\BinaryStorageServiceInterface;
 use Enginewerk\ResumableBundle\Request\FileRequest;
 use Enginewerk\UserBundle\Entity\User;

@@ -12,6 +12,7 @@ class AppKernel extends Kernel
             new Doctrine\Bundle\MigrationsBundle\DoctrineMigrationsBundle(),
             new Enginewerk\EmissionBundle\EnginewerkEmissionBundle(),
             new Enginewerk\FSBundle\EnginewerkFSBundle(),
+            new Enginewerk\FileManagementBundle\EnginewerkFileManagementBundle(),
             new Enginewerk\MigrationBundle\EmissionMigrationBundle(),
             new Enginewerk\OAuthBundle\OAuthBundle(),
             new Enginewerk\UserBundle\UserBundle(),

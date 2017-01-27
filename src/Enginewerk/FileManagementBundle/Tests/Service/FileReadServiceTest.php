@@ -1,35 +1,20 @@
 <?php
-namespace Enginewerk\ResumableBundle\Tests\Service;
+namespace Enginewerk\FileManagementBundle\Tests\Service;
 
 use Enginewerk\ApplicationBundle\Response\ServiceResponse;
-use Enginewerk\EmissionBundle\Repository\FileBlockRepositoryInterface;
-use Enginewerk\EmissionBundle\Repository\FileRepositoryInterface;
-use Enginewerk\EmissionBundle\Service\FileReadServiceInterface;
-use Enginewerk\EmissionBundle\Service\FileViewServiceInterface;
-use Enginewerk\EmissionBundle\Service\FileWriteServiceInterface;
+use Enginewerk\FileManagementBundle\Entity\File;
 use Enginewerk\FileManagementBundle\Entity\FileBlock;
-use Enginewerk\FSBundle\Service\BinaryStorageServiceInterface;
-use Enginewerk\ResumableBundle\Service\ResumableFileUploadService;
+use Enginewerk\FileManagementBundle\Repository\FileBlockRepositoryInterface;
+use Enginewerk\FileManagementBundle\Repository\FileRepositoryInterface;
+use Enginewerk\FileManagementBundle\Service\FileReadService;
 
-class ResumableFileUploadServiceTest extends \PHPUnit_Framework_TestCase
+class FileReadServiceTest extends \PHPUnit_Framework_TestCase
 {
     /** @var  FileRepositoryInterface|\PHPUnit_Framework_MockObject_MockObject */
     private $fileRepository;
 
     /** @var  FileBlockRepositoryInterface|\PHPUnit_Framework_MockObject_MockObject */
     private $fileBlockRepository;
-
-    /** @var  FileWriteServiceInterface|\PHPUnit_Framework_MockObject_MockObject */
-    private $fileWriteService;
-
-    /** @var  FileReadServiceInterface|\PHPUnit_Framework_MockObject_MockObject */
-    private $fileReadService;
-
-    /** @var  BinaryStorageServiceInterface */
-    private $binaryStorageService;
-
-    /** @var  FileViewServiceInterface */
-    private $fileViewService;
 
     public function setUp()
     {
@@ -42,12 +27,7 @@ class ResumableFileUploadServiceTest extends \PHPUnit_Framework_TestCase
      */
     public function findFileChunkWithExistingFileAndFileBlock()
     {
-        $fileUploadService = new ResumableFileUploadService(
-            $this->binaryStorageService,
-            $this->fileViewService,
-            $this->fileWriteService,
-            $this->fileReadService
-        );
+        $fileUploadService = new FileReadService($this->fileRepository, $this->fileBlockRepository);
 
         $fileName = 'fileName-01';
         $fileChecksum = '08abc89a';
@@ -93,12 +73,7 @@ class ResumableFileUploadServiceTest extends \PHPUnit_Framework_TestCase
      */
     public function findFileChunkWithExistingFileAndNotExistingFileBlock()
     {
-        $fileUploadService = new ResumableFileUploadService(
-            $this->binaryStorageService,
-            $this->fileViewService,
-            $this->fileWriteService,
-            $this->fileReadService
-        );
+        $fileUploadService = new FileReadService($this->fileRepository, $this->fileBlockRepository);
 
         $fileName = 'fileName-01';
         $fileChecksum = '08abc89a';
@@ -143,12 +118,7 @@ class ResumableFileUploadServiceTest extends \PHPUnit_Framework_TestCase
      */
     public function findFileChunkWithNotExistingFileAndNotExistingFileBlock()
     {
-        $fileUploadService = new ResumableFileUploadService(
-            $this->binaryStorageService,
-            $this->fileViewService,
-            $this->fileWriteService,
-            $this->fileReadService
-        );
+        $fileUploadService = new FileReadService($this->fileRepository, $this->fileBlockRepository);
 
         $fileName = 'fileName-01';
         $fileChecksum = '08abc89a';

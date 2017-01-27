@@ -2,10 +2,10 @@
 namespace Enginewerk\EmissionBundle\Service;
 
 use Enginewerk\ApplicationBundle\Logger\HasLoggerTrait;
-use Enginewerk\EmissionBundle\Entity\File;
-use Enginewerk\EmissionBundle\FileResponse\BinaryBlockCollection;
-use Enginewerk\EmissionBundle\Storage\InvalidFileIdentifierException;
-use Enginewerk\FSBundle\Service\BinaryStorageServiceInterface;
+use Enginewerk\FileManagementBundle\Service\FileBlockReadServiceInterface;
+use Enginewerk\FileManagementBundle\Service\FileReadServiceInterface;
+use Enginewerk\FileManagementBundle\Storage\FileNotFoundException;
+use Enginewerk\FileManagementBundle\Storage\InvalidFileIdentifierException;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -14,22 +14,22 @@ class FileStreamService
 {
     use HasLoggerTrait;
 
+    /** @var  FileBlockReadServiceInterface */
+    protected $fileBlockReadService;
+
     /** @var  FileReadServiceInterface */
     protected $fileReadService;
 
-    /** @var  BinaryStorageServiceInterface */
-    protected $binaryBlockStorage;
-
     /**
+     * @param FileBlockReadServiceInterface $fileBlockReadService
      * @param FileReadServiceInterface $fileReadService
-     * @param BinaryStorageServiceInterface $binaryBlockStorage
      */
     public function __construct(
-        FileReadServiceInterface $fileReadService,
-        BinaryStorageServiceInterface $binaryBlockStorage
+        FileBlockReadServiceInterface $fileBlockReadService,
+        FileReadServiceInterface $fileReadService
     ) {
+        $this->fileBlockReadService = $fileBlockReadService;
         $this->fileReadService = $fileReadService;
-        $this->binaryBlockStorage = $binaryBlockStorage;
     }
 
     /**
@@ -41,16 +41,15 @@ class FileStreamService
     public function getFileForDownload($fileShortIdentifier, $returnAsAttachment = false)
     {
         try {
-            if (null === ($file = $this->fileReadService->findByShortIdentifier($fileShortIdentifier))) {
-                return new NotFoundHttpException('File not found');
-            }
+            $file = $this->fileReadService->getByShortFileIdentifier($fileShortIdentifier);
+            $binaryBlockCollection = $this->fileBlockReadService->getFileBlockCollection($fileShortIdentifier);
+        } catch (FileNotFoundException $fileNotFoundException) {
+            return new NotFoundHttpException($fileNotFoundException->getMessage());
         } catch (InvalidFileIdentifierException $invalidFileIdentifierException) {
             $this->getLogger()->error($invalidFileIdentifierException->getMessage());
 
             return new Response('File not found', 404);
         }
-
-        $binaryBlockCollection = $this->getBlockCollection($file);
 
         $response = new StreamedResponse();
 
@@ -77,25 +76,5 @@ class FileStreamService
         }
 
         return $response;
-    }
-
-    /**
-     * @param File $file
-     *
-     * @throws InvalidFileIdentifierException
-     *
-     * @return BinaryBlockCollection
-     *
-     */
-    protected function getBlockCollection(File $file)
-    {
-        $fileBlocks = $this->fileReadService->findBlocksByFileId($file->getId());
-
-        $binaryBlocks = [];
-        foreach ($fileBlocks as $fileBlock) {
-            $binaryBlocks[] = $this->binaryBlockStorage->get($fileBlock->getFileHash());
-        }
-
-        return new BinaryBlockCollection($binaryBlocks);
     }
 }

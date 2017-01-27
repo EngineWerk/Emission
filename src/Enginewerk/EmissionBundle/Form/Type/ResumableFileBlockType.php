@@ -41,7 +41,7 @@ class ResumableFileBlockType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => 'Enginewerk\EmissionBundle\Entity\FileBlock',
+            'data_class' => 'Enginewerk\FileManagementBundle\Entity\FileBlock',
             'csrf_field_name' => '_tokenFileBlock',
         ]);
     }

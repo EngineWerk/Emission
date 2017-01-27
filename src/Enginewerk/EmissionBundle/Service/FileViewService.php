@@ -1,7 +1,7 @@
 <?php
 namespace Enginewerk\EmissionBundle\Service;
 
-use Enginewerk\EmissionBundle\Entity\File;
+use Enginewerk\FileManagementBundle\Entity\File;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class FileViewService implements FileViewServiceInterface

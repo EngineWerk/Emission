@@ -1,7 +1,6 @@
 <?php
 namespace Enginewerk\EmissionBundle\Controller;
 
-use Enginewerk\ApplicationBundle\Response\ApplicationResponse;
 use Enginewerk\EmissionBundle\Form\Type\ResumableFileBlockType;
 use Enginewerk\EmissionBundle\Form\Type\ResumableFileType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -24,7 +23,7 @@ class DefaultController extends Controller
         $responseContent = $this->renderView(
             'EnginewerkEmissionBundle:Default:index.html.twig',
             [
-                'FileCollection' => $this->get('enginewerk_emission.storage.file_storage')->findAllFiles(),
+                'FileCollection' => $this->get('enginewerk_emission.service.file_service')->findAllFiles(),
                 'FileBlockForm' => $fileBlockForm->createView(),
                 'FileForm' => $fileForm->createView(),
                 'Capabilities' => $this->get('enginewerk_emission.service.capabilities_service')->getCapabilities(),
@@ -44,7 +43,7 @@ class DefaultController extends Controller
      */
     public function showFileAction(Request $request)
     {
-        $fileStorage = $this->get('enginewerk_emission.storage.file_storage');
+        $fileStorage = $this->get('enginewerk_emission.service.file_service');
 
         if (null === ($file = $fileStorage->findByShortIdentifier($request->get('file')))) {
             throw $this->createNotFoundException(sprintf('File #%s not found.', $request->get('file')));
@@ -69,22 +68,13 @@ class DefaultController extends Controller
      */
     public function showFileContentAction(Request $request)
     {
-        $fileStorage = $this->get('enginewerk_emission.storage.file_storage');
+        $serviceResponse = $this->get('enginewerk_emission.service.file_service')
+            ->showFileContent($request->get('fileShortIdentifier'));
 
-        if (null === ($file = $fileStorage->findByShortIdentifier($request->get('fileShortIdentifier')))) {
-            throw $this->createNotFoundException(sprintf('File #%s not found.', $request->get('fileShortIdentifier')));
-        }
-
-        $appResponse = new ApplicationResponse();
-        $appResponse->success();
-        $appResponse->data(
-            $this->renderView(
-                'EnginewerkEmissionBundle:Default:showFileContent.html.twig',
-                ['File' => $file]
-            )
+        return new JsonResponse(
+            $serviceResponse->getResponseContent(),
+            $serviceResponse->getResponseCode()
         );
-
-        return new JsonResponse($appResponse->toArray(), 200);
     }
 
     /**
@@ -110,7 +100,7 @@ class DefaultController extends Controller
      */
     public function deleteAction(Request $request)
     {
-        $serviceResponse = $this->get('enginewerk_emission.storage.file_storage')
+        $serviceResponse = $this->get('enginewerk_emission.service.file_service')
             ->deleteFile($request->get('file'));
 
         return new JsonResponse(
@@ -126,7 +116,7 @@ class DefaultController extends Controller
      */
     public function fileExpirationDateAction(Request $request)
     {
-        $serviceResponse = $this->get('enginewerk_emission.storage.file_storage')
+        $serviceResponse = $this->get('enginewerk_emission.service.file_service')
             ->setFileExpirationDate(
                 $request->get('file'),
                 $request->get('date') ? new \DateTimeImmutable($request->get('date')) : null
@@ -146,7 +136,7 @@ class DefaultController extends Controller
      */
     public function replaceFileAction($replace, $replacement)
     {
-        $serviceResponse = $this->get('enginewerk_emission.storage.file_storage')
+        $serviceResponse = $this->get('enginewerk_emission.service.file_service')
             ->replace($replace, $replacement);
 
         return new JsonResponse(
@@ -162,7 +152,7 @@ class DefaultController extends Controller
      */
     public function filesAction($createdAfter = null)
     {
-        $serviceResponse = $this->get('enginewerk_emission.storage.file_storage')
+        $serviceResponse = $this->get('enginewerk_emission.service.file_service')
             ->getFilesForJsonApi($createdAfter);
 
         return new JsonResponse(

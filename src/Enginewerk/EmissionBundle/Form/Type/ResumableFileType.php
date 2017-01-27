@@ -34,7 +34,7 @@ class ResumableFileType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => 'Enginewerk\EmissionBundle\Entity\File',
+            'data_class' => 'Enginewerk\FileManagementBundle\Entity\File',
             'csrf_field_name' => '_tokenFile',
         ]);
     }

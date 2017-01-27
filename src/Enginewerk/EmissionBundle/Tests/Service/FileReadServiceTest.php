@@ -2,11 +2,11 @@
 namespace Enginewerk\EmissionBundle\Tests\Service;
 
 use Enginewerk\ApplicationBundle\Response\ServiceResponse;
-use Enginewerk\EmissionBundle\Entity\File;
-use Enginewerk\EmissionBundle\Entity\FileBlock;
 use Enginewerk\EmissionBundle\Repository\FileBlockRepositoryInterface;
 use Enginewerk\EmissionBundle\Repository\FileRepositoryInterface;
 use Enginewerk\EmissionBundle\Service\FileReadService;
+use Enginewerk\FileManagementBundle\Entity\File;
+use Enginewerk\FileManagementBundle\Entity\FileBlock;
 
 class FileReadServiceTest extends \PHPUnit_Framework_TestCase
 {

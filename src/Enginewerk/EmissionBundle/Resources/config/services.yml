@@ -4,74 +4,30 @@ services:
         class: Enginewerk\EmissionBundle\Service\CapabilitiesService
         arguments: ['%app.uploader_max_chunk_size%']
 
-    enginewerk_emission.model.file_factory:
-        public: false
-        class: Enginewerk\EmissionBundle\Model\FileFactory
-
-    enginewerk_emission.service.file_read_service:
-        public: true
-        class: Enginewerk\EmissionBundle\Service\FileReadService
-        arguments:
-            - '@enginewerk_emission.repository.file_repository'
-            - '@enginewerk_emission.repository.file_block_repository'
-            - '@enginewerk_emission.model.file_factory'
-
-    enginewerk_emission.repository.file_block_repository:
-        public: false
-        class: Enginewerk\EmissionBundle\Repository\Doctrine\FileBlockRepository
-        factory:   ['@doctrine.orm.default_entity_manager', getRepository]
-        arguments: [Enginewerk\EmissionBundle\Entity\FileBlock]
-
-    enginewerk_emission.repository.file_repository:
-        public: false
-        class: Enginewerk\EmissionBundle\Repository\Doctrine\FileRepository
-        factory:   ['@doctrine.orm.default_entity_manager', getRepository]
-        arguments: [Enginewerk\EmissionBundle\Entity\File]
-
     enginewerk.twig.enginewerk_extension:
         public: true
         class: Enginewerk\EmissionBundle\Twig\EmissionExtension
         tags:
             - { name: twig.extension }
 
-    enginewerk_emission.event_listener.file_block_subscriber:
-        public: true
-        class: Enginewerk\EmissionBundle\EventListener\FileBlockSubscriber
-        tags:
-            - { name: doctrine.event_subscriber, connection: default }
-
-    enginewerk_emission.event_listener.file_subscriber:
-        class: Enginewerk\EmissionBundle\EventListener\FileSubscriber
-        tags:
-            - { name: doctrine.event_subscriber, connection: default }
-
     enginewerk_emission.service.file_stream_service:
         public: true
         class: Enginewerk\EmissionBundle\Service\FileStreamService
         arguments:
-            - '@enginewerk_emission.service.file_read_service'
-            - '@enginewerk_fs.service.binary_storage_service'
+            - '@enginewerk_file_management.service.file_block_read_service'
+            - '@enginewerk_file_management.service.file_read_service'
         calls:
             - [setLogger, ['@logger']]
-
-    enginewerk_emission.storage.file_storage:
-        public: true
-        class: Enginewerk\EmissionBundle\Storage\FileStorage
-        arguments:
-            - '@enginewerk_fs.service.binary_storage_service'
-            - '@enginewerk_emission.service.file_read_service'
-            - '@enginewerk_emission.service.file_write_service'
-        calls:
-            - [setLogger, ['@logger']]
-
-    enginewerk_emission.service.file_write_service:
-        public: false
-        class: Enginewerk\EmissionBundle\Service\FileWriteService
-        arguments:
-            - '@enginewerk_emission.repository.file_repository'
-            - '@enginewerk_emission.repository.file_block_repository'
 
     enginewerk_emission.service.file_view_service:
         public: false
         class: Enginewerk\EmissionBundle\Service\FileViewService
         arguments: ['@router']
+
+    enginewerk_emission.service.file_service:
+        public: true
+        class: Enginewerk\EmissionBundle\Service\FileService
+        arguments:
+            - '@templating.engine.twig'
+            - '@enginewerk_file_management.storage.file_storage'
+            - '@enginewerk_file_management.service.file_read_service'

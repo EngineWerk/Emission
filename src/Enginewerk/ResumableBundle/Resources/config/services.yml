@@ -5,5 +5,5 @@ services:
         arguments:
             - '@enginewerk_fs.service.binary_storage_service'
             - '@enginewerk_emission.service.file_view_service'
-            - '@enginewerk_emission.service.file_write_service'
-            - '@enginewerk_emission.service.file_read_service'
+            - '@enginewerk_file_management.service.file_write_service'
+            - '@enginewerk_file_management.service.file_read_service'
