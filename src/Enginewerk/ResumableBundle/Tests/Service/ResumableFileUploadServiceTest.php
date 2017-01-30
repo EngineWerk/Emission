@@ -4,7 +4,6 @@ namespace Enginewerk\ResumableBundle\Tests\Service;
 use Enginewerk\ApplicationBundle\Response\ServiceResponse;
 use Enginewerk\EmissionBundle\Service\FileViewServiceInterface;
 use Enginewerk\FileManagementBundle\Entity\File;
-use Enginewerk\FileManagementBundle\Entity\FileBlock;
 use Enginewerk\FileManagementBundle\Repository\FileBlockRepositoryInterface;
 use Enginewerk\FileManagementBundle\Repository\FileRepositoryInterface;
 use Enginewerk\FileManagementBundle\Service\FileReadServiceInterface;
@@ -65,18 +64,17 @@ class ResumableFileUploadServiceTest extends \PHPUnit_Framework_TestCase
             ->method('getId')
             ->will($this->returnValue(888));
 
-        $this->fileRepository
+        $this->fileReadService
             ->expects($this->once())
             ->method('findOneByNameAndChecksumAndSize')
             ->with($fileName, $fileChecksum, $fileSize)
             ->will($this->returnValue($fileEntityMock));
 
-        $fileBlockEntity = new FileBlock();
-        $this->fileBlockRepository
+        $this->fileReadService
             ->expects($this->once())
-            ->method('findByFileIdAndRangeStartAndRangeEnd')
+            ->method('hasFileFileBlock')
             ->with(888, $chunkRangeStart, $chunkRangeEnd)
-            ->will($this->returnValue($fileBlockEntity));
+            ->will($this->returnValue(true));
 
         $this->assertEquals(
             new ServiceResponse(
@@ -116,17 +114,17 @@ class ResumableFileUploadServiceTest extends \PHPUnit_Framework_TestCase
             ->method('getId')
             ->will($this->returnValue(888));
 
-        $this->fileRepository
+        $this->fileReadService
             ->expects($this->once())
             ->method('findOneByNameAndChecksumAndSize')
             ->with($fileName, $fileChecksum, $fileSize)
             ->will($this->returnValue($fileEntityMock));
 
-        $this->fileBlockRepository
+        $this->fileReadService
             ->expects($this->once())
-            ->method('findByFileIdAndRangeStartAndRangeEnd')
+            ->method('hasFileFileBlock')
             ->with(888, $chunkRangeStart, $chunkRangeEnd)
-            ->will($this->returnValue(null));
+            ->will($this->returnValue(false));
 
         $this->assertEquals(
             new ServiceResponse(
@@ -161,15 +159,15 @@ class ResumableFileUploadServiceTest extends \PHPUnit_Framework_TestCase
         $chunkRangeStart = 0;
         $chunkRangeEnd = 512;
 
-        $this->fileRepository
+        $this->fileReadService
             ->expects($this->once())
             ->method('findOneByNameAndChecksumAndSize')
             ->with($fileName, $fileChecksum, $fileSize)
             ->will($this->returnValue(null));
 
-        $this->fileBlockRepository
+        $this->fileReadService
             ->expects($this->never())
-            ->method('findByFileIdAndRangeStartAndRangeEnd');
+            ->method('hasFileFileBlock');
 
         $this->assertEquals(
             new ServiceResponse(

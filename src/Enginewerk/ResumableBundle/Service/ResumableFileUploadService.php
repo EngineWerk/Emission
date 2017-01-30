@@ -131,7 +131,7 @@ class ResumableFileUploadService
             } else {
                 return new ServiceResponse(
                     Response::HTTP_RESERVED,
-                    (new ErrorResponse(
+                    (new SuccessResponse(
                         'Block not found'
                     ))->toArray()
                 );
