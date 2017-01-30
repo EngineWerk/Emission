@@ -73,7 +73,17 @@ class FileRepository extends EntityRepository implements FileRepositoryInterface
             ->where($queryBuilder->expr()->eq('f.fileId', ':fileId'))
             ->setParameter('fileId', $shortIdentifier);
 
-        return $queryBuilder->getQuery()->getSingleResult();
+        try {
+            $result = $queryBuilder->getQuery()->getSingleResult();
+        } catch (NoResultException $e) {
+            $result = null;
+            // Add logger
+        } catch (NonUniqueResultException $e) {
+            $result = null;
+            // Add logger
+        }
+
+        return $result;
     }
 
     /**

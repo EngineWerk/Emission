@@ -3,7 +3,6 @@ namespace Enginewerk\FileManagementBundle\Service;
 
 use DateTimeInterface;
 use Enginewerk\FileManagementBundle\Entity\File;
-use Enginewerk\FileManagementBundle\Model\File as FileModel;
 use Enginewerk\FileManagementBundle\Model\FileCollection;
 use Enginewerk\FileManagementBundle\Model\FileFactoryInterface;
 use Enginewerk\FileManagementBundle\Repository\FileBlockRepositoryInterface;
@@ -38,7 +37,7 @@ class FileReadService implements FileReadServiceInterface
     }
 
     /**
-     * @return FileCollection
+     * @inheritdoc
      */
     public function findAllFiles()
     {
@@ -51,15 +50,13 @@ class FileReadService implements FileReadServiceInterface
     }
 
     /**
-     * @param string $shortIdentifier
-     *
-     * @return FileModel
+     * @inheritdoc
      */
     public function findFileByShortIdentifier($shortIdentifier)
     {
         $fileEntity = $this->findByShortIdentifier($shortIdentifier);
 
-        return $this->fileFactory->createFromEntity($fileEntity);
+        return $fileEntity ? $this->fileFactory->createFromEntity($fileEntity) : $fileEntity;
     }
 
     /**

@@ -55,7 +55,7 @@ final class FileService
     /**
      * @param string $shortIdentifier
      *
-     * @return FileModel
+     * @return FileModel|null
      */
     public function findByShortIdentifier($shortIdentifier)
     {

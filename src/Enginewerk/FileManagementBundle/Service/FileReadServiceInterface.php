@@ -104,7 +104,10 @@ interface FileReadServiceInterface
     /**
      * @param string $shortIdentifier
      *
-     * @return FileModel
+     * @throws InvalidFileIdentifierException
+     *
+     * @return FileModel|null
+     *
      */
     public function findFileByShortIdentifier($shortIdentifier);
 }

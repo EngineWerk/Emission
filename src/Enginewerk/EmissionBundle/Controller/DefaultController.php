@@ -46,7 +46,7 @@ class DefaultController extends Controller
         $fileStorage = $this->get('enginewerk_emission.service.file_service');
 
         if (null === ($file = $fileStorage->findByShortIdentifier($request->get('file')))) {
-            throw $this->createNotFoundException(sprintf('File #%s not found.', $request->get('file')));
+            return new Response(sprintf('File "%s" is not found.', $request->get('file')), Response::HTTP_NOT_FOUND);
         }
 
         $responseContent = $this->renderView(
