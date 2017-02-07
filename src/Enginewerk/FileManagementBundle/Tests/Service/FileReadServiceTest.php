@@ -22,9 +22,9 @@ class FileReadServiceTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->fileRepository = $this->getMock(FileRepositoryInterface::class);
-        $this->fileBlockRepository = $this->getMock(FileBlockRepositoryInterface::class);
-        $this->fileFactory = $this->getMock(FileFactoryInterface::class);
+        $this->fileRepository = $this->createMock(FileRepositoryInterface::class);
+        $this->fileBlockRepository = $this->createMock(FileBlockRepositoryInterface::class);
+        $this->fileFactory = $this->createMock(FileFactoryInterface::class);
     }
 
     /**

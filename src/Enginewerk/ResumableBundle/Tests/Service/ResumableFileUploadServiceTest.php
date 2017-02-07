@@ -33,12 +33,12 @@ class ResumableFileUploadServiceTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->fileRepository = $this->getMock(FileRepositoryInterface::class);
-        $this->fileBlockRepository = $this->getMock(FileBlockRepositoryInterface::class);
-        $this->fileWriteService = $this->getMock(FileWriteServiceInterface::class);
-        $this->fileReadService = $this->getMock(FileReadServiceInterface::class);
-        $this->binaryStorageService = $this->getMock(BinaryStorageServiceInterface::class);
-        $this->fileViewService = $this->getMock(FileViewServiceInterface::class);
+        $this->fileRepository = $this->createMock(FileRepositoryInterface::class);
+        $this->fileBlockRepository = $this->createMock(FileBlockRepositoryInterface::class);
+        $this->fileWriteService = $this->createMock(FileWriteServiceInterface::class);
+        $this->fileReadService = $this->createMock(FileReadServiceInterface::class);
+        $this->binaryStorageService = $this->createMock(BinaryStorageServiceInterface::class);
+        $this->fileViewService = $this->createMock(FileViewServiceInterface::class);
     }
 
     /**
@@ -59,7 +59,7 @@ class ResumableFileUploadServiceTest extends \PHPUnit_Framework_TestCase
         $chunkRangeStart = 0;
         $chunkRangeEnd = 512;
 
-        $fileEntityMock = $this->getMock(File::class);
+        $fileEntityMock = $this->createMock(File::class);
         $fileEntityMock->expects($this->once())
             ->method('getId')
             ->will($this->returnValue(888));
@@ -109,7 +109,7 @@ class ResumableFileUploadServiceTest extends \PHPUnit_Framework_TestCase
         $chunkRangeStart = 0;
         $chunkRangeEnd = 512;
 
-        $fileEntityMock = $this->getMock(File::class);
+        $fileEntityMock = $this->createMock(File::class);
         $fileEntityMock->expects($this->once())
             ->method('getId')
             ->will($this->returnValue(888));
