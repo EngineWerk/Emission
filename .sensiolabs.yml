@@ -1,12 +1,12 @@
 global_exclude_dirs:
-    - vendor
-    - Tests
+    - emission/vendor
+    - emission/Tests
 
 exclude_patterns:
-    - app/check.php
-    - app/SymfonyRequirements.php
-    - web/config.php
-    - web/app_*.php
+    - emission/app/check.php
+    - emission/app/SymfonyRequirements.php
+    - emission/web/config.php
+    - emission/web/app_*.php
 
 rules:
     composer.apc_class_loader_should_be_enabled:

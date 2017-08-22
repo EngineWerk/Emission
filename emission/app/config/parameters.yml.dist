@@ -21,4 +21,4 @@ parameters:
 
     app.company_name: Awesome Company
 
-    storage_root_directory: /vagrant/data
+    storage_root_directory: /vagrant/shared-storage/data
