@@ -10,17 +10,15 @@ emission/app/bootstrap*
 
 # Symfony directories
 emission/vendor/*
-*/logs/*
-*/cache/*
-web/uploads/*
-web/bundles/*
-bin/*
+emission/app/logs/*
+emission/app/cache/*
+emission/web/uploads/*
+emission/web/bundles/*
+emission/bin/*
 
 # Configuration files
 emission/app/config/parameters.ini
 emission/app/config/parameters.yml
 emission/app/SymfonyRequirements.php
 
-#File storage directory
-emission/app/local_fs/*
 *.php~

@@ -2,7 +2,9 @@ services:
     enginewerk_fs.service.binary_storage_service:
         public: true
         class: Enginewerk\FSBundle\Service\BinaryStorageService
-        arguments: ['@enginewerk_fs.repository.binary_block_repository', '@enginewerk_fs.storage.local_storage']
+        arguments:
+            - '@enginewerk_fs.repository.binary_block_repository'
+            - '@enginewerk_fs.storage.local_storage'
 
     enginewerk_fs.repository.binary_block_repository:
         public: false
