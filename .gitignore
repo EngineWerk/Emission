@@ -1,8 +1,15 @@
+## Directory-based project format:
+.idea/
+
+# Vagrant machine
+vm*/.vagrant
+vm*/*.box
+
 # Bootstrap
-app/bootstrap*
+emission/app/bootstrap*
 
 # Symfony directories
-vendor/*
+emission/vendor/*
 */logs/*
 */cache/*
 web/uploads/*
@@ -10,10 +17,10 @@ web/bundles/*
 bin/*
 
 # Configuration files
-app/config/parameters.ini
-app/config/parameters.yml
-app/SymfonyRequirements.php
+emission/app/config/parameters.ini
+emission/app/config/parameters.yml
+emission/app/SymfonyRequirements.php
 
 #File storage directory
-app/local_fs/*
+emission/app/local_fs/*
 *.php~

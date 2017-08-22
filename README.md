@@ -50,14 +50,21 @@ Generate user invitation code.
     app/console invitation:add user@acme.com
 
 ###Virtual Machine for testing / development
-[VirtualBox - Vagrant](https://github.com/EngineWerk/EmissionVM)
 
-Create directory vm-emission, clone Vagrant setup into
+Clone repository.
 
-    git clone https://github.com/EngineWerk/EmissionVM.git
+    git clone https://github.com/EngineWerk/Emission.git emission
+    
+Run Virtual machine
 
-then clone Emission code
-
-    git clone https://github.com/EngineWerk/Emission.git
-
-
+    cd emission
+    vagrant up # wait for box download and provision
+    vagrant ssh    
+    cd /var/www/emission
+    composer install
+    
+    chmod a+X app/console
+    
+    php app/console doctrine:migrations:migrate --no-interaction
+    php app/console fos:user:create vagrant vagrant@localhost vagrant --super-admin
+    php app/console fos:user:activate vagrant
