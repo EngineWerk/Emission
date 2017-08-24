@@ -1,0 +1,42 @@
+version: '2.1'
+
+services:
+    codebase:
+        build: ./build/codebase
+        volumes:
+            - ../emission:/var/www/html
+    nginx:
+        image: 'emsn-nginx:1.11-1'
+        restart: unless-stopped
+        ports:
+            - '9980:80'
+        links:
+            - php-fpm
+        volumes_from:
+            - codebase
+
+    mysql:
+        image: 'emsn-mysql:5.5-1'
+        environment:
+            MYSQL_ROOT_PASSWORD: docker-root
+            MYSQL_DATABASE: emission
+            MYSQL_USER: emission
+            MYSQL_PASSWORD: docker-emission
+        healthcheck:
+            test: "exit 0"
+        ports:
+            - '3306:3306'
+
+    php-fpm:
+        image: 'emsn-php-fpm:7.1-1'
+        links:
+            - mysql
+        volumes_from:
+            - codebase
+
+    php-cli:
+        image: 'emsn-php-cli:7.1-1'
+        links:
+            - mysql
+        volumes_from:
+            - codebase
