@@ -5,15 +5,15 @@ Web browser file sharing application.
 [![Build Status](https://travis-ci.org/EngineWerk/Emission.svg?branch=master)](https://travis-ci.org/EngineWerk/Emission)
 [![SensioLabsInsight](https://insight.sensiolabs.com/projects/798573d8-39d8-4133-8056-3c457a65f3e6/mini.png)](https://insight.sensiolabs.com/projects/798573d8-39d8-4133-8056-3c457a65f3e6)
 
-###Features
+### Features
 - Large files (~GB) upload
 - Resumable upload (using [Resumable.js](https://github.com/23/resumable.js))
 - Upload images via clipboard paste (Ctrl+v)
 
-###Requirements
+### Requirements
 PHP >= 5.6.29
 
-###Installation
+### Running on local system
 Clone repository.
 
     git clone https://github.com/EngineWerk/Emission.git emission
@@ -49,7 +49,7 @@ Generate user invitation code.
 
     app/console invitation:add user@acme.com
 
-###Virtual Machine for testing / development
+## Running within Virtual Machine
 
 Clone repository.
 
