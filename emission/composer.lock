@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "336e0d4b7257d6536e7dd9ff44017f10",
+    "content-hash": "8fbc1119664652077f6ea752b1a145f4",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -983,7 +983,7 @@
             "keywords": [
                 "User management"
             ],
-            "time": "2017-01-06 15:23:08"
+            "time": "2017-01-06T15:23:08+00:00"
         },
         {
             "name": "hwi/oauth-bundle",
@@ -1106,7 +1106,7 @@
                 "yahoo",
                 "yandex"
             ],
-            "time": "2015-08-21 12:02:30"
+            "time": "2015-08-21T12:02:30+00:00"
         },
         {
             "name": "incenteev/composer-parameter-handler",
@@ -2331,16 +2331,16 @@
         },
         {
             "name": "symfony/symfony",
-            "version": "v2.7.23",
+            "version": "v2.7.24",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/symfony.git",
-                "reference": "9073fb2c762efa94a1dc96953e6707e6df31a360"
+                "reference": "8a9cc9b76f77799f21e241a770664f4db482d20c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/symfony/zipball/9073fb2c762efa94a1dc96953e6707e6df31a360",
-                "reference": "9073fb2c762efa94a1dc96953e6707e6df31a360",
+                "url": "https://api.github.com/repos/symfony/symfony/zipball/8a9cc9b76f77799f21e241a770664f4db482d20c",
+                "reference": "8a9cc9b76f77799f21e241a770664f4db482d20c",
                 "shasum": ""
             },
             "require": {
@@ -2407,6 +2407,7 @@
                 "ircmaxell/password-compat": "~1.0",
                 "monolog/monolog": "~1.11",
                 "ocramius/proxy-manager": "~0.4|~1.0|~2.0",
+                "sensio/framework-extra-bundle": "^3.0.2",
                 "symfony/phpunit-bridge": "~3.2"
             },
             "type": "library",
@@ -2455,7 +2456,7 @@
             "keywords": [
                 "framework"
             ],
-            "time": "2017-01-12T20:02:33+00:00"
+            "time": "2017-02-06T12:06:15+00:00"
         },
         {
             "name": "twig/extensions",
