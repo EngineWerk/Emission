@@ -4,7 +4,7 @@
 
 {% block fos_user_content %}
 {% if error %}
-    <div>{{ error|trans }}</div>
+    <div>Provided credentials are incorrect</div>
 {% endif %}
 
 <form action="{{ path("fos_user_security_check") }}" method="post">
