@@ -1,4 +1,5 @@
 imports:
+    - { resource: parameters_defaults.yml }
     - { resource: parameters.yml }
     - { resource: security.yml }
     - { resource: '@EnginewerkFSBundle/Resources/config/services.yml' }
@@ -15,7 +16,7 @@ framework:
         strict_requirements: ~
     form:            ~
     csrf_protection: ~
-    validation:      { enable_annotations: true }
+    validation:      { enabled: true, enable_annotations: true }
     templating:
         engines: ['twig']
         #assets_version: SomeVersionScheme
@@ -25,7 +26,7 @@ framework:
         handler_id: ~
         name: EMSNSID
     fragments:       ~
-    
+
 parameters:
 
 # Twig Configuration
@@ -35,6 +36,7 @@ twig:
     globals:
         max_chunk_size: '%app.uploader_max_chunk_size%'
         company_name: '%app.company_name%'
+        use_oauth_login: '%use_oauth_login%'
           
 # Assetic Configuration
 assetic:
@@ -65,6 +67,8 @@ doctrine:
     orm:
         auto_generate_proxy_classes: '%kernel.debug%'
         auto_mapping: true
+        proxy_dir: '%kernel.cache_dir%/doctrine/orm/Proxies'
+        proxy_namespace: Proxies
 
 # Swiftmailer Configuration
 swiftmailer:
@@ -83,6 +87,9 @@ doctrine_migrations:
 
 fos_user:
     db_driver: orm
+    from_email:
+        address: registration@example.com
+        sender_name: Demo Registration
     firewall_name: secure_area
     user_class: Enginewerk\UserBundle\Entity\User
     registration:

@@ -1,19 +1,15 @@
 <?php
-
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Debug\Debug;
+use Symfony\Component\HttpFoundation\Request;
 
-// If you don't want to setup permissions the proper way, just uncomment the following PHP line
-// read http://symfony.com/doc/current/book/installation.html#configuration-and-setup for more information
-umask(0002); // This will let the permissions be 0775
-
-$loader = require_once __DIR__ . '/../app/bootstrap.php.cache';
+require __DIR__.'/../vendor/autoload.php';
 Debug::enable();
 
-require_once __DIR__ . '/../app/AppKernel.php';
-
 $kernel = new AppKernel('dev', true);
-$kernel->loadClassCache();
+if (PHP_VERSION_ID < 70000) {
+    $kernel->loadClassCache();
+}
+
 Request::enableHttpMethodParameterOverride();
 $request = Request::createFromGlobals();
 $response = $kernel->handle($request);

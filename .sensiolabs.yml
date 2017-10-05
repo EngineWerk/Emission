@@ -1,3 +1,5 @@
+working_directory: emission
+
 global_exclude_dirs:
     - emission/vendor
     - emission/Tests

@@ -1,14 +1,15 @@
 <?php
-umask(0000); // This will let the permissions be 0775
-
 use Symfony\Component\HttpFoundation\Request;
 
-$loader = require_once __DIR__ . '/../app/bootstrap.php.cache';
-
-require_once __DIR__ . '/../app/AppKernel.php';
+require __DIR__.'/../vendor/autoload.php';
+if (PHP_VERSION_ID < 70000) {
+    include_once __DIR__.'/../app/bootstrap.php.cache';
+}
 
 $kernel = new AppKernel('prod', false);
-$kernel->loadClassCache();
+if (PHP_VERSION_ID < 70000) {
+    $kernel->loadClassCache();
+}
 
 Request::enableHttpMethodParameterOverride();
 $request = Request::createFromGlobals();

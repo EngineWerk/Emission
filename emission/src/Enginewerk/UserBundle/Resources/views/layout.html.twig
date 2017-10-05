@@ -7,7 +7,8 @@
 
 {% block body %}
 <div class="login_form_content">
-    {% if hwi_oauth_resource_owners() %}
+
+    {% if use_oauth_login and hwi_oauth_resource_owners() %}
     <div class="oauth_owners">
     {% for owner in hwi_oauth_resource_owners() %}
         <a href="{{ hwi_oauth_login_url(owner) }}" title="{{ owner | trans({}, 'HWIOAuthBundle') }}" class="oauthLink {{owner}}">{{ owner }} me in</a>

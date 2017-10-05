@@ -1,3 +1,6 @@
+parameters:
+    use_oauth_login: false
+
 services:
     hwi_oauth.user.provider:
         class: HWI\Bundle\OAuthBundle\Security\Core\User\OAuthUserProvider

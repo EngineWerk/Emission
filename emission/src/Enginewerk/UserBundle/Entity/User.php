@@ -2,37 +2,20 @@
 namespace Enginewerk\UserBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\ORM\Mapping as ORM;
 use FOS\UserBundle\Model\User as BaseUser;
 use Symfony\Component\Validator\Constraints as Assert;
 
-/**
- * @ORM\Entity
- * @ORM\Table(name="fos_user")
- */
 class User extends BaseUser
 {
-    /**
-     * @ORM\Id
-     * @ORM\Column(type="integer")
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    protected $id;
-
-     /**
-      * @ORM\Column(name="google", type="string", length=255, nullable=true)
-      */
     protected $google;
 
     /**
-     * @ORM\OneToOne(targetEntity="Invitation", inversedBy="user")
-     * @ORM\JoinColumn(name="invitation_id", referencedColumnName="code")
      * @Assert\NotNull(message="Your invitation is wrong")
      */
     protected $invitation;
 
     /**
-     * @ORM\OneToMany(targetEntity="Enginewerk\EmissionBundle\Entity\File", mappedBy="user", cascade={"remove"})
+     * @var ArrayCollection
      */
     protected $files;
 
@@ -44,8 +27,6 @@ class User extends BaseUser
     }
 
     /**
-     * Get id
-     *
      * @return int
      */
     public function getId()
@@ -54,8 +35,6 @@ class User extends BaseUser
     }
 
     /**
-     * Set google
-     *
      * @param  string $google
      *
      * @return User
@@ -68,8 +47,6 @@ class User extends BaseUser
     }
 
     /**
-     * Get google
-     *
      * @return string
      */
     public function getGoogle()
@@ -78,8 +55,6 @@ class User extends BaseUser
     }
 
     /**
-     * Set invitation
-     *
      * @param  \Enginewerk\UserBundle\Entity\Invitation $invitation
      *
      * @return User
@@ -128,7 +103,7 @@ class User extends BaseUser
     /**
      * Get files
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return ArrayCollection
      */
     public function getFiles()
     {
