@@ -27,7 +27,7 @@ class InvitationToCodeTransformer implements DataTransformerInterface
         }
 
         if (!$value instanceof Invitation) {
-            throw new UnexpectedTypeException($value, 'Enginewerk\UserBundle\Entity\Invitation');
+            throw new UnexpectedTypeException($value, Invitation::class);
         }
 
         return $value->getCode();
@@ -44,7 +44,7 @@ class InvitationToCodeTransformer implements DataTransformerInterface
         }
 
         return $this->entityManager
-            ->getRepository('Enginewerk\UserBundle\Entity\Invitation')
+            ->getRepository(Invitation::class)
             ->findOneBy([
                 'code' => $value,
                 'user' => null,

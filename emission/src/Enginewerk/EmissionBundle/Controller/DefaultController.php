@@ -4,18 +4,15 @@ namespace Enginewerk\EmissionBundle\Controller;
 use Enginewerk\ApplicationBundle\Response\ApplicationResponse;
 use Enginewerk\EmissionBundle\Form\Type\ResumableFileBlockType;
 use Enginewerk\EmissionBundle\Form\Type\ResumableFileType;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class DefaultController extends Controller
 {
-    /**
-     * @Template()
-     */
     public function indexAction()
     {
         $files = $this
@@ -36,23 +33,24 @@ class DefaultController extends Controller
         sort($uploaderCapabilities, SORT_NUMERIC);
         $maxUploadFileSize = (int) $uploaderCapabilities[0];
 
-        return [
-            'Files' => $files,
-            'FileBlockForm' => $fileBlockForm->createView(),
-            'FileForm' => $fileForm->createView(),
-            'Capabilities' => $capabilities,
-            'MaxUploadFileSize' => $maxUploadFileSize,
-        ];
+        return new Response($this->renderView(
+            'EnginewerkEmissionBundle:Default:index.html.twig',
+            [
+                'Files' => $files,
+                'FileBlockForm' => $fileBlockForm->createView(),
+                'FileForm' => $fileForm->createView(),
+                'Capabilities' => $capabilities,
+                'MaxUploadFileSize' => $maxUploadFileSize,
+            ]
+        ));
     }
 
     /**
-     * @Template()
-     *
-     * @param  Request $request
+     * @param Request $request
      *
      * @throws NotFoundHttpException
      *
-     * @return array
+     * @return Response
      */
     public function showFileAction(Request $request)
     {
@@ -62,7 +60,7 @@ class DefaultController extends Controller
             throw $this->createNotFoundException(sprintf('File #%s not found.', $request->get('file')));
         }
 
-        return ['File' => $file];
+        return new Response($this->renderView('EnginewerkEmissionBundle:Default:showFile.html.twig', ['File' => $file]));
     }
 
     /**

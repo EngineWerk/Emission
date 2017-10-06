@@ -38,9 +38,11 @@ Enginewerk\EmissionBundle\Entity\FileBlock:
             nullable: false
 
         createdAt:
+            column: createdAt
             type: datetime
 
         updatedAt:
+            column: updatedAt
             type: datetime
 
     manyToOne:

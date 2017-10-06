@@ -1,0 +1,17 @@
+Enginewerk\UserBundle\Entity\Invitation:
+    type: entity
+    table: 'invitation'
+    id:
+        code:
+            type: string
+            length: 6
+    fields:
+        email:
+            column: email
+            type: string
+            length: 256
+
+        sent:
+            column: sent
+            type: boolean
+            default: false

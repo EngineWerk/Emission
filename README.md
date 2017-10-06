@@ -44,10 +44,6 @@ Create new user.
 Change user password
 
     php app/console fos:user:change-password
-    
-Generate user invitation code.
-
-    app/console invitation:add user@acme.com
 
 ## Running within Virtual Machine
 

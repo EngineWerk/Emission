@@ -1,0 +1,26 @@
+Enginewerk\UserBundle\Entity\User:
+    type: entity
+    table: 'fos_user'
+    id:
+        id:
+            type: integer
+            generator:
+                strategy: AUTO
+    fields:
+        google:
+            type: string
+            length: 255
+            nullable: true
+
+    oneToMany:
+        files:
+            targetEntity: Enginewerk\EmissionBundle\Entity\File
+            mappedBy: user
+            fetch: EXTRA_LAZY
+            onDelete: CASCADE
+
+    oneToOne:
+        invitation:
+          targetEntity: Enginewerk\UserBundle\Entity\Invitation
+          joinColumn:
+              referencedColumnName: code

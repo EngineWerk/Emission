@@ -18,8 +18,8 @@ class FileReadServiceTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->fileRepository = $this->getMock(FileRepositoryInterface::class);
-        $this->fileBlockRepository = $this->getMock(FileBlockRepositoryInterface::class);
+        $this->fileRepository = $this->createMock(FileRepositoryInterface::class);
+        $this->fileBlockRepository = $this->createMock(FileBlockRepositoryInterface::class);
     }
 
     /**
@@ -35,7 +35,7 @@ class FileReadServiceTest extends \PHPUnit_Framework_TestCase
         $chunkRangeStart = 0;
         $chunkRangeEnd = 512;
 
-        $fileEntityMock = $this->getMock(File::class);
+        $fileEntityMock = $this->createMock(File::class);
         $fileEntityMock->expects($this->once())
             ->method('getId')
             ->will($this->returnValue(888));
@@ -81,7 +81,7 @@ class FileReadServiceTest extends \PHPUnit_Framework_TestCase
         $chunkRangeStart = 0;
         $chunkRangeEnd = 512;
 
-        $fileEntityMock = $this->getMock(File::class);
+        $fileEntityMock = $this->createMock(File::class);
         $fileEntityMock->expects($this->once())
             ->method('getId')
             ->will($this->returnValue(888));

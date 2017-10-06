@@ -1,44 +1,21 @@
 <?php
 namespace Enginewerk\UserBundle\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints as Assert;
-
-/**
- * Description of Invitation
- *
- * @author Paweł Czyżewski <pawel.czyzewski@enginewerk.com>
- *
- * @ORM\Entity
- * @ORM\Table(name="invitation")
- */
 class Invitation
 {
-    /**
-     * @ORM\Id @ORM\Column(type="string", length=6)
-     */
     protected $code;
 
-    /**
-     * @ORM\Column(type="string", length=256)
-     * @Assert\Email(
-     *     message = "The email '{{ value }}' is not a valid email.",
-     *     checkMX = false
-     * )
-     */
     protected $email;
 
     /**
      * When sending invitation be sure to set this value to `true`
      *
      * It can prevent invitations from being sent twice
-     *
-     * @ORM\Column(type="boolean")
      */
     protected $sent = false;
 
     /**
-     * @ORM\OneToOne(targetEntity="User", mappedBy="invitation", cascade={"persist", "merge"})
+     * @var User
      */
     protected $user;
 
@@ -49,8 +26,6 @@ class Invitation
     }
 
     /**
-     * Set code
-     *
      * @param  string     $code
      *
      * @return Invitation
@@ -63,8 +38,6 @@ class Invitation
     }
 
     /**
-     * Get code
-     *
      * @return string
      */
     public function getCode()
@@ -73,8 +46,6 @@ class Invitation
     }
 
     /**
-     * Set email
-     *
      * @param  string     $email
      *
      * @return Invitation
@@ -87,8 +58,6 @@ class Invitation
     }
 
     /**
-     * Get email
-     *
      * @return string
      */
     public function getEmail()
@@ -97,8 +66,6 @@ class Invitation
     }
 
     /**
-     * Set sent
-     *
      * @param  bool    $sent
      *
      * @return Invitation
@@ -111,8 +78,6 @@ class Invitation
     }
 
     /**
-     * Get sent
-     *
      * @return bool
      */
     public function getSent()
@@ -121,13 +86,11 @@ class Invitation
     }
 
     /**
-     * Set user
-     *
-     * @param  \Enginewerk\UserBundle\Entity\User $user
+     * @param  User $user
      *
      * @return Invitation
      */
-    public function setUser(\Enginewerk\UserBundle\Entity\User $user = null)
+    public function setUser(User $user = null)
     {
         $this->user = $user;
 
@@ -135,9 +98,7 @@ class Invitation
     }
 
     /**
-     * Get user
-     *
-     * @return \Enginewerk\UserBundle\Entity\User
+     * @return User
      */
     public function getUser()
     {

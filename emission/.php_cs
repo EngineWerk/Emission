@@ -2,21 +2,26 @@
 
 $files = shell_exec('git diff-index --name-only HEAD');
 $changedFiles = $files ? explode("\n", trim($files)) : [];
+$fixers = require_once __DIR__ . '/php-cs-fixer-settings.php';
 
-return Symfony\CS\Config\Config::create()
+$finder = Symfony\CS\Finder::create()
+    ->filter(function (\SplFileInfo $file) use ($changedFiles) {
+        if (isFileAllowedToChange($file, $changedFiles)) {
+            // don't include
+            return false;
+        }
+
+        // include
+        return true;
+    })
+    ->in(__DIR__ . '/src/')
+;
+
+return Symfony\CS\Config::create()
     ->level(Symfony\CS\FixerInterface::PSR2_LEVEL)
-    ->fixers(require_once __DIR__ . '/php-cs-fixer-settings.php')
-    ->finder(
-        Symfony\CS\Finder\DefaultFinder::create()
-            ->filter(function (\SplFileInfo $file) use ($changedFiles) {
-                if (isFileAllowedToChange($file, $changedFiles)) {
-                    return false;
-                }
-
-                return true;
-            })
-            ->in(__DIR__ . '/src/')
-    );
+    ->fixers($fixers)
+    ->finder($finder)
+    ;
 
 /**
  * @param SplFileInfo $file
@@ -27,7 +32,7 @@ return Symfony\CS\Config\Config::create()
 function isFileAllowedToChange(\SplFileInfo $file, array $allowedFiles)
 {
     return !in_array(
-        str_replace(__DIR__ . '/', '', $file->getRealPath()),
+        str_replace(__DIR__ . '/', 'emission/', $file->getRealPath()),
         $allowedFiles
     );
 }
