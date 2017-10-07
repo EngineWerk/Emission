@@ -3,9 +3,6 @@ namespace Enginewerk\EmissionBundle\Entity;
 
 use Enginewerk\EmissionBundle\Generator\HashGenerator;
 
-/**
- * File
- */
 class File
 {
     /**

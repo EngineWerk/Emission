@@ -7,35 +7,35 @@ show_file:
     path: /f/{file}
     methods: [GET]
 #    requirements: file
-    defaults: { _controller: EnginewerkEmissionBundle:Default:showFile }
+    defaults: { _controller: EnginewerkEmissionBundle:Web:showFile }
 
 show_file_content:
     path: /fc/{fileShortIdentifier}
     methods: [GET]
     requirements:
         fileShortIdentifier: '.*'
-    defaults: { _controller: EnginewerkEmissionBundle:Default:showFileContent }
+    defaults: { _controller: EnginewerkEmissionBundle:Web:showFileContent }
 
 download_file:
     path: /d/{fileShortIdentifier}
     methods: [GET]
     requirements:
         fileShortIdentifier: '.*'
-    defaults: { _controller: EnginewerkEmissionBundle:Default:downloadFile, dl: 1 }
+    defaults: { _controller: EnginewerkEmissionBundle:Stream:downloadFile, dl: 1 }
 
 open_file:
     path: /o/{fileShortIdentifier}
     methods: [GET]
     requirements:
         fileShortIdentifier: '.*'
-    defaults: { _controller: EnginewerkEmissionBundle:Default:downloadFile }
+    defaults: { _controller: EnginewerkEmissionBundle:Stream:downloadFile }
 
 delete_file:
     path: /delete/{file}
     methods: [DELETE]
     requirements:
         fileShortIdentifier: '.*'
-    defaults: { _controller: EnginewerkEmissionBundle:Default:delete }
+    defaults: { _controller: EnginewerkEmissionBundle:Web:delete }
 
 file_expiration_date:
     path: /{file}/expiration/{date}
@@ -43,7 +43,7 @@ file_expiration_date:
     requirements:
         file: '.*'
         date: '.*'
-    defaults: { _controller: EnginewerkEmissionBundle:Default:delete, date: 'never' }
+    defaults: { _controller: EnginewerkEmissionBundle:Web:fileExpirationDate, date: 'never' }
 
 replace_file:
     path: /replace/{replace}/with/{replacement}
@@ -51,9 +51,9 @@ replace_file:
     requirements:
         replace: '.*'
         replacement: '.*'
-    defaults: { _controller: EnginewerkEmissionBundle:Default:replaceFile }
+    defaults: { _controller: EnginewerkEmissionBundle:Web:replaceFile }
 
 list_files:
     path: /files/{created_after}
     methods: [GET]
-    defaults: { _controller: EnginewerkEmissionBundle:Default:files, created_after: null }
+    defaults: { _controller: EnginewerkEmissionBundle:Web:files, created_after: null }

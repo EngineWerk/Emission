@@ -2,9 +2,11 @@
 namespace Enginewerk\EmissionBundle\Service;
 
 use DateTimeInterface;
-use Enginewerk\ApplicationBundle\Response\ApplicationResponse;
 use Enginewerk\ApplicationBundle\Response\ServiceResponse;
+use Enginewerk\ApplicationBundle\Response\WebApplicationResponse;
 use Enginewerk\EmissionBundle\Entity\File;
+use Enginewerk\EmissionBundle\Presentation\Model\FileView;
+use Enginewerk\EmissionBundle\Presentation\Model\FileViewCollection;
 use Enginewerk\EmissionBundle\Repository\FileBlockRepositoryInterface;
 use Enginewerk\EmissionBundle\Repository\FileRepositoryInterface;
 
@@ -39,7 +41,7 @@ class FileReadService implements FileReadServiceInterface
      */
     public function findFileChunk($fileName, $fileChecksum, $fileSize, $chunkRangeStart, $chunkRangeEnd)
     {
-        $response = new ApplicationResponse();
+        $response = new WebApplicationResponse();
 
         $file = $this->fileRepository
             ->findOneByNameAndChecksumAndSize($fileName, $fileChecksum, $fileSize);
@@ -94,11 +96,20 @@ class FileReadService implements FileReadServiceInterface
     }
 
     /**
-     * @return File[]
+     * @return FileViewCollection
      */
     public function findAllFiles()
     {
-        return $this->fileRepository->getFiles();
+        $collection = new FileViewCollection();
+
+        $files = $this->fileRepository->getFiles();
+
+        foreach ($files as $file) {
+            $fileView = $this->createFileViewFromFileEntity($file);
+            $collection->add($fileView);
+        }
+
+        return $collection;
     }
 
     /**
@@ -123,5 +134,42 @@ class FileReadService implements FileReadServiceInterface
     public function findFileBlock($fileId, $rangeStart, $rangeEnd)
     {
         return $this->fileBlockRepository->findByFileIdAndRangeStartAndRangeEnd($fileId, $rangeStart, $rangeEnd);
+    }
+
+    /**
+     * @param File $file
+     *
+     * @return FileView
+     */
+    private function createFileViewFromFileEntity(File $file)
+    {
+        return new FileView(
+            $file->getId(),
+            $file->getFileId(),
+            $file->getChecksum(),
+            $file->getName(),
+            $file->getType(),
+            $file->getSize(), \DateTimeImmutable::createFromMutable($file->getExpirationDate()),
+            \DateTimeImmutable::createFromMutable($file->getCreatedAt()),
+            \DateTimeImmutable::createFromMutable($file->getUpdatedAt()),
+            $file->getComplete(),
+            $file->getUser()->getUsername()
+        );
+    }
+
+    /**
+     * @param string $identifier
+     *
+     * @return FileView|null
+     */
+    public function findByShortIdentifier($identifier)
+    {
+        $file = $this->fileRepository->findOneByShortIdentifier($identifier);
+
+        if ($file) {
+            return $this->createFileViewFromFileEntity($file);
+        }
+
+        return null;
     }
 }

@@ -10,13 +10,13 @@ use Enginewerk\FSBundle\Service\BinaryStorageService;
 
 final class FileStorage
 {
-    /** @var  FileRepositoryInterface */
+    /** @var FileRepositoryInterface */
     private $fileRepository;
 
-    /** @var  FileBlockRepositoryInterface */
+    /** @var FileBlockRepositoryInterface */
     private $fileBlockRepository;
 
-    /** @var  BinaryStorageService */
+    /** @var BinaryStorageService */
     private $binaryBlockStorage;
 
     /**
@@ -68,11 +68,11 @@ final class FileStorage
     {
         $file = $this->findByShortIdentifier($shortFileIdentifier);
 
-        if (null !== $file) {
-            return $file;
-        } else {
+        if (null === $file) {
             throw new FileNotFoundException(sprintf('File with key "%s" not found.', $shortFileIdentifier));
         }
+
+        return $file;
     }
 
     /**
@@ -92,23 +92,6 @@ final class FileStorage
         }
 
         return new ChunkedFile($binaryBlocks);
-    }
-
-    /**
-     * @param string $identifier
-     *
-     * @throws \RuntimeException
-     *
-     * @return File|null
-     *
-     */
-    public function findByShortIdentifier($identifier)
-    {
-        if (mb_strlen($identifier) === 0) {
-            throw new \RuntimeException('File short identifier cannot be empty');
-        }
-
-        return $this->fileRepository->findOneByShortIdentifier($identifier);
     }
 
     /**
@@ -151,5 +134,22 @@ final class FileStorage
         $file->setExpirationDate(new \DateTime($expirationDate->getTimestamp()));
 
         $this->fileRepository->persist($file);
+    }
+
+    /**
+     * @param string $identifier
+     *
+     * @throws \RuntimeException
+     *
+     * @return File|null
+     *
+     */
+    private function findByShortIdentifier($identifier)
+    {
+        if ($identifier === '') {
+            throw new \RuntimeException('File short identifier cannot be empty');
+        }
+
+        return $this->fileRepository->findOneByShortIdentifier($identifier);
     }
 }
