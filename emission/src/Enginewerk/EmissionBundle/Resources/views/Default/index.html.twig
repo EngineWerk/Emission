@@ -64,7 +64,7 @@
                 <tr{% if File.complete == 1 %} data-file-completed="yes"{% endif%} data-file-id="{{ File.id }}" data-search="{{ File.name }}" id="fhash-{% if File.checksum == null %}{{ File.name|md5 }}{% else %}{{ File.checksum }}{% endif %}">
                     <td>
                         <div class="fileName">{% if File.complete == 0 %}(incomplete){% endif %}{{ File.name }}</div>
-                        <div class="fileUploadedBy">{{ File.User.Username }}</div>
+                        <div class="fileUploadedBy">{{ File.UserName }}</div>
                         <div class="fileSize">{{ marco.bytesToSize(File.size) }}</div>
                     </td>
                     {% if File.complete == 1 %}

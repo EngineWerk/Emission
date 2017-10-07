@@ -9,7 +9,7 @@ use Symfony\Component\HttpFoundation\File\File;
 
 class BinaryStorageService
 {
-    /** @var  BinaryBlockRepositoryInterface */
+    /** @var BinaryBlockRepositoryInterface */
     private $binaryBlockRepository;
 
     /** @var StorageInterface */

@@ -6,7 +6,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class FileViewService implements FileViewServiceInterface
 {
-    /** @var  UrlGeneratorInterface */
+    /** @var UrlGeneratorInterface */
     protected $routeGenerator;
 
     /**

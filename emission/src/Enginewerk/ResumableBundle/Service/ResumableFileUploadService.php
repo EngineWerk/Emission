@@ -1,8 +1,8 @@
 <?php
 namespace Enginewerk\ResumableBundle\Service;
 
-use Enginewerk\ApplicationBundle\Response\ApplicationResponse;
 use Enginewerk\ApplicationBundle\Response\ServiceResponse;
+use Enginewerk\ApplicationBundle\Response\WebApplicationResponse;
 use Enginewerk\EmissionBundle\Service\FileReadServiceInterface;
 use Enginewerk\EmissionBundle\Service\FileViewServiceInterface;
 use Enginewerk\EmissionBundle\Service\FileWriteServiceInterface;
@@ -52,7 +52,7 @@ class ResumableFileUploadService
      */
     public function uploadFromRequest(UploadedFile $uploadedFile, FileRequest $resumableRequest, User $user)
     {
-        $applicationResponse = new ApplicationResponse();
+        $applicationResponse = new WebApplicationResponse();
 
         $fileEntity = $this->fileReadService->findFile(
             $resumableRequest->getResumableFilename(),

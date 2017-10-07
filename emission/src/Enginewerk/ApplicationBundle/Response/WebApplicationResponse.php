@@ -1,7 +1,7 @@
 <?php
 namespace Enginewerk\ApplicationBundle\Response;
 
-class ApplicationResponse
+final class WebApplicationResponse
 {
     const STATUS_SUCCESS = 'Success';
     const STATUS_ERROR = 'Error';

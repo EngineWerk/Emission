@@ -1,7 +1,7 @@
 <?php
 namespace Enginewerk\ApplicationBundle\Tests\Response;
 
-use Enginewerk\ApplicationBundle\Response\ApplicationResponse;
+use Enginewerk\ApplicationBundle\Response\WebApplicationResponse;
 
 class ApplicationResponseTest extends \PHPUnit_Framework_TestCase
 {
@@ -10,7 +10,7 @@ class ApplicationResponseTest extends \PHPUnit_Framework_TestCase
      */
     public function toArray()
     {
-        $response = new ApplicationResponse();
+        $response = new WebApplicationResponse();
         $response->success('SuccessMessage');
         $response->data('SomeDataString');
 
@@ -18,7 +18,7 @@ class ApplicationResponseTest extends \PHPUnit_Framework_TestCase
             [
                 'response' => [
                     'message' => 'SuccessMessage',
-                    'status' => ApplicationResponse::STATUS_SUCCESS,
+                    'status' => WebApplicationResponse::STATUS_SUCCESS,
                     'data' => 'SomeDataString',
                 ],
             ],
