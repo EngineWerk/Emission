@@ -24,7 +24,7 @@ class FileViewService implements FileViewServiceInterface
     {
         return [
             'id' => $file->getId(),
-            'file_id' => $file->getFileId(),
+            'file_id' => $file->getPublicIdentifier(),
             'name' => $file->getName(),
             'type' => $file->getType(),
             'size' => $file->getSize(),
@@ -38,7 +38,7 @@ class FileViewService implements FileViewServiceInterface
     {
         return [
             'id' => $file->getId(),
-            'file_id' => $file->getFileId(),
+            'file_id' => $file->getPublicIdentifier(),
             'name' => $file->getName(),
             'type' => $file->getType(),
             'size' => $file->getSize(),
@@ -48,22 +48,22 @@ class FileViewService implements FileViewServiceInterface
             'uploaded_by' => $file->getUser()->getUsername(),
             'show_url' => $this->routeGenerator->generate(
                 'show_file',
-                ['file' => $file->getFileId()],
+                ['file' => $file->getPublicIdentifier()],
                 true
             ),
             'download_url' => $this->routeGenerator->generate(
                 'download_file',
-                ['fileShortIdentifier' => $file->getFileId()],
+                ['fileShortIdentifier' => $file->getPublicIdentifier()],
                 true
             ),
             'open_url' => $this->routeGenerator->generate(
                 'open_file',
-                ['fileShortIdentifier' => $file->getFileId()],
+                ['fileShortIdentifier' => $file->getPublicIdentifier()],
                 true
             ),
             'delete_url' => $this->routeGenerator->generate(
                 'delete_file',
-                ['file' => $file->getFileId()],
+                ['file' => $file->getPublicIdentifier()],
                 true
             ),
         ];

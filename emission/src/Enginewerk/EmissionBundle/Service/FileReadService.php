@@ -145,7 +145,7 @@ class FileReadService implements FileReadServiceInterface
     {
         return new FileView(
             $file->getId(),
-            $file->getFileId(),
+            $file->getPublicIdentifier(),
             $file->getChecksum(),
             $file->getName(),
             $file->getType(),
@@ -164,7 +164,7 @@ class FileReadService implements FileReadServiceInterface
      */
     public function findByShortIdentifier($identifier)
     {
-        $file = $this->fileRepository->findOneByShortIdentifier($identifier);
+        $file = $this->fileRepository->findByPublicIdentifier($identifier);
 
         if ($file) {
             return $this->createFileViewFromFileEntity($file);

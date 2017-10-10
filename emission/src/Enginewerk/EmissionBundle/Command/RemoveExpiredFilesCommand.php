@@ -31,11 +31,11 @@ class RemoveExpiredFilesCommand extends ContainerAwareCommand
         foreach ($files as $file) {
             $output->writeln($file->getName());
             try {
-                $efs->delete($file->getFileId());
+                $efs->delete($file->getPublicIdentifier());
             } catch (\Exception $e) {
                 $this->getContainer()
                     ->get('logger')
-                    ->error(sprintf('Can`t remove File #%s. %s', $file->getFileId(), $e->getMessage()));
+                    ->error(sprintf('Can`t remove File #%s. %s', $file->getPublicIdentifier(), $e->getMessage()));
             }
         }
     }

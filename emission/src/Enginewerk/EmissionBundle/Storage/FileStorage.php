@@ -109,7 +109,7 @@ final class FileStorage
         /* @var $replacementFile \Enginewerk\EmissionBundle\Entity\File */
 
         if ($replaceFile->getUser()->getId() === $replacementFile->getUser()->getId()) {
-            $replacementFile->setFileId($replaceFile->getFileId());
+            $replacementFile->setPublicIdentifier($replaceFile->getPublicIdentifier());
             $this->fileRepository->persist($replacementFile);
 
             $replaceFileKey = $replaceFile->getFileHash();
@@ -150,6 +150,6 @@ final class FileStorage
             throw new \RuntimeException('File short identifier cannot be empty');
         }
 
-        return $this->fileRepository->findOneByShortIdentifier($identifier);
+        return $this->fileRepository->findByPublicIdentifier($identifier);
     }
 }
