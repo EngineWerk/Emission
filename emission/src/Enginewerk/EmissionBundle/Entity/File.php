@@ -13,7 +13,7 @@ class File
     /**
      * @var string
      */
-    private $fileId;
+    private $publicIdentifier;
 
     /**
      * @var string
@@ -89,27 +89,27 @@ class File
     }
 
     /**
-     * Set fileId
+     * Set publicIdentifier
      *
-     * @param string $fileId
+     * @param string $publicIdentifier
      *
      * @return File
      */
-    public function setFileId($fileId)
+    public function setPublicIdentifier($publicIdentifier)
     {
-        $this->fileId = $fileId;
+        $this->publicIdentifier = $publicIdentifier;
 
         return $this;
     }
 
     /**
-     * Get fileId
+     * Get publicIdentifier
      *
      * @return string
      */
-    public function getFileId()
+    public function getPublicIdentifier()
     {
-        return $this->fileId;
+        return $this->publicIdentifier;
     }
 
     /**
@@ -395,7 +395,7 @@ class File
             $fileHash = sha1(uniqid(mt_rand(), true));
             $this->fileHash = $fileHash;
             $this->setCreatedAt($currentTime);
-            $this->setFileId(HashGenerator::generateRandomHash(8));
+            $this->setPublicIdentifier(HashGenerator::generateRandomHash(8));
 
             $expirationTime = new \DateTime();
             $expirationTime->setTimestamp(time() + 86600);

@@ -30,8 +30,8 @@ class FileBlockRepository extends EntityRepository implements FileBlockRepositor
     {
         $queryBuilder = $this->createQueryBuilder('fb');
         $queryBuilder->select('SUM(fb.size) AS totalSize')
-            ->where($queryBuilder->expr()->eq('fb.file', ':fileId'))
-            ->setParameter('fileId', $fileId);
+            ->where($queryBuilder->expr()->eq('fb.file', ':publicIdentifier'))
+            ->setParameter('publicIdentifier', $fileId);
 
         return (int) $queryBuilder->getQuery()->getSingleScalarResult();
     }
@@ -43,8 +43,8 @@ class FileBlockRepository extends EntityRepository implements FileBlockRepositor
     {
         $queryBuilder = $this->createQueryBuilder('fb');
         $queryBuilder
-            ->where($queryBuilder->expr()->eq('fb.file', ':fileId'))
-            ->setParameter('fileId', $fileId)
+            ->where($queryBuilder->expr()->eq('fb.file', ':publicIdentifier'))
+            ->setParameter('publicIdentifier', $fileId)
             ->orderBy('fb.rangeStart', 'ASC');
 
         return $queryBuilder->getQuery()->getResult();
@@ -57,8 +57,8 @@ class FileBlockRepository extends EntityRepository implements FileBlockRepositor
     {
         $queryBuilder = $this->createQueryBuilder('fb');
         $queryBuilder
-            ->where($queryBuilder->expr()->eq('fb.file', ':fileId'))
-            ->setParameter('fileId', $fileId)
+            ->where($queryBuilder->expr()->eq('fb.file', ':publicIdentifier'))
+            ->setParameter('publicIdentifier', $fileId)
             ->andWhere($queryBuilder->expr()->eq('fb.rangeStart', ':rangeStart'))
             ->setParameter('rangeStart', $rangeStart)
             ->andWhere($queryBuilder->expr()->eq('fb.rangeEnd', ':rangeEnd'))

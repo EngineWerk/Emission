@@ -25,11 +25,11 @@ interface FileRepositoryInterface
     public function getFilesForJsonApi(\DateTimeInterface $createdAfter = null);
 
     /**
-     * @param string $shortIdentifier
+     * @param string $publicIdentifier
      *
      * @return File|null
      */
-    public function findOneByShortIdentifier($shortIdentifier);
+    public function findByPublicIdentifier($publicIdentifier);
 
     /**
      * @param string $fileName

@@ -45,7 +45,7 @@ class FileRepository extends EntityRepository implements FileRepositoryInterface
     public function getFilesForJsonApi(\DateTimeInterface $createdAfter = null)
     {
         $queryBuilder = $this->createQueryBuilder('f')
-            ->select('f.fileId, f.name, f.checksum, f.size, f.type, f.expirationDate, f.complete')
+            ->select('f.publicIdentifier, f.name, f.checksum, f.size, f.type, f.expirationDate, f.complete')
             ->orderBy('f.id', 'DESC');
 
         if (null !== $createdAfter) {
@@ -62,12 +62,12 @@ class FileRepository extends EntityRepository implements FileRepositoryInterface
     /**
      * @inheritdoc
      */
-    public function findOneByShortIdentifier($shortIdentifier)
+    public function findByPublicIdentifier($publicIdentifier)
     {
         $queryBuilder = $this->createQueryBuilder('f');
         $queryBuilder
-            ->where($queryBuilder->expr()->eq('f.fileId', ':fileId'))
-            ->setParameter('fileId', $shortIdentifier);
+            ->where($queryBuilder->expr()->eq('f.publicIdentifier', ':publicIdentifier'))
+            ->setParameter('publicIdentifier', $publicIdentifier);
 
         return $queryBuilder->getQuery()->getSingleResult();
     }

@@ -10,11 +10,13 @@ Enginewerk\EmissionBundle\Entity\File:
             generator:
                 strategy: AUTO
     fields:
-        fileId:
+        publicIdentifier:
             type: string
             length: 16
-            column: file_id
+            column: public_identifier
             nullable: false
+            index: true
+            unique: true
 
         fileHash:
             type: string
