@@ -10,9 +10,7 @@ class DefaultController extends Controller
 {
     public function indexAction()
     {
-        $files = $this
-                ->get('enginewerk_emission.service.file_read_service')
-                ->findAllFiles();
+        $files = $this->get('enginewerk_emission.service.file_presentation_service')->findAll();
 
         $fileBlockForm = $this->createForm(new ResumableFileBlockType());
         $fileForm = $this->createForm(new ResumableFileType());

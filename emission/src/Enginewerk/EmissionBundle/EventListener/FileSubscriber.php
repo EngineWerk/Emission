@@ -3,7 +3,7 @@ namespace Enginewerk\EmissionBundle\EventListener;
 
 use Doctrine\Common\EventSubscriber;
 use Doctrine\ORM\Event\LifecycleEventArgs;
-use Enginewerk\EmissionBundle\Entity\File;
+use Enginewerk\EmissionBundle\Entity\File as FileEntity;
 
 class FileSubscriber implements EventSubscriber
 {
@@ -25,7 +25,7 @@ class FileSubscriber implements EventSubscriber
     {
         $file = $args->getEntity();
 
-        if ($file instanceof File) {
+        if ($file instanceof FileEntity) {
             $file->preChange();
         }
     }
@@ -37,7 +37,7 @@ class FileSubscriber implements EventSubscriber
     {
         $file = $args->getEntity();
 
-        if ($file instanceof File) {
+        if ($file instanceof FileEntity) {
             $file->preChange();
         }
     }

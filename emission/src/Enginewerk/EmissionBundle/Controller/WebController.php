@@ -21,8 +21,8 @@ class WebController extends Controller
 
         $appResponse->success();
         $appResponse->data(
-            $this->get('enginewerk_emission.service.file_read_service')
-                ->getFilesForJsonApi(new \DateTime($created_after ?: 'now'))
+            $this->get('enginewerk_emission.service.file_presentation_service')
+                ->findAllAsArray(new \DateTime($created_after ?: 'now'))
         );
 
         return new JsonResponse($appResponse->toArray(), Response::HTTP_OK);
@@ -37,9 +37,10 @@ class WebController extends Controller
      */
     public function showFileAction(Request $request)
     {
-        $fileReadService = $this->get('enginewerk_emission.service.file_read_service');
+        $fileReadService = $this->get('enginewerk_emission.service.file_presentation_service');
+        $file = $fileReadService->findByPublicIdentifier($request->get('file'));
 
-        if (null === ($file = $fileReadService->findByShortIdentifier($request->get('file')))) {
+        if (null === $file) {
             throw $this->createNotFoundException(sprintf('File #%s not found.', $request->get('file')));
         }
 
@@ -55,9 +56,9 @@ class WebController extends Controller
      */
     public function showFileContentAction(Request $request)
     {
-        $fileReadService = $this->get('enginewerk_emission.service.file_read_service');
+        $fileReadService = $this->get('enginewerk_emission.service.file_presentation_service');
 
-        if (null === ($file = $fileReadService->findByShortIdentifier($request->get('fileShortIdentifier')))) {
+        if (null === ($file = $fileReadService->findByPublicIdentifier($request->get('fileShortIdentifier')))) {
             throw $this->createNotFoundException(sprintf(
                 'File #%s not found.',
                 $request->get('fileShortIdentifier')
@@ -85,10 +86,8 @@ class WebController extends Controller
     {
         $appResponse = new WebApplicationResponse();
 
-        $fileStorage = $this->get('enginewerk_emission.storage.file_storage');
-
         try {
-            $fileStorage->delete($request->get('file'));
+            $this->get('enginewerk_emission.storage.file_manager')->delete($request->get('file'));
             $appResponse->success();
         } catch (\Exception $ex) {
             $appResponse->error(sprintf(
@@ -115,7 +114,7 @@ class WebController extends Controller
     {
         $appResponse = new WebApplicationResponse();
 
-        if (null === $this->get('enginewerk_emission.service.file_read_service')->findByShortIdentifier($request->get('file'))) {
+        if (null === $this->get('enginewerk_emission.service.file_presentation_service')->findByPublicIdentifier($request->get('file'))) {
             $appResponse->error(sprintf('File #%s not found.', $request->get('file')));
         } else {
             if ('never' === $request->get('date')) {
@@ -125,7 +124,7 @@ class WebController extends Controller
             }
 
             try {
-                $this->get('enginewerk_emission.storage.file_storage')->alterExpirationDate($request->get('file'), $expirationDate);
+                $this->get('enginewerk_emission.storage.file_manager')->alterExpirationDate($request->get('file'), $expirationDate);
                 $appResponse->success();
             } catch (\Exception $ex) {
                 $appResponse->error('Can`t change expiration date');
@@ -146,10 +145,8 @@ class WebController extends Controller
     {
         $appResponse = new WebApplicationResponse();
 
-        $efs = $this->get('enginewerk_emission.storage.file_storage');
-
         try {
-            $efs->replace($replace, $replacement);
+            $this->get('enginewerk_emission.storage.file_manager')->replace($replace, $replacement);
             $appResponse->success('File replaced.');
         } catch (\Exception $ex) {
             $this->get('logger')->error(sprintf('Can`t replace file. [%s] %s', get_class($ex), $ex->getMessage()));

@@ -1,14 +1,21 @@
 services:
-    enginewerk_emission.service.file_read_service:
+    enginewerk_emission.service.file_presentation_service:
         public: true
-        class: Enginewerk\EmissionBundle\Service\FileReadService
+        class: Enginewerk\EmissionBundle\Service\FilePresentationService
+        arguments: ['@enginewerk_emission.repository.file_repository']
+
+    enginewerk_emission.storage.file_manager:
+        public: true
+        class: Enginewerk\EmissionBundle\Storage\FileManager
         arguments:
             - '@enginewerk_emission.repository.file_repository'
             - '@enginewerk_emission.repository.file_block_repository'
+            - '@enginewerk_user.repository_doctrine.user_repository'
+            - '@enginewerk_fs.service.binary_storage_service'
 
     enginewerk_emission.repository.file_block_repository:
         class: Enginewerk\EmissionBundle\Repository\Doctrine\FileBlockRepository
-        public: true # change to false
+        public: false
         factory:   ['@doctrine.orm.default_entity_manager', getRepository]
         arguments: [Enginewerk\EmissionBundle\Entity\FileBlock]
 
@@ -33,14 +40,6 @@ services:
         tags:
             - { name: doctrine.event_subscriber, connection: default }
 
-    enginewerk_emission.storage.file_storage:
-        public: true
-        class: Enginewerk\EmissionBundle\Storage\FileStorage
-        arguments:
-            - '@enginewerk_emission.repository.file_repository'
-            - '@enginewerk_emission.repository.file_block_repository'
-            - '@enginewerk_fs.service.binary_storage_service'
-
     enginewerk_emission.service.file_write_service:
         public: false
         class: Enginewerk\EmissionBundle\Service\FileWriteService
@@ -48,7 +47,28 @@ services:
             - '@enginewerk_emission.repository.file_repository'
             - '@enginewerk_emission.repository.file_block_repository'
 
-    enginewerk_emission.service.file_view_service:
+    enginewerk_emission.service.file_read_service:
         public: false
-        class: Enginewerk\EmissionBundle\Service\FileViewService
-        arguments: ['@router']
+        class: Enginewerk\EmissionBundle\Service\FileReadService
+        arguments:
+            - '@enginewerk_emission.repository.file_repository'
+            - '@enginewerk_emission.repository.file_block_repository'
+
+    enginewerk_emission.service.stream_service:
+        public: true
+        class: Enginewerk\EmissionBundle\Service\StreamService
+        arguments:
+            - '@enginewerk_emission.storage.file_finder'
+            - '@enginewerk_emission.storage.file_reader'
+
+    enginewerk_emission.storage.file_reader:
+        public: false
+        class: Enginewerk\EmissionBundle\Storage\FileReader
+        arguments: ['@enginewerk_fs.service.binary_storage_service']
+
+    enginewerk_emission.storage.file_finder:
+        public: false
+        class: Enginewerk\EmissionBundle\Storage\FileFinder
+        arguments:
+            - '@enginewerk_emission.repository.file_repository'
+            - '@enginewerk_emission.repository.file_block_repository'

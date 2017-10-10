@@ -3,8 +3,9 @@ namespace Enginewerk\EmissionBundle\Repository\Doctrine;
 
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
-use Doctrine\ORM\NoResultException;
-use Enginewerk\EmissionBundle\Entity\File;
+use Doctrine\ORM\NoResultException as DoctrineNoResultException;
+use Enginewerk\ApplicationBundle\Repository\NoResultException;
+use Enginewerk\EmissionBundle\Entity\File as FileEntity;
 use Enginewerk\EmissionBundle\Repository\FileRepositoryInterface;
 
 class FileRepository extends EntityRepository implements FileRepositoryInterface
@@ -42,7 +43,7 @@ class FileRepository extends EntityRepository implements FileRepositoryInterface
     /**
      * @inheritdoc
      */
-    public function getFilesForJsonApi(\DateTimeInterface $createdAfter = null)
+    public function findAllAsArray(\DateTimeInterface $createdAfter = null)
     {
         $queryBuilder = $this->createQueryBuilder('f')
             ->select('f.publicIdentifier, f.name, f.checksum, f.size, f.type, f.expirationDate, f.complete')
@@ -69,7 +70,22 @@ class FileRepository extends EntityRepository implements FileRepositoryInterface
             ->where($queryBuilder->expr()->eq('f.publicIdentifier', ':publicIdentifier'))
             ->setParameter('publicIdentifier', $publicIdentifier);
 
-        return $queryBuilder->getQuery()->getSingleResult();
+        return $queryBuilder->getQuery()->getOneOrNullResult();
+    }
+
+    /** @inheritdoc */
+    public function getByPublicIdentifier($publicIdentifier)
+    {
+        $queryBuilder = $this->createQueryBuilder('f');
+        $queryBuilder
+            ->where($queryBuilder->expr()->eq('f.publicIdentifier', ':publicIdentifier'))
+            ->setParameter('publicIdentifier', $publicIdentifier);
+
+        try {
+            return $queryBuilder->getQuery()->getSingleResult();
+        } catch (DoctrineNoResultException $noResultException) {
+            throw new NoResultException('Expected entity, got none');
+        }
     }
 
     /**
@@ -87,10 +103,7 @@ class FileRepository extends EntityRepository implements FileRepositoryInterface
             ->setParameter('fileSize', $fileSize);
 
         try {
-            $result = $queryBuilder->getQuery()->getSingleResult();
-        } catch (NoResultException $e) {
-            $result = null;
-            // Add logger
+            $result = $queryBuilder->getQuery()->getOneOrNullResult();
         } catch (NonUniqueResultException $e) {
             $result = null;
             // Add logger
@@ -102,7 +115,7 @@ class FileRepository extends EntityRepository implements FileRepositoryInterface
     /**
      * @inheritdoc
      */
-    public function remove(File $file)
+    public function remove(FileEntity $file)
     {
         $this->getEntityManager()->remove($file);
         $this->getEntityManager()->flush();
@@ -111,7 +124,7 @@ class FileRepository extends EntityRepository implements FileRepositoryInterface
     /**
      * @inheritdoc
      */
-    public function persist(File $file)
+    public function persist(FileEntity $file)
     {
         $this->getEntityManager()->persist($file);
         $this->getEntityManager()->flush();

@@ -1,5 +1,5 @@
 <?php
-namespace Enginewerk\ResumableBundle\Request;
+namespace Enginewerk\ResumableBundle\FileUpload;
 
 class FileRequest
 {
@@ -41,7 +41,7 @@ class FileRequest
      */
     public function __construct(array $resumableRequest)
     {
-        $this->resumableChunkNumber = (int) $resumableRequest['resumableTotalChunks'];
+        $this->resumableChunkNumber = (int) $resumableRequest['resumableChunkNumber'];
         $this->resumableChunkSize = (int) $resumableRequest['resumableChunkSize'];
         $this->resumableCurrentChunkSize = (int) $resumableRequest['resumableCurrentChunkSize'];
         $this->resumableCurrentStartByte = (int) $resumableRequest['resumableCurrentStartByte'];

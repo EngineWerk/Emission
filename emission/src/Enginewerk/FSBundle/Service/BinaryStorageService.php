@@ -4,10 +4,9 @@ namespace Enginewerk\FSBundle\Service;
 use Enginewerk\FSBundle\Entity\BinaryBlock;
 use Enginewerk\FSBundle\Repository\BinaryBlockRepositoryInterface;
 use Enginewerk\FSBundle\Storage\StorageInterface;
-use Exception;
-use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\HttpFoundation\File\File as SystemFile;
 
-class BinaryStorageService
+class BinaryStorageService implements BinaryStorageInterface
 {
     /** @var BinaryBlockRepositoryInterface */
     private $binaryBlockRepository;
@@ -28,14 +27,11 @@ class BinaryStorageService
     }
 
     /**
-     * @param File $file
-     * @param string $key
-     *
-     * @return int
+     * @inheritdoc
      */
-    public function store(File $file, $key)
+    public function store(SystemFile $file, $key)
     {
-        $checksum = md5_file($file->getPathname());
+        $checksum = md5_file($file->getPathname()); // Path in local system
         $size = $file->getSize();
 
         $binaryBlock = new BinaryBlock();
@@ -50,13 +46,22 @@ class BinaryStorageService
     }
 
     /**
-     * @param string $key
-     *
-     * @return File
+     * @inheritdoc
      */
     public function get($key)
     {
         return $this->binaryBlockStorage->get($this->getBlockByResourceName($key)->getUrn());
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function delete($key)
+    {
+        $binaryBlock = $this->getBlockByResourceName($key);
+        $urn = $binaryBlock->getUrn();
+        $this->binaryBlockRepository->remove($binaryBlock);
+        $this->binaryBlockStorage->delete($urn);
     }
 
     /**
@@ -67,18 +72,5 @@ class BinaryStorageService
     private function getBlockByResourceName($name)
     {
         return $this->binaryBlockRepository->findOneByUniformResourceName($name);
-    }
-
-    /**
-     * @param string $key
-     *
-     * @throws Exception
-     */
-    public function delete($key)
-    {
-        $binaryBlock = $this->getBlockByResourceName($key);
-        $urn = $binaryBlock->getUrn();
-        $this->binaryBlockRepository->remove($binaryBlock);
-        $this->binaryBlockStorage->delete($urn);
     }
 }

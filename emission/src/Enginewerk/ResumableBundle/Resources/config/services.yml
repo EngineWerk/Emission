@@ -3,7 +3,25 @@ services:
         public: true
         class: Enginewerk\ResumableBundle\Service\ResumableFileUploadService
         arguments:
+            - '@enginewerk_emission.storage.file_finder'
+            - '@enginewerk_emission.storage.file_manager'
+            - '@enginewerk_emission.service.file_presentation_service'
+            - '@enginewerk_resumable.file_upload.response_factory'
             - '@enginewerk_fs.service.binary_storage_service'
-            - '@enginewerk_emission.service.file_view_service'
-            - '@enginewerk_emission.service.file_write_service'
-            - '@enginewerk_emission.service.file_read_service'
+            - '@enginewerk_resumable.common.uuid.uuid_version4generator'
+        calls:
+            - [setLogger, ['@monolog.logger.resumable']]
+
+    enginewerk_resumable.file_upload.response_factory:
+        public: false
+        class: Enginewerk\ResumableBundle\FileUpload\ResponseFactory
+        arguments: ['@router']
+
+    enginewerk_resumable.common.uuid.adapter.ramsey_uuid_generator:
+        public: false
+        class: Enginewerk\Common\Uuid\Adapter\RamseyUuidGenerator
+
+    enginewerk_resumable.common.uuid.uuid_version4generator:
+        public: false
+        class: Enginewerk\Common\Uuid\UuidVersion4Generator
+        arguments: ['@enginewerk_resumable.common.uuid.adapter.ramsey_uuid_generator']

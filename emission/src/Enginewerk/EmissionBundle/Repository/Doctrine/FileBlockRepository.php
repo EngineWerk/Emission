@@ -3,7 +3,7 @@ namespace Enginewerk\EmissionBundle\Repository\Doctrine;
 
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
-use Doctrine\ORM\NoResultException;
+use Enginewerk\EmissionBundle\Entity\File;
 use Enginewerk\EmissionBundle\Entity\FileBlock;
 use Enginewerk\EmissionBundle\Repository\FileBlockRepositoryInterface;
 
@@ -26,12 +26,16 @@ class FileBlockRepository extends EntityRepository implements FileBlockRepositor
     /**
      * @inheritdoc
      */
-    public function getTotalSize($fileId)
+    public function getTotalSize($publicIdentifier)
     {
-        $queryBuilder = $this->createQueryBuilder('fb');
-        $queryBuilder->select('SUM(fb.size) AS totalSize')
-            ->where($queryBuilder->expr()->eq('fb.file', ':publicIdentifier'))
-            ->setParameter('publicIdentifier', $fileId);
+        $queryBuilder = $this->getEntityManager()
+            ->createQueryBuilder()
+            ->select('SUM(fb.size) AS totalSize')
+            ->from(File::class, 'f');
+
+        $queryBuilder->leftJoin('f.fileBlocks', 'fb')
+            ->where($queryBuilder->expr()->eq('f.publicIdentifier', ':publicIdentifier'))
+            ->setParameter('publicIdentifier', $publicIdentifier);
 
         return (int) $queryBuilder->getQuery()->getSingleScalarResult();
     }
@@ -43,8 +47,8 @@ class FileBlockRepository extends EntityRepository implements FileBlockRepositor
     {
         $queryBuilder = $this->createQueryBuilder('fb');
         $queryBuilder
-            ->where($queryBuilder->expr()->eq('fb.file', ':publicIdentifier'))
-            ->setParameter('publicIdentifier', $fileId)
+            ->where($queryBuilder->expr()->eq('fb.file', ':fileId'))
+            ->setParameter('fileId', $fileId)
             ->orderBy('fb.rangeStart', 'ASC');
 
         return $queryBuilder->getQuery()->getResult();
@@ -53,22 +57,24 @@ class FileBlockRepository extends EntityRepository implements FileBlockRepositor
     /**
      * @inheritdoc
      */
-    public function findByFileIdAndRangeStartAndRangeEnd($fileId, $rangeStart, $rangeEnd)
+    public function findByFileIdAndRangeStartAndRangeEnd($publicIdentifier, $rangeStart, $rangeEnd)
     {
-        $queryBuilder = $this->createQueryBuilder('fb');
+        $queryBuilder = $this->getEntityManager()
+            ->createQueryBuilder()
+            ->select('f')
+            ->from(File::class, 'f');
+
         $queryBuilder
-            ->where($queryBuilder->expr()->eq('fb.file', ':publicIdentifier'))
-            ->setParameter('publicIdentifier', $fileId)
+            ->leftJoin('f.fileBlocks', 'fb')
+            ->where($queryBuilder->expr()->eq('f.publicIdentifier', ':publicIdentifier'))
+            ->setParameter('publicIdentifier', $publicIdentifier)
             ->andWhere($queryBuilder->expr()->eq('fb.rangeStart', ':rangeStart'))
             ->setParameter('rangeStart', $rangeStart)
             ->andWhere($queryBuilder->expr()->eq('fb.rangeEnd', ':rangeEnd'))
             ->setParameter('rangeEnd', $rangeEnd);
 
         try {
-            $result = $queryBuilder->getQuery()->getSingleResult();
-        } catch (NoResultException $e) {
-            $result = null;
-            // Add logger
+            $result = $queryBuilder->getQuery()->getOneOrNullResult();
         } catch (NonUniqueResultException $e) {
             $result = null;
             // Add logger

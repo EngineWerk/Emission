@@ -1,6 +1,7 @@
 <?php
 namespace Enginewerk\EmissionBundle\Form\Type;
 
+use Enginewerk\EmissionBundle\Entity\File;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
@@ -34,7 +35,7 @@ class ResumableFileType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => 'Enginewerk\EmissionBundle\Entity\File',
+            'data_class' => File::class,
             'csrf_field_name' => '_tokenFile',
         ]);
     }

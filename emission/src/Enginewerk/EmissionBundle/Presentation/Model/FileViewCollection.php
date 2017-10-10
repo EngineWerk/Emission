@@ -1,7 +1,7 @@
 <?php
 namespace Enginewerk\EmissionBundle\Presentation\Model;
 
-use Enginewerk\ApplicationBundle\Collection\AbstractRestrictedArrayCollection;
+use Enginewerk\Common\Collection\AbstractRestrictedArrayCollection;
 
 final class FileViewCollection extends AbstractRestrictedArrayCollection
 {

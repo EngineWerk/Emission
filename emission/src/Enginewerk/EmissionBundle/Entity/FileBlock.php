@@ -1,9 +1,6 @@
 <?php
 namespace Enginewerk\EmissionBundle\Entity;
 
-/**
- * FileBlock
- */
 class FileBlock
 {
     /**
@@ -42,7 +39,7 @@ class FileBlock
     private $updatedAt;
 
     /**
-     * @var \Enginewerk\EmissionBundle\Entity\File
+     * @var File
      */
     private $file;
 
@@ -203,11 +200,11 @@ class FileBlock
     /**
      * Set file
      *
-     * @param \Enginewerk\EmissionBundle\Entity\File $file
+     * @param File $file
      *
      * @return FileBlock
      */
-    public function setFile(\Enginewerk\EmissionBundle\Entity\File $file = null)
+    public function setFile(File $file = null)
     {
         $this->file = $file;
 
@@ -217,7 +214,7 @@ class FileBlock
     /**
      * Get file
      *
-     * @return \Enginewerk\EmissionBundle\Entity\File
+     * @return File
      */
     public function getFile()
     {

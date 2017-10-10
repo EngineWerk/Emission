@@ -1,8 +1,9 @@
 <?php
 namespace Enginewerk\EmissionBundle\Service;
 
-use Enginewerk\EmissionBundle\Entity\File;
+use Enginewerk\EmissionBundle\Entity\File as FileEntity;
 use Enginewerk\EmissionBundle\Entity\FileBlock;
+use Enginewerk\EmissionBundle\Storage\FileNotFoundException;
 use Enginewerk\UserBundle\Entity\User;
 
 interface FileWriteServiceInterface
@@ -14,17 +15,21 @@ interface FileWriteServiceInterface
      * @param User $user
      * @param string $mimeType
      *
-     * @return File
+     * @return FileEntity
      */
     public function createFile($fileName, $fileChecksum, $fileSize, User $user, $mimeType);
 
     /**
-     * @param File $file
+     * @param string $publicIdentifier
+     *
+     * @throws FileNotFoundException
+     *
+     * @return void
      */
-    public function setFileAsComplete(File $file);
+    public function setFileAsComplete($publicIdentifier);
 
     /**
-     * @param File $file
+     * @param FileEntity $file
      * @param string $fileHash
      * @param int $size
      * @param int $rangeStart
@@ -32,5 +37,5 @@ interface FileWriteServiceInterface
      *
      * @return FileBlock
      */
-    public function createFileBlock(File $file, $fileHash, $size, $rangeStart, $rangeEnd);
+    public function createFileBlock(FileEntity $file, $fileHash, $size, $rangeStart, $rangeEnd);
 }

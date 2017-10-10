@@ -1,33 +1,33 @@
 <?php
 namespace Enginewerk\EmissionBundle\Service;
 
-use Enginewerk\EmissionBundle\Entity\File;
+use Enginewerk\EmissionBundle\Entity\File as FileEntity;
 use Enginewerk\EmissionBundle\Entity\FileBlock;
 
 interface FileReadServiceInterface
 {
     /**
-     * @param int $fileId
+     * @param string $publicIdentifier
      *
      * @return int
      */
-    public function getTotalSize($fileId);
+    public function getTotalSize($publicIdentifier);
 
     /**
      * @param string $fileName
      * @param string $fileChecksum
      * @param int $fileSize
      *
-     * @return File|null
+     * @return FileEntity|null
      */
     public function findFile($fileName, $fileChecksum, $fileSize);
 
     /**
-     * @param int $fileId
+     * @param string $publicIdentifier
      * @param int $rangeStart
      * @param int $rangeEnd
      *
      * @return FileBlock|null
      */
-    public function findFileBlock($fileId, $rangeStart, $rangeEnd);
+    public function findFileBlock($publicIdentifier, $rangeStart, $rangeEnd);
 }

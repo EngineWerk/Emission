@@ -12,3 +12,9 @@ services:
     enginewerk.invitation.form.data_transformer:
         class: Enginewerk\UserBundle\Form\DataTransformer\InvitationToCodeTransformer
         arguments: ['@doctrine.orm.entity_manager']
+
+    enginewerk_user.repository_doctrine.user_repository:
+        public: false
+        class: Enginewerk\UserBundle\Repository\Doctrine\UserRepository
+        factory:   ['@doctrine.orm.default_entity_manager', getRepository]
+        arguments: [Enginewerk\UserBundle\Entity\User]

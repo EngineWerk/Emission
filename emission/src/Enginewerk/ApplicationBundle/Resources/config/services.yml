@@ -1,0 +1,17 @@
+services:
+    enginewerk_application.logger.request_uuid_processor:
+        class: Enginewerk\ApplicationBundle\Logger\RequestUuidProcessor
+        public: true
+        arguments: ['@enginewerk_application.common.uuid_generator.version_4']
+        tags:
+            - { name: monolog.processor, method: processRecord }
+
+    enginewerk_application.common.uuid_generator.version_4:
+        class: Enginewerk\Common\Uuid\UuidVersion4Generator
+        public: false
+        arguments:
+          - '@enginewerk_application.common.uuid.adapter.ramsey_uuid_generator'
+
+    enginewerk_application.common.uuid.adapter.ramsey_uuid_generator:
+        public: false
+        class: Enginewerk\Common\Uuid\Adapter\RamseyUuidGenerator
