@@ -2,6 +2,7 @@ imports:
     - { resource: parameters_defaults.yml }
     - { resource: parameters.yml }
     - { resource: security.yml }
+    - { resource: '@EnginewerkApplicationBundle/Resources/config/services.yml' }
     - { resource: '@EnginewerkFSBundle/Resources/config/services.yml' }
     - { resource: '@UserBundle/Resources/config/services.yml' }
     - { resource: '@OAuthBundle/Resources/config/services.yml' }
@@ -78,7 +79,6 @@ swiftmailer:
     password:  '%mailer_password%'
     spool:     { type: memory }
 
-
 doctrine_migrations:
     dir_name: '%kernel.root_dir%/../src/Enginewerk/MigrationBundle/Migrations'
     namespace: Enginewerk\MigrationBundle\Migrations
@@ -108,3 +108,6 @@ knp_gaufrette:
             adapter:        data_local
             alias:          binary_storage         
     stream_wrapper: ~
+
+monolog:
+    channels: ['resumable']

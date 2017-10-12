@@ -71,8 +71,19 @@ final class FileView
      * @param bool $complete
      * @param string $userName
      */
-    public function __construct($id, $fileId, $checksum, $name, $type, $size, \DateTimeImmutable $expirationDate, \DateTimeImmutable $createdAt, \DateTimeImmutable $updatedAt, $complete, $userName)
-    {
+    public function __construct(
+        $id,
+        $fileId,
+        $checksum,
+        $name,
+        $type,
+        $size,
+        \DateTimeImmutable $expirationDate,
+        \DateTimeImmutable $createdAt,
+        \DateTimeImmutable $updatedAt,
+        $complete,
+        $userName
+    ) {
         $this->fileId = $fileId;
         $this->checksum = $checksum;
         $this->name = $name;
@@ -87,6 +98,8 @@ final class FileView
     }
 
     /**
+     * @deprecated Usage of internal identifier should be removed ASAP
+     *
      * @return int
      */
     public function getId()

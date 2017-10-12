@@ -1,10 +1,12 @@
 <?php
 namespace Enginewerk\EmissionBundle\Service;
 
-use Enginewerk\EmissionBundle\Entity\File;
+use Enginewerk\ApplicationBundle\Repository\NoResultException;
+use Enginewerk\EmissionBundle\Entity\File as FileEntity;
 use Enginewerk\EmissionBundle\Entity\FileBlock;
 use Enginewerk\EmissionBundle\Repository\FileBlockRepositoryInterface;
 use Enginewerk\EmissionBundle\Repository\FileRepositoryInterface;
+use Enginewerk\EmissionBundle\Storage\FileNotFoundException;
 use Enginewerk\UserBundle\Entity\User;
 
 class FileWriteService implements FileWriteServiceInterface
@@ -32,7 +34,7 @@ class FileWriteService implements FileWriteServiceInterface
      */
     public function createFile($fileName, $fileChecksum, $fileSize, User $user, $mimeType)
     {
-        $file = new File();
+        $file = new FileEntity();
 
         $file->setName($fileName);
         $file->setChecksum($fileChecksum);
@@ -49,17 +51,22 @@ class FileWriteService implements FileWriteServiceInterface
     /**
      * @inheritdoc
      */
-    public function setFileAsComplete(File $file)
+    public function setFileAsComplete($publicIdentifier)
     {
-        $file->setComplete(true);
+        try {
+            $file = $this->fileRepository->getByPublicIdentifier($publicIdentifier);
+        } catch (NoResultException $exception) {
+            throw new FileNotFoundException(sprintf('File identified by "%s" not found', $publicIdentifier));
+        }
 
+        $file->setComplete(true);
         $this->fileRepository->persist($file);
     }
 
     /**
      * @inheritdoc
      */
-    public function createFileBlock(File $file, $fileHash, $size, $rangeStart, $rangeEnd)
+    public function createFileBlock(FileEntity $file, $fileHash, $size, $rangeStart, $rangeEnd)
     {
         $fileBlock = new FileBlock();
 

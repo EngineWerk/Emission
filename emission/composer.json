@@ -24,6 +24,7 @@
         "jms/translation-bundle": "1.1.0",
         "knplabs/gaufrette": "0.2.1",
         "knplabs/knp-gaufrette-bundle": "0.3.0",
+        "ramsey/uuid": "^3.7",
         "roave/security-advisories": "dev-master",
         "sensio/framework-extra-bundle": "~3.0",
         "sensio/generator-bundle": "2.3.*",

@@ -13,11 +13,11 @@ interface FileBlockRepositoryInterface
     public function getUsedBlocksNumber($fileHash);
 
     /**
-     * @param string $fileId
+     * @param string $publicIdentifier
      *
      * @return int
      */
-    public function getTotalSize($fileId);
+    public function getTotalSize($publicIdentifier);
 
     /**
      * Returns FileBlocks ordered by Range
@@ -29,13 +29,13 @@ interface FileBlockRepositoryInterface
     public function findByFileId($fileId);
 
     /**
-     * @param int $fileId
+     * @param string $publicIdentifier
      * @param int $rangeStart
      * @param int $rangeEnd
      *
      * @return FileBlock|null
      */
-    public function findByFileIdAndRangeStartAndRangeEnd($fileId, $rangeStart, $rangeEnd);
+    public function findByFileIdAndRangeStartAndRangeEnd($publicIdentifier, $rangeStart, $rangeEnd);
 
     /**
      * @param FileBlock $fileBlock

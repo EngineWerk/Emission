@@ -2,6 +2,7 @@
 namespace Enginewerk\UserBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Enginewerk\EmissionBundle\Entity\File as FileEntity;
 use FOS\UserBundle\Model\User as BaseUser;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -55,11 +56,11 @@ class User extends BaseUser
     }
 
     /**
-     * @param  \Enginewerk\UserBundle\Entity\Invitation $invitation
+     * @param Invitation $invitation
      *
      * @return User
      */
-    public function setInvitation(\Enginewerk\UserBundle\Entity\Invitation $invitation = null)
+    public function setInvitation(Invitation $invitation = null)
     {
         $this->invitation = $invitation;
 
@@ -69,7 +70,7 @@ class User extends BaseUser
     /**
      * Get invitation
      *
-     * @return \Enginewerk\UserBundle\Entity\Invitation
+     * @return Invitation
      */
     public function getInvitation()
     {
@@ -79,11 +80,11 @@ class User extends BaseUser
     /**
      * Add files
      *
-     * @param \Enginewerk\EmissionBundle\Entity\File $files
+     * @param FileEntity $files
      *
      * @return User
      */
-    public function addFile(\Enginewerk\EmissionBundle\Entity\File $files)
+    public function addFile(FileEntity $files)
     {
         $this->files[] = $files;
 
@@ -93,9 +94,9 @@ class User extends BaseUser
     /**
      * Remove files
      *
-     * @param \Enginewerk\EmissionBundle\Entity\File $files
+     * @param FileEntity $files
      */
-    public function removeFile(\Enginewerk\EmissionBundle\Entity\File $files)
+    public function removeFile(FileEntity $files)
     {
         $this->files->removeElement($files);
     }

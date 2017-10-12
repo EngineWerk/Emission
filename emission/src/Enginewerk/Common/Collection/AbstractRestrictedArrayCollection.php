@@ -1,5 +1,5 @@
 <?php
-namespace Enginewerk\ApplicationBundle\Collection;
+namespace Enginewerk\Common\Collection;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Psr\Log\InvalidArgumentException;

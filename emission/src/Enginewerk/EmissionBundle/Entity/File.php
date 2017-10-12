@@ -1,7 +1,9 @@
 <?php
 namespace Enginewerk\EmissionBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Enginewerk\EmissionBundle\Generator\HashGenerator;
+use Enginewerk\UserBundle\Entity\User;
 
 class File
 {
@@ -61,12 +63,12 @@ class File
     private $complete;
 
     /**
-     * @var \Doctrine\Common\Collections\Collection
+     * @var ArrayCollection
      */
     private $fileBlocks;
 
     /**
-     * @var \Enginewerk\UserBundle\Entity\User
+     * @var User
      */
     private $user;
 
@@ -75,7 +77,7 @@ class File
      */
     public function __construct()
     {
-        $this->fileBlocks = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->fileBlocks = new ArrayCollection();
     }
 
     /**
@@ -331,11 +333,11 @@ class File
     /**
      * Add fileBlock
      *
-     * @param \Enginewerk\EmissionBundle\Entity\FileBlock $fileBlock
+     * @param FileBlock $fileBlock
      *
      * @return File
      */
-    public function addFileBlock(\Enginewerk\EmissionBundle\Entity\FileBlock $fileBlock)
+    public function addFileBlock(FileBlock $fileBlock)
     {
         $this->fileBlocks[] = $fileBlock;
 
@@ -345,9 +347,9 @@ class File
     /**
      * Remove fileBlock
      *
-     * @param \Enginewerk\EmissionBundle\Entity\FileBlock $fileBlock
+     * @param FileBlock $fileBlock
      */
-    public function removeFileBlock(\Enginewerk\EmissionBundle\Entity\FileBlock $fileBlock)
+    public function removeFileBlock(FileBlock $fileBlock)
     {
         $this->fileBlocks->removeElement($fileBlock);
     }
@@ -355,7 +357,7 @@ class File
     /**
      * Get fileBlocks
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return ArrayCollection
      */
     public function getFileBlocks()
     {
@@ -363,13 +365,11 @@ class File
     }
 
     /**
-     * Set user
-     *
-     * @param \Enginewerk\UserBundle\Entity\User $user
+     * @param User $user
      *
      * @return File
      */
-    public function setUser(\Enginewerk\UserBundle\Entity\User $user = null)
+    public function setUser(User $user = null)
     {
         $this->user = $user;
 
@@ -377,9 +377,7 @@ class File
     }
 
     /**
-     * Get user
-     *
-     * @return \Enginewerk\UserBundle\Entity\User
+     * @return User
      */
     public function getUser()
     {

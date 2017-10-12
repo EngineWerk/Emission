@@ -1,4 +1,5 @@
 Enginewerk\UserBundle\Entity\User:
+    repositoryClass: Enginewerk\UserBundle\Repository\Doctrine\UserRepository
     type: entity
     table: 'fos_user'
     id:

@@ -79,4 +79,3 @@ Enginewerk\EmissionBundle\Entity\File:
         fileBlocks:
             targetEntity: Enginewerk\EmissionBundle\Entity\FileBlock
             mappedBy: file
-
