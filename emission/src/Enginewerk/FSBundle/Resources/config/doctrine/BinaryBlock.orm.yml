@@ -13,6 +13,8 @@ Enginewerk\FSBundle\Entity\BinaryBlock:
             column: urn
             length: 255
             nullable: false
+            index: true
+            unique: true
         checksum:
             type: string
             column: checksum
