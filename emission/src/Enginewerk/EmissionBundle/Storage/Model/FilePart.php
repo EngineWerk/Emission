@@ -20,8 +20,8 @@ final class FilePart
     public function __construct($identifier, $rangeStart, $rangeEnd)
     {
         $this->identifier = $identifier;
-        $this->rangeStart = $rangeStart;
-        $this->rangeEnd = $rangeEnd;
+        $this->rangeStart = (int) $rangeStart;
+        $this->rangeEnd = (int) $rangeEnd;
     }
 
     /**

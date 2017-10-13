@@ -170,13 +170,13 @@ final class ResumableFileUploadService
     {
         $response = new WebApplicationResponse();
 
-        $file = $this->fileFinder->findFile($fileName, $fileChecksum, (int) $fileSize);
+        $file = $this->fileFinder->findFile($fileName, $fileChecksum, $fileSize);
 
         if ($file) {
             $filePart = $this->findFilePart(
                 $file->getFilePartCollection(),
-                (int) $chunkRangeStart,
-                (int) $chunkRangeEnd
+                $chunkRangeStart,
+                $chunkRangeEnd
             );
             if ($filePart) {
                 $response->success('Block found');
