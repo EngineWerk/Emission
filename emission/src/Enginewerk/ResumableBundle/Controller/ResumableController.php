@@ -19,9 +19,9 @@ class ResumableController extends Controller
         $serviceResponse = $fileUploadService->findFileChunk(
             $request->get('resumableFilename'),
             $request->get('resumableIdentifier'),
-            $request->get('resumableTotalSize'),
-            $request->get('resumableCurrentStartByte'),
-            $request->get('resumableCurrentEndByte')
+            (int) $request->get('resumableTotalSize'),
+            (int) $request->get('resumableCurrentStartByte'),
+            (int) $request->get('resumableCurrentEndByte')
         );
 
         return new JsonResponse(
