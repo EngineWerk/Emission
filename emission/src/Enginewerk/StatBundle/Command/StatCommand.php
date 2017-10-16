@@ -29,16 +29,26 @@ final class StatCommand extends ContainerAwareCommand
         $this->output = $output;
 
         $fileStatReader = $this->getContainer()->get('enginewerk_stat.presentation_doctrine.file_reader');
+        $declaredFilesSize = $fileStatReader->getFilesSize();
+        $realFilesSize = $fileStatReader->getFilesSizeReal();
 
         $fileSizeAndCountTable = (new Table($this->output))
-            ->setHeaders(['Files number', 'Size (declared)', 'Size (on disk)']);
+            ->setHeaders(['Files number', 'Size declared (bytes)', 'Size on disk (bytes)']);
 
         $fileSizeAndCountTable->setRow(
             0,
             [
                 $fileStatReader->getFilesCount(),
-                (new ByteFormatter())->setBase(Base::DECIMAL)->setPrecision(2)->format($fileStatReader->getFilesSize()),
-                (new ByteFormatter())->setBase(Base::DECIMAL)->setPrecision(2)->format($fileStatReader->getFilesSizeReal()),
+                sprintf(
+                    '%s (%d)',
+                    (new ByteFormatter())->setBase(Base::DECIMAL)->setPrecision(2)->format($declaredFilesSize),
+                    $declaredFilesSize
+                ),
+                sprintf(
+                    '%s (%d)',
+                    (new ByteFormatter())->setBase(Base::DECIMAL)->setPrecision(2)->format($realFilesSize),
+                    $realFilesSize
+                ),
             ]
         );
 
