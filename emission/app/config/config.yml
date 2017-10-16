@@ -7,6 +7,7 @@ imports:
     - { resource: '@UserBundle/Resources/config/services.yml' }
     - { resource: '@OAuthBundle/Resources/config/services.yml' }
     - { resource: '@EnginewerkResumableBundle/Resources/config/services.yml' }
+    - { resource: '@EnginewerkStatBundle/Resources/config/services.yml' }
 
 framework:
     #esi:             ~

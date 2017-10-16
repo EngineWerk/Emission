@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "2e26295f532d0686f51049fa7132a5df",
+    "content-hash": "6010e71e788cc189d454da4f0190015d",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -2098,6 +2098,47 @@
             ],
             "description": "Prevents installation of composer packages with known security vulnerabilities: no API, simply require it",
             "time": "2017-09-11T12:05:25+00:00"
+        },
+        {
+            "name": "scriptfusion/byte-formatter",
+            "version": "3.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ScriptFUSION/ByteFormatter.git",
+                "reference": "edc3b7f02b00b460e8139dc019b284e42948612e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ScriptFUSION/ByteFormatter/zipball/edc3b7f02b00b460e8139dc019b284e42948612e",
+                "reference": "edc3b7f02b00b460e8139dc019b284e42948612e",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.5"
+            },
+            "require-dev": {
+                "mockery/mockery": "^0",
+                "phpunit/phpunit": "^4",
+                "squizlabs/php_codesniffer": "^2"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "ScriptFUSION\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Bilge",
+                    "email": "bilge@scriptfusion.com"
+                }
+            ],
+            "description": "Formats byte values as human-readable strings.",
+            "time": "2016-01-03T23:54:33+00:00"
         },
         {
             "name": "sensio/framework-extra-bundle",
