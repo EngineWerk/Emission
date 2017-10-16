@@ -16,6 +16,7 @@ class AppKernel extends Kernel
             new Enginewerk\MigrationBundle\EmissionMigrationBundle(),
             new Enginewerk\OAuthBundle\OAuthBundle(),
             new Enginewerk\ResumableBundle\EnginewerkResumableBundle(),
+            new Enginewerk\StatBundle\EnginewerkStatBundle(),
             new Enginewerk\UserBundle\UserBundle(),
             new FOS\UserBundle\FOSUserBundle(),
             new HWI\Bundle\OAuthBundle\HWIOAuthBundle(),

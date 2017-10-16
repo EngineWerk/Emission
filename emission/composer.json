@@ -26,6 +26,7 @@
         "knplabs/knp-gaufrette-bundle": "0.3.0",
         "ramsey/uuid": "^3.7",
         "roave/security-advisories": "dev-master",
+        "scriptfusion/byte-formatter": "^3.2",
         "sensio/framework-extra-bundle": "~3.0",
         "sensio/generator-bundle": "2.3.*",
         "symfony/assetic-bundle": "2.3.*",
