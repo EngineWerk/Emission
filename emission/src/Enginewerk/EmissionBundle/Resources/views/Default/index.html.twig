@@ -22,8 +22,6 @@
 <link rel="stylesheet" href="{{ asset('bundles/enginewerkemission/vendor/Resumable/resumable.css') }}">
 {% endblock %}
 
-{% import '::macro.html.twig' as marco %}
-
 {% block body %}
 <div id="emissionApplicationContainer">
 <!-- The fileinput-button span is used to style the file input field as button -->
@@ -65,7 +63,7 @@
                     <td>
                         <div class="fileName">{% if File.complete == 0 %}(incomplete){% endif %}{{ File.name }}</div>
                         <div class="fileUploadedBy">{{ File.UserName }}</div>
-                        <div class="fileSize">{{ marco.bytesToSize(File.size) }}</div>
+                        <div class="fileSize">{{ File.size }}</div>
                     </td>
                     {% if File.complete == 1 %}
                         <td class="fileOptions">

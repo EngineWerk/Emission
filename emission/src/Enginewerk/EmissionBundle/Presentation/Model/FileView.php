@@ -31,6 +31,9 @@ final class FileView
     /**
      * @var int
      */
+    private $sizeBytes;
+
+    /** @var string */
     private $size;
 
     /**
@@ -64,7 +67,8 @@ final class FileView
      * @param string $checksum
      * @param string $name
      * @param string $type
-     * @param int $size
+     * @param int $sizeBytes
+     * @param string $size
      * @param \DateTimeImmutable $expirationDate
      * @param \DateTimeImmutable $createdAt
      * @param \DateTimeImmutable $updatedAt
@@ -77,6 +81,7 @@ final class FileView
         $checksum,
         $name,
         $type,
+        $sizeBytes,
         $size,
         \DateTimeImmutable $expirationDate,
         \DateTimeImmutable $createdAt,
@@ -88,6 +93,7 @@ final class FileView
         $this->checksum = $checksum;
         $this->name = $name;
         $this->type = $type;
+        $this->sizeBytes = $sizeBytes;
         $this->size = $size;
         $this->expirationDate = $expirationDate;
         $this->createdAt = $createdAt;
@@ -141,6 +147,14 @@ final class FileView
 
     /**
      * @return int
+     */
+    public function getSizeBytes()
+    {
+        return $this->sizeBytes;
+    }
+
+    /**
+     * @return string
      */
     public function getSize()
     {

@@ -177,6 +177,7 @@ class ResumableFileUploadServiceTest extends \PHPUnit_Framework_TestCase
             $fileName,
             'pdf',
             $fileSize,
+            'size',
             $this->createMock(\DateTimeImmutable::class),
             $this->createMock(\DateTimeImmutable::class),
             $this->createMock(\DateTimeImmutable::class),
