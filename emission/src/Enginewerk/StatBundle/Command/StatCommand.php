@@ -12,9 +12,6 @@ final class StatCommand extends ContainerAwareCommand
 {
     const COMMAND_NAME = 'emission:stat';
 
-    /** @var InputInterface */
-    private $input;
-
     /** @var OutputInterface */
     private $output;
 
@@ -25,7 +22,6 @@ final class StatCommand extends ContainerAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->input = $input;
         $this->output = $output;
 
         $fileStatReader = $this->getContainer()->get('enginewerk_stat.presentation_doctrine.file_reader');
