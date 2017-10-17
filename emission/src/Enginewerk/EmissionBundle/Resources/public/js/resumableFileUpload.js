@@ -144,7 +144,7 @@ $(function(){
                     '<td>' + 
                         '<div class="fileName">' + file.name + '</div>' +
                         '<div class="fileUploadedBy">&nbsp;' + file.uploaded_by + '&nbsp;</div>' +
-                        '<div class="fileSize">' + bytesToSize(file.size, 2) + '</div>' +
+                        '<div class="fileSize">' + file.size + '</div>' +
                     '</td>' +
                     '<td class="fileOptions">' + 
                         '<a href="' + file.show_url + '" data-show-file-content-href="' + file.show_url.replace('/f/', '/fc/') + '" class="show_file">show</a> ' +

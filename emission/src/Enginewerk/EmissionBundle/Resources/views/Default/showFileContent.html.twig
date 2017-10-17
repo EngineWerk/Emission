@@ -1,5 +1,3 @@
-{% import '::macro.html.twig' as marco %}
-
 {% block body %}
 <div id="showFileContainer">
     <h2>{{ File.name }}</h2>
@@ -10,7 +8,7 @@
         </div>
         <div class="property">
             <span class="name">{% trans %}gui.file.size{% endtrans %}</span>:
-            <span class="value">{{ marco.bytesToSize(File.size) }}</span>
+            <span class="value">{{ File.size }}</span>
         </div>
         {% if File.checksum %}
         <div class="property">

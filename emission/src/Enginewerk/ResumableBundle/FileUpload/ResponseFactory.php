@@ -31,7 +31,7 @@ final class ResponseFactory implements ResponseFactoryInterface
             $fileView->getFileId(),
             $fileView->getName(),
             $fileView->getType(),
-            $fileView->getSize()
+            $fileView->getSizeBytes()
         );
     }
 
@@ -47,7 +47,7 @@ final class ResponseFactory implements ResponseFactoryInterface
             $fileView->getFileId(),
             $fileView->getName(),
             $fileView->getType(),
-            $fileView->getSize(),
+            $fileView->getSizeBytes(),
             $fileView->getExpirationDate(),
             $fileView->getUpdatedAt(),
             $fileView->getCreatedAt(),

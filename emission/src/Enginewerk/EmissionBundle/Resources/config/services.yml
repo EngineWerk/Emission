@@ -2,7 +2,9 @@ services:
     enginewerk_emission.service.file_presentation_service:
         public: true
         class: Enginewerk\EmissionBundle\Service\FilePresentationService
-        arguments: ['@enginewerk_emission.repository.file_repository']
+        arguments:
+            - '@enginewerk_emission.repository.file_repository'
+            - '@enginewerk_emission.byte_formatter.script_fusion_adapter'
 
     enginewerk_emission.storage.file_manager:
         public: true
@@ -12,6 +14,15 @@ services:
             - '@enginewerk_emission.repository.file_block_repository'
             - '@enginewerk_user.repository_doctrine.user_repository'
             - '@enginewerk_fs.service.binary_storage_service'
+
+    enginewerk_emission.byte_formatter.script_fusion_adapter:
+        public: false
+        class: Enginewerk\Common\Formatter\ByteFormatter\Adapter\ScriptFusionAdapter
+        arguments: ['@enginewerk_emission.byte_formatter.script_fusion']
+
+    enginewerk_emission.byte_formatter.script_fusion:
+        public: false
+        class: ScriptFUSION\Byte\ByteFormatter
 
     enginewerk_emission.repository.file_block_repository:
         class: Enginewerk\EmissionBundle\Repository\Doctrine\FileBlockRepository

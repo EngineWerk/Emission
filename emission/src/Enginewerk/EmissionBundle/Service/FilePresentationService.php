@@ -1,6 +1,7 @@
 <?php
 namespace Enginewerk\EmissionBundle\Service;
 
+use Enginewerk\Common\Formatter\ByteFormatter\HumanReadableFormatInterface;
 use Enginewerk\EmissionBundle\Entity\File as FileEntity;
 use Enginewerk\EmissionBundle\Presentation\Model\FileView;
 use Enginewerk\EmissionBundle\Presentation\Model\FileViewCollection;
@@ -12,12 +13,17 @@ final class FilePresentationService implements FileViewFinderInterface
     /** @var FileRepositoryInterface */
     private $fileRepository;
 
+    /** @var HumanReadableFormatInterface */
+    private $byteFormatter;
+
     /**
      * @param FileRepositoryInterface $fileRepository
+     * @param HumanReadableFormatInterface $byteFormatter
      */
-    public function __construct(FileRepositoryInterface $fileRepository)
+    public function __construct(FileRepositoryInterface $fileRepository, HumanReadableFormatInterface $byteFormatter)
     {
         $this->fileRepository = $fileRepository;
+        $this->byteFormatter = $byteFormatter;
     }
 
     /**
@@ -105,6 +111,7 @@ final class FilePresentationService implements FileViewFinderInterface
             $file->getName(),
             $file->getType(),
             $file->getSize(),
+            $this->byteFormatter->format($file->getSize()),
             \DateTimeImmutable::createFromMutable($file->getExpirationDate()),
             \DateTimeImmutable::createFromMutable($file->getCreatedAt()),
             \DateTimeImmutable::createFromMutable($file->getUpdatedAt()),
