@@ -1,4 +1,16 @@
 services:
+    enginewerk_application.service.date_time_read_service:
+        class: Enginewerk\ApplicationBundle\Service\DateTimeReadService
+        public: true
+        arguments:
+            -  '@enginewerk_application.service.data_time_zone'
+
+    enginewerk_application.service.data_time_zone:
+        class: DateTimeZone
+        public: false
+        arguments:
+            - '%app.time_zone%'
+
     enginewerk_application.logger.request_uuid_processor:
         class: Enginewerk\ApplicationBundle\Logger\RequestUuidProcessor
         public: true
