@@ -23,19 +23,19 @@ $(function(){
     r.assignBrowse(document.getElementById('browse'));
     r.assignDrop(document.getElementById('dropbox'));
 
-    r.on('fileAdded', function(resumableFile) {
-        info('File added to queue' , resumableFile.file.name);
+    r.on('fileAdded', function(Resumable) {
+        info('File added to queue' , Resumable.file.name);
         cursorBusy();
 
-        var file = resumableFile.file;
+        var resumableFile = Resumable.file;
 
         var fhash = SparkMD5.hash(Math.random().toString());
-        var tableRow = '<tr id="fhash-' + fhash + '" data-search="' + file.name + '" > \n' +
+        var tableRow = '<tr id="fhash-' + fhash + '" data-search="' + resumableFile.name + '" > \n' +
                     '<td>' +
                         '<div class="status"></div>' +
-                        '<div class="fileName">' + file.name + '</div>' +
+                        '<div class="fileName">' + resumableFile.name + '</div>' +
                         '<div class="fileUploadedBy">&nbsp;' + appUserName + '&nbsp;</div>' +
-                        '<div class="fileSize">' + bytesToSize(file.size, 2) + '</div>' +
+                        '<div class="fileSize">' + bytesToSize(resumableFile.size, 2) + '</div>' +
                     '</td>' +
                     '<td class="fileOptions">' +
                     '</td> \n' +
@@ -44,34 +44,34 @@ $(function(){
         var fileRow = $(tableRow);
         $('#filesTable tbody').prepend(fileRow);
         
-        resumableFile.pause(); // Pasue particular file to compute hash
+        Resumable.pause(); // Pasue particular file to compute hash
 
         var blobSlice = File.prototype.slice || File.prototype.mozSlice || File.prototype.webkitSlice;
         var chunkSize = maxChunkSize;
-        var chunks = Math.ceil(file.size / chunkSize);
+        var chunks = Math.ceil(resumableFile.size / chunkSize);
         var currentChunk = 1;
         var spark = new SparkMD5.ArrayBuffer();
         
         var fileReaderOnload = function(e) {
-            info('Loaded chunk for', file.name);
+            info('Loaded chunk for', resumableFile.name);
             
             spark.append(e.target.result);                 // append array buffer
             var md5 = SparkMD5.ArrayBuffer.hash(e.target.result);
             $('div.status:first', fileRow).html('Processed: ' + Math.round((currentChunk * 100 / chunks)) + '% &nbsp;');
-            info('Chunk "' + currentChunk + '" MD5 hash for file ' + file.name + ':', md5);
+            info('Chunk "' + currentChunk + '" MD5 hash for file ' + resumableFile.name + ':', md5);
 
             currentChunk++;
             if (currentChunk <= chunks) {
                 loadNext();
             } else {
-                resumableFile.uniqueIdentifier = spark.end();
+                Resumable.uniqueIdentifier = spark.end();
                 cursorNormal();
 
-                var fileNameHash = resumableFile.uniqueIdentifier;
-                info(file.name, fileNameHash);
+                var fileNameHash = Resumable.uniqueIdentifier;
+                info(resumableFile.name, fileNameHash);
                 pendingFilesNumber++;
 
-                resumableFile.pause(); // Resume upload of particular file
+                Resumable.pause(); // Resume upload of particular file
                 r.upload();
 
                 if($('#fhash-' + fileNameHash).length === 0 ) {
@@ -98,15 +98,15 @@ $(function(){
 
         function loadNext() {
             
-            info('Processing chunk for ' + file.name + ':', currentChunk + ' out of ' + chunks);
+            info('Processing chunk for ' + resumableFile.name + ':', currentChunk + ' out of ' + chunks);
             var fileReader = new FileReader();
             fileReader.onload = fileReaderOnload;
             fileReader.onerror = fileReaderOnerror;
 
             var start = (currentChunk - 1)* chunkSize,
-                end = ((start + chunkSize) >= file.size) ? file.size : start + chunkSize;
+                end = ((start + chunkSize) >= resumableFile.size) ? resumableFile.size : start + chunkSize;
 
-            fileReader.readAsArrayBuffer(blobSlice.call(file, start, end));
+            fileReader.readAsArrayBuffer(blobSlice.call(resumableFile, start, end));
             
         };
 
