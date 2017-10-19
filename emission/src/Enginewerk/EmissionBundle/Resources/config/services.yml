@@ -12,8 +12,27 @@ services:
         arguments:
             - '@enginewerk_emission.repository.file_repository'
             - '@enginewerk_emission.repository.file_block_repository'
-            - '@enginewerk_user.repository_doctrine.user_repository'
+            - '@enginewerk_emission.storage.manager.file_creation_manager'
             - '@enginewerk_fs.service.binary_storage_service'
+
+    enginewerk_emission.storage.manager.file_creation_manager:
+        class: Enginewerk\EmissionBundle\Storage\Manager\FileCreationManager
+        public: true
+        arguments:
+            - '@enginewerk_emission.repository.file_repository'
+            - '@enginewerk_resumable.common.uuid.uuid_version4generator'
+            - '@enginewerk_emission.generator_adapter.native_generator_adapter'
+            - '@enginewerk_user.repository_doctrine.user_repository'
+            - '@enginewerk_emission.storage_configuration.configuration'
+            - '@enginewerk_application.service.date_time_read_service'
+
+    enginewerk_emission.storage_configuration.configuration:
+        class: Enginewerk\EmissionBundle\Storage\Configuration\Configuration
+        public: false
+
+    enginewerk_emission.generator_adapter.native_generator_adapter:
+        class: Enginewerk\EmissionBundle\Generator\Adapter\NativeGeneratorAdapter
+        public: false
 
     enginewerk_emission.byte_formatter.script_fusion_adapter:
         public: false
@@ -45,11 +64,13 @@ services:
         class: Enginewerk\EmissionBundle\EventListener\FileBlockSubscriber
         tags:
             - { name: doctrine.event_subscriber, connection: default }
+        arguments: ['@enginewerk_application.service.date_time_read_service']
 
     enginewerk_emission.event_listener.file_subscriber:
         class: Enginewerk\EmissionBundle\EventListener\FileSubscriber
         tags:
             - { name: doctrine.event_subscriber, connection: default }
+        arguments: ['@enginewerk_application.service.date_time_read_service']
 
     enginewerk_emission.service.file_write_service:
         public: false

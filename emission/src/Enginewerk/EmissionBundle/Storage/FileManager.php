@@ -6,8 +6,8 @@ use Enginewerk\EmissionBundle\Entity\File as FileEntity;
 use Enginewerk\EmissionBundle\Entity\FileBlock;
 use Enginewerk\EmissionBundle\Repository\FileBlockRepositoryInterface;
 use Enginewerk\EmissionBundle\Repository\FileRepositoryInterface;
+use Enginewerk\EmissionBundle\Storage\Manager\CreateFileInterface;
 use Enginewerk\FSBundle\Service\BinaryStorageInterface;
-use Enginewerk\UserBundle\Repository\UserFinderInterface;
 
 final class FileManager implements FileCreationInterface
 {
@@ -17,27 +17,27 @@ final class FileManager implements FileCreationInterface
     /** @var FileBlockRepositoryInterface */
     private $fileBlockRepository;
 
-    /** @var UserFinderInterface */
-    private $userRepository;
-
     /** @var BinaryStorageInterface */
     private $binaryBlockStorage;
+
+    /** @var CreateFileInterface */
+    private $fileCreationManager;
 
     /**
      * @param FileRepositoryInterface $fileRepository
      * @param FileBlockRepositoryInterface $fileBlockRepository
-     * @param UserFinderInterface $userRepository
+     * @param CreateFileInterface $fileCreationManager
      * @param BinaryStorageInterface $binaryBlockStorage
      */
     public function __construct(
         FileRepositoryInterface $fileRepository,
         FileBlockRepositoryInterface $fileBlockRepository,
-        UserFinderInterface $userRepository,
+        CreateFileInterface $fileCreationManager,
         BinaryStorageInterface $binaryBlockStorage
     ) {
         $this->fileRepository = $fileRepository;
         $this->fileBlockRepository = $fileBlockRepository;
-        $this->userRepository = $userRepository;
+        $this->fileCreationManager = $fileCreationManager;
         $this->binaryBlockStorage = $binaryBlockStorage;
     }
 
@@ -110,19 +110,7 @@ final class FileManager implements FileCreationInterface
      */
     public function createFile($fileName, $fileChecksum, $fileSize, $userIdentifier, $mimeType)
     {
-        $user = $this->userRepository->getByEmail($userIdentifier);
-        $file = new FileEntity();
-
-        $file->setName($fileName);
-        $file->setChecksum($fileChecksum);
-        $file->setSize($fileSize);
-        $file->setType($mimeType);
-        $file->setUser($user);
-        $file->setComplete(false);
-
-        $this->fileRepository->persist($file);
-
-        return $file->getPublicIdentifier();
+        return $this->fileCreationManager->createFile($fileName, $fileChecksum, $fileSize, $userIdentifier, $mimeType);
     }
 
     /**

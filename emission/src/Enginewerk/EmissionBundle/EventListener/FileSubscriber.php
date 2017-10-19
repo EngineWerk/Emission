@@ -3,10 +3,22 @@ namespace Enginewerk\EmissionBundle\EventListener;
 
 use Doctrine\Common\EventSubscriber;
 use Doctrine\ORM\Event\LifecycleEventArgs;
+use Enginewerk\ApplicationBundle\DateTime\DateTimeReadInterface;
 use Enginewerk\EmissionBundle\Entity\File as FileEntity;
 
 class FileSubscriber implements EventSubscriber
 {
+    /** @var DateTimeReadInterface */
+    private $dateTimeReader;
+
+    /**
+     * @param DateTimeReadInterface $dateTimeReader
+     */
+    public function __construct(DateTimeReadInterface $dateTimeReader)
+    {
+        $this->dateTimeReader = $dateTimeReader;
+    }
+
     /**
      * @return string[]
      */
@@ -26,7 +38,9 @@ class FileSubscriber implements EventSubscriber
         $file = $args->getEntity();
 
         if ($file instanceof FileEntity) {
-            $file->preChange();
+            $currentTime = $this->dateTimeReader->getCurrentDateTime();
+            $file->setCreatedAt($currentTime);
+            $file->setUpdatedAt($currentTime);
         }
     }
 
@@ -38,7 +52,7 @@ class FileSubscriber implements EventSubscriber
         $file = $args->getEntity();
 
         if ($file instanceof FileEntity) {
-            $file->preChange();
+            $file->setUpdatedAt($this->dateTimeReader->getCurrentDateTime());
         }
     }
 }

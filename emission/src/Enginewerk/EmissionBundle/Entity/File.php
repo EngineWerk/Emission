@@ -2,7 +2,6 @@
 namespace Enginewerk\EmissionBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Enginewerk\EmissionBundle\Generator\HashGenerator;
 use Enginewerk\UserBundle\Entity\User;
 
 class File
@@ -382,24 +381,5 @@ class File
     public function getUser()
     {
         return $this->user;
-    }
-
-    public function preChange()
-    {
-        $currentTime = new \DateTime();
-        $currentTime->setTimestamp(time());
-
-        if (null === $this->getFileHash()) {
-            $fileHash = sha1(uniqid(mt_rand(), true));
-            $this->fileHash = $fileHash;
-            $this->setCreatedAt($currentTime);
-            $this->setPublicIdentifier(HashGenerator::generateRandomHash(8));
-
-            $expirationTime = new \DateTime();
-            $expirationTime->setTimestamp(time() + 86600);
-            $this->setExpirationDate($expirationTime);
-        }
-
-        $this->setUpdatedAt($currentTime);
     }
 }
