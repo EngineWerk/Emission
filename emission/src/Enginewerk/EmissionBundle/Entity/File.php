@@ -382,16 +382,4 @@ class File
     {
         return $this->user;
     }
-
-    public function preChange()
-    {
-        $currentTime = new \DateTime();
-        $currentTime->setTimestamp(time());
-
-        if (null === $this->getCreatedAt()) {
-            $this->setCreatedAt($currentTime);
-        }
-
-        $this->setUpdatedAt($currentTime);
-    }
 }

@@ -64,11 +64,13 @@ services:
         class: Enginewerk\EmissionBundle\EventListener\FileBlockSubscriber
         tags:
             - { name: doctrine.event_subscriber, connection: default }
+        arguments: ['@enginewerk_application.service.date_time_read_service']
 
     enginewerk_emission.event_listener.file_subscriber:
         class: Enginewerk\EmissionBundle\EventListener\FileSubscriber
         tags:
             - { name: doctrine.event_subscriber, connection: default }
+        arguments: ['@enginewerk_application.service.date_time_read_service']
 
     enginewerk_emission.service.file_write_service:
         public: false
