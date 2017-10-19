@@ -76,7 +76,6 @@ final class FileCreationManager implements CreateFileInterface
 
         $expirationTime = $this->dateTimeReader->getCurrentDateTime();
         $expirationTime->add(new \DateInterval(sprintf('PT%dS', $this->configuration->getTimeToLive())));
-
         $file->setExpirationDate($expirationTime);
 
         $this->fileRepository->persist($file);
