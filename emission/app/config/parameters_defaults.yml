@@ -1,4 +1,6 @@
 parameters:
+    use_oauth_login: false
     google_openid_client_id: client_id
     google_openid_client_secret: client_secret
+
     app.time_zone: 'UTC'
