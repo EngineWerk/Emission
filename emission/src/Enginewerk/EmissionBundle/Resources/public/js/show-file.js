@@ -1,17 +1,17 @@
 $(document).ready( function(){
 
-    $('a.show_file').live('click', function(event){
+    $('body').on('click', 'a.show_file', function(event){
         getFileData($(this));
         openFilePreviewWindow();
         event.preventDefault();
     });
     
-    $('.window button.close').live('click', function(event){
+    $('body').on('click', '.window button.close', function(event){
         closeFilePreviewWindow();
         event.preventDefault();
     });
     
-    $('#showFileContainer a.preview_file').live('click', function(event){
+    $('#showFileContainer').on('click', 'a.preview_file', function(event){
         showFilepreviewFile($(this), $(this).parent());
         event.preventDefault();
     });

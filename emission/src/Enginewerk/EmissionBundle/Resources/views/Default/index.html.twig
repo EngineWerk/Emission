@@ -1,12 +1,15 @@
 {% extends '::base.html.twig' %}
 
 {% block javascripts %}
-<script src="{{ asset('bundles/enginewerkemission/vendor/jQuery/jquery-1.7.2.min.js') }}"></script>
+    {% javascripts
+        '@EnginewerkEmissionBundle/Resources/node_modules/jquery/jquery.js'
+        '@EnginewerkEmissionBundle/Resources/node_modules/spark-md5/spark-md5.js'
+        '@EnginewerkEmissionBundle/Resources/node_modules/jstorage/jstorage.js' %}
+    <script src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+
 <script src="{{ asset('bundles/enginewerkemission/vendor/Resumable/resumable.js') }}"></script>
 <script src="{{ asset('bundles/enginewerkemission/js/resumableFileUpload.js') }}"></script>
-<script src="{{ asset('bundles/enginewerkemission/vendor/CryptoJS/md5.js') }}"></script>
-<script src="{{ asset('bundles/enginewerkemission/vendor/SparkMD5/spark-md5.min.js') }}"></script>
-<script src="{{ asset('bundles/enginewerkemission/vendor/jStorage/jstorage.js') }}"></script>
 <script src="{{ asset('bundles/enginewerkemission/js/base.js') }}"></script>
 <script src="{{ asset('bundles/enginewerkemission/js/pasteImageFromClipboard.js') }}"></script>
 <script src="{{ asset('bundles/enginewerkemission/js/app-response.js') }}"></script>
