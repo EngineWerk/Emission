@@ -86,6 +86,10 @@ echo 'export XDEBUG_CONFIG="idekey=PHPSTORM remote_host=192.168.200.1 remote_por
 #the server name should correspond to the server name you created in your project in phpstorm
 echo 'export PHP_IDE_CONFIG="serverName=emission.local"' >> /home/vagrant/.profile
 
+curl -sL https://deb.nodesource.com/setup_6.x | bash -
+apt-get install -y nodejs
+npm install -g yarn
+
 # Box shrink
 /vagrant/post-provision.sh
 echo 'Machine ready'
