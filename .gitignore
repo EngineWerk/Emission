@@ -5,6 +5,11 @@
 vm*/.vagrant
 vm*/*.box
 
+vm-build/shared-storage
+!vm-build/shared-storage/.gitkeep
+vm/shared-storage
+!vm/shared-storage/.gitkeep
+
 # Bootstrap
 emission/app/bootstrap*
 
@@ -14,11 +19,15 @@ emission/app/logs/*
 emission/app/cache/*
 emission/web/uploads/*
 emission/web/bundles/*
+emission/web/js/*
 emission/bin/*
 
 # Configuration files
 emission/app/config/parameters.ini
 emission/app/config/parameters.yml
 emission/app/SymfonyRequirements.php
+
+# JS
+/emission/src/Enginewerk/EmissionBundle/Resources/node_modules/
 
 *.php~
