@@ -64,9 +64,7 @@ function cursorNormal() {
   
 $(document).ready( function(){
 
-    //$.prettyLoader();
-    
-    $('.remove-file').live('click',function(event){
+    $('body').on('click', 'a.remove-file', function(event){
         
         var clickedObj = $(this);
         

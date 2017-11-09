@@ -1,0 +1,13 @@
+{
+  "name": "emission-bundle",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Emission",
+  "dependencies": {
+    "jquery": "1.9.*",
+    "jstorage": "^0.4.8",
+    "resumablejs": "1.0.*",
+    "spark-md5": "^3.0.0"
+  },
+  "devDependencies": {}
+}
