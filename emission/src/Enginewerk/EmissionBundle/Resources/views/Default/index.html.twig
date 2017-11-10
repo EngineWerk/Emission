@@ -131,46 +131,50 @@
     $(function(){
 
         // Option - Ask before delete
+        var askBeforeDeleteOption = $('#askBeforeDeleteCheckBox');
         if($.jStorage.get('app.settings.ask_before_delete', 'yes') === 'yes') {
-            $('#askBeforeDeleteCheckBox').attr('checked', 'checked');
+            askBeforeDeleteOption.prop('checked', true);
         }
 
-        $('#askBeforeDeleteCheckBox').change(function(){
-            var option = ($(this).attr('checked') === 'checked') ? 'yes' : 'no';
+        askBeforeDeleteOption.change(function(){
+            var option = ($(this).prop('checked')) ? 'yes' : 'no';
             $.jStorage.set('app.settings.ask_before_delete', option);
             log($.jStorage.get('app.settings.ask_before_delete', 'yes'));
         });
 
         // Option - Fast and stable network - LAN
+        var fastAndStableNetworkOption = $('#fastAndStableNetworkCheckBox');
         if($.jStorage.get('app.settings.fast_and_stable_network', 'yes') === 'yes') {
-            $('#fastAndStableNetworkCheckBox').attr('checked', 'checked');
+            fastAndStableNetworkOption.prop('checked', true);
         }
 
-        $('#fastAndStableNetworkCheckBox').change(function(){
-            var option = ($(this).attr('checked') === 'checked') ? 'yes' : 'no';
+        fastAndStableNetworkOption.change(function(){
+            var option = ($(this).prop('checked')) ? 'yes' : 'no';
             $.jStorage.set('app.settings.fast_and_stable_network', option);
             log($.jStorage.get('app.settings.fast_and_stable_network', 'yes'));
         });
 
         // Option - Prompt for screenshot file name
+        var promptForScreenShotFilenameOption = $('#promptForScreenshotFilename');
         if($.jStorage.get('app.settings.prompt_for_screenshot_filename', 'yes') === 'yes') {
-            $('#promptForScreenshotFilename').attr('checked', 'checked');
+            promptForScreenShotFilenameOption.prop('checked', true);
         }
 
-        $('#promptForScreenshotFilename').change(function(){
-            var option = ($(this).attr('checked') === 'checked') ? 'yes' : 'no';
+        promptForScreenShotFilenameOption.change(function(){
+            var option = ($(this).prop('checked')) ? 'yes' : 'no';
             $.jStorage.set('app.settings.prompt_for_screenshot_filename', option);
             log($.jStorage.get('app.settings.prompt_for_screenshot_filename', 'yes'));
         });
 
         // Option - Simple search
+        var enableSimpleSearchOption = $('#enableSimpleSearchCheckBox');
         if($.jStorage.get('app.settings.enable_simple_search', 'yes') === 'yes') {
-            $('#enableSimpleSearchCheckBox').attr('checked', 'checked');
+            enableSimpleSearchOption.prop('checked', true);
             simpleSearchEnable();
         }
 
-        $('#enableSimpleSearchCheckBox').change(function(){
-            var option = ($(this).attr('checked') === 'checked') ? 'yes' : 'no';
+        enableSimpleSearchOption.change(function(){
+            var option = ($(this).prop('checked')) ? 'yes' : 'no';
             $.jStorage.set('app.settings.enable_simple_search', option);
             log($.jStorage.get('app.settings.enable_simple_search', 'yes'));
             if(option === 'yes') {
@@ -181,12 +185,13 @@
         });
 
         // Option - Enable auto file preview
+        var enableAutoFilePreviewOption = $('#enableAutoFilePreviewCheckBox');
         if($.jStorage.get('app.settings.enable_auto_file_preview', 'yes') === 'yes') {
-            $('#enableAutoFilePreviewCheckBox').attr('checked', 'checked');
+            enableAutoFilePreviewOption.prop('checked', true);
         }
 
-        $('#enableAutoFilePreviewCheckBox').change(function(){
-            var option = ($(this).attr('checked') === 'checked') ? 'yes' : 'no';
+        enableAutoFilePreviewOption.change(function(){
+            var option = ($(this).prop('checked')) ? 'yes' : 'no';
             $.jStorage.set('app.settings.enable_auto_file_preview', option);
             log($.jStorage.get('app.settings.enable_auto_file_preview', 'yes'));
         });
