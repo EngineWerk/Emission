@@ -25,31 +25,37 @@ $(document).ready( function(){
         var userFilename = null;
         
         if($.jStorage.get('app.settings.prompt_for_screenshot_filename', 'yes') === 'yes') {
-            var userFilename = prompt("Please enter file name", defaultFilename );
+            userFilename = prompt("Please enter file name", defaultFilename );
         } else {
             userFilename = defaultFilename;
         }
         
-        if(userFilename === null) {
+        if (userFilename === null) {
             return false;
         }
         
         if(userFilename !== '') {
             file.name = userFilename;
+            file.fileName = userFilename;
         } else {
+            file.fileName = defaultFilename;
             file.name = defaultFilename;
         }
+
+        console.log(file.fileName);
         
         window.resumable.addFile(file);
     }
 
     /* Handle paste events */
     function pasteHandler(e) {
-        
+
         // Focus on paste Catcher - helps in FF
         pasteCatcher.focus();
-        
-       if (e.clipboardData.items) {
+
+        console.log(e.clipboardData);
+
+        if (e.clipboardData.items) {
           // Get the items from the clipboard
           var items = e.clipboardData.items;
           if (items) {
@@ -61,13 +67,13 @@ $(document).ready( function(){
                 }
              }
           }
-       // If we can't handle clipboard data directly (Firefox), 
-       // we need to read what was pasted from the contenteditable element
-       } else {
+        // If we can't handle clipboard data directly (Firefox),
+        // we need to read what was pasted from the contenteditable element
+        } else {
           // This is a cheap trick to make sure we read the data
           // AFTER it has been inserted.
           setTimeout(checkInput, 1);
-       }
+        }
     }
 
     /* Parse the input in the paste catcher element */

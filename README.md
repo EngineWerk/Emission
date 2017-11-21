@@ -8,7 +8,7 @@ Web browser file sharing application.
 ### Features
 - Large files (~GB) upload
 - Resumable upload (using [Resumable.js](https://github.com/23/resumable.js))
-- Upload images via clipboard paste (Ctrl+v)
+- Upload images via clipboard paste (Ctrl+V). Make screen shoot on OSX and keep it in clipboard cmd+ctrl+shift+3.
 
 ### Requirements
 PHP >= 5.6.29
