@@ -1,13 +1,13 @@
 <?php
-namespace Enginewerk\MigrationBundle\Command;
+namespace Enginewerk\Shared\Infrastructure\Persistence\Doctrine\Sf3DoctrineMigrationBundle\Command;
 
-use Doctrine\Bundle\MigrationsBundle\Command\MigrationsGenerateDoctrineCommand as BaseMigrationsGenerateDoctrineCommand;
+use Doctrine\Bundle\MigrationsBundle\Command\MigrationsDiffDoctrineCommand as BaseMigrationsDiffDoctrineCommand;
 use Doctrine\DBAL\Migrations\Configuration\Configuration;
-use Enginewerk\MigrationBundle\Helper\MigrationGeneratorHelper;
+use Enginewerk\Shared\Infrastructure\Persistence\Doctrine\Sf3DoctrineMigrationBundle\Helper\MigrationGeneratorHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 
-class MigrationsGenerateDoctrineCommand extends BaseMigrationsGenerateDoctrineCommand
+class MigrationsDiffDoctrineCommand extends BaseMigrationsDiffDoctrineCommand
 {
     protected function configure()
     {
@@ -17,7 +17,13 @@ class MigrationsGenerateDoctrineCommand extends BaseMigrationsGenerateDoctrineCo
     }
 
     /**
-     * @inheritdoc
+     * @param Configuration $configuration
+     * @param InputInterface $input
+     * @param string $version
+     * @param null|string $up
+     * @param null|string $down
+     *
+     * @return string
      */
     protected function generateMigration(
         Configuration $configuration,

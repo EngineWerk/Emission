@@ -1,13 +1,10 @@
 <?php
-namespace Enginewerk\MigrationBundle\Migrations;
+namespace Enginewerk\Shared\Infrastructure\Persistence\Doctrine\Sf3DoctrineMigrationBundle\Migrations;
 
 use Doctrine\DBAL\Migrations\AbstractMigration;
 use Doctrine\DBAL\Schema\Schema;
 
-/**
- * Auto-generated Migration: Please modify to your needs!
- */
-class Version20171010090523_004_indexes extends AbstractMigration
+class Version20171012105936_005_search_idx extends AbstractMigration
 {
     /**
      * @param Schema $schema
@@ -17,7 +14,7 @@ class Version20171010090523_004_indexes extends AbstractMigration
         // this up() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
-        $this->addSql('CREATE UNIQUE INDEX UNIQ_8C9F3610EDBC1707 ON file (public_identifier)');
+        $this->addSql('CREATE UNIQUE INDEX UNIQ_3F77E4691A782482 ON binary_block (urn)');
     }
 
     /**
@@ -28,6 +25,6 @@ class Version20171010090523_004_indexes extends AbstractMigration
         // this down() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
-        $this->addSql('DROP INDEX UNIQ_8C9F3610EDBC1707 ON file');
+        $this->addSql('DROP INDEX UNIQ_3F77E4691A782482 ON binary_block');
     }
 }

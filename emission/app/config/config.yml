@@ -81,8 +81,8 @@ swiftmailer:
     spool:     { type: memory }
 
 doctrine_migrations:
-    dir_name: '%kernel.root_dir%/../src/Enginewerk/MigrationBundle/Migrations'
-    namespace: Enginewerk\MigrationBundle\Migrations
+    dir_name: '%kernel.root_dir%/../src/Enginewerk/Shared/Infrastructure/Persistence/Doctrine/Sf3DoctrineMigrationBundle/Migrations'
+    namespace: Enginewerk\Shared\Infrastructure\Persistence\Doctrine\Sf3DoctrineMigrationBundle\Migrations
     table_name: _doctrine_migration_versions
     name: Emission Migrations
 

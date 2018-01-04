@@ -1,5 +1,5 @@
 <?php
-namespace Enginewerk\MigrationBundle\Helper;
+namespace Enginewerk\Shared\Infrastructure\Persistence\Doctrine\Sf3DoctrineMigrationBundle\Helper;
 
 class MigrationGeneratorHelper
 {

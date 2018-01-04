@@ -1,7 +1,7 @@
 <?php
-namespace Enginewerk\MigrationBundle\Tests\Helper;
+namespace Enginewerk\Shared\Infrastructure\Persistence\Doctrine\Sf3DoctrineMigrationBundle\Tests\Helper;
 
-use Enginewerk\MigrationBundle\Helper\MigrationGeneratorHelper;
+use Enginewerk\Shared\Infrastructure\Persistence\Doctrine\Sf3DoctrineMigrationBundle\Helper\MigrationGeneratorHelper;
 
 final class MigrationGeneratorHelperTest extends \PHPUnit_Framework_TestCase
 {
