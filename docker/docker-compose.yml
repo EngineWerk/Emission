@@ -1,19 +1,18 @@
-version: '2.1'
+version: "3.2"
 
 services:
-    codebase:
-        build: ./build/codebase
-        volumes:
-            - ../emission:/var/www/html
     nginx:
-        image: 'emsn-nginx:1.11-1'
+        image: 'emsn-nginx:1.11-2'
         restart: unless-stopped
         ports:
             - '9980:80'
-        links:
-            - php-fpm
-        volumes_from:
-            - codebase
+        deploy:
+            replicas: 2
+            update_config:
+                parallelism: 1
+
+        volumes:
+            - "./build/nginx/default.conf:/etc/nginx/conf.d/default.conf"
 
     mysql:
         image: 'emsn-mysql:5.5-1'
@@ -29,14 +28,21 @@ services:
 
     php-fpm:
         image: 'emsn-php-fpm:7.1-1'
-        links:
-            - mysql
-        volumes_from:
-            - codebase
+        depends_on:
+          - mysql
+        volumes:
+            - type: bind
+              source: "../emission"
+              target: "/var/www/html"
 
     php-cli:
         image: 'emsn-php-cli:7.1-1'
-        links:
-            - mysql
-        volumes_from:
-            - codebase
+        depends_on:
+          - mysql
+        volumes:
+            - type: bind
+              source: "../emission"
+              target: "/var/www/html"
+
+volumes:
+    codebase:
