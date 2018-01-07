@@ -1,0 +1,48 @@
+version: "3.2"
+
+services:
+    nginx:
+        image: 'emsn-nginx:1.11-2'
+        restart: unless-stopped
+        ports:
+            - '9980:80'
+        deploy:
+            replicas: 2
+            update_config:
+                parallelism: 1
+
+        volumes:
+            - "./build/nginx/default.conf:/etc/nginx/conf.d/default.conf"
+
+    mysql:
+        image: 'emsn-mysql:5.5-1'
+        environment:
+            MYSQL_ROOT_PASSWORD: docker-root
+            MYSQL_DATABASE: emission
+            MYSQL_USER: emission
+            MYSQL_PASSWORD: docker-emission
+        healthcheck:
+            test: "exit 0"
+        ports:
+            - '3306:3306'
+
+    php-fpm:
+        image: 'emsn-php-fpm:7.1-1'
+        depends_on:
+          - mysql
+        volumes:
+            - type: bind
+              source: "../emission"
+              target: "/var/www/html"
+
+    php-cli:
+        image: 'emsn-php-cli:7.1-1'
+        depends_on:
+          - mysql
+        volumes:
+            - type: bind
+              source: "../emission"
+              target: "/var/www/html"
+
+volumes:
+    codebase:
